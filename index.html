@@ -11,7 +11,13 @@
     />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-
+    <!-- Add after existing meta tags -->
+    <meta name="description" content="Portfolio website of Mehmet Kahya - Software Developer & Electrical Engineering Student" />
+    <meta name="keywords" content="Mehmet Kahya, Software Developer, Python, JavaScript, Portfolio" />
+    <meta name="author" content="Mehmet Kahya" />
+    <meta property="og:title" content="Mehmet Kahya Portfolio" />
+    <meta property="og:description" content="Software Developer & Electrical Engineering Student" />
+    <meta property="og:image" content="images/favicon2.png" />
     <title>Mehmet Kahya Portfolio</title>
     <link rel="stylesheet" href="public/style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -25,7 +31,6 @@
       rel="stylesheet"
       href="https://use.fontawesome.com/releases/v5.13.0/css/all.css"
     />
-
     <!-- add favicon-->
     <link
       rel="icon"
@@ -40,6 +45,11 @@
       type="image/x-icon"
     />
 
+        <!-- Add in head -->
+    <link rel="preload" as="style" href="public/style.css" />
+    <link rel="preload" as="script" href="public/script.js" />
+    <link rel="preload" as="font" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" />
+
     <script id="_waudci">
       var _wau = _wau || [];
       _wau.push(["small", "v5jlndt7b8", "dci"]);
@@ -47,8 +57,10 @@
     <script async src="//waust.at/s.js"></script>
   </head>
   <body>
-    <header><span class="dot"></span> Hello, I'm Mehmet Kahya</header>
-
+    <header><span class="dot"></span> 
+      Hello, I'm Mehmet Kahya
+      <div id="3d-model-container"></div>
+    </header>
     <div class="projects">
       <div class="subheader">🔥My Top Projects 🔥</div>
 
@@ -252,12 +264,11 @@
         />
 
         <img
-        src="https://github-readme-activity-graph.vercel.app/graph?username=mehmetkahya0&bg_color=ffeecd&color=000000&line=000000&point=ff9500&area=true&hide_border=true)](https://github.com/ashutosh00710/github-readme-activity-graph)"
-        alt="Mehmet Kahya's GitHub Stats"
-        style="width: 75%; height: auto; max-width: 400px; min-width: 300px"
-        draggable="false"
-      />
-
+          src="https://github-readme-activity-graph.vercel.app/graph?username=mehmetkahya0&bg_color=ffeecd&color=000000&line=000000&point=ff9500&area=true&hide_border=true"
+          alt="Mehmet Kahya's GitHub Stats"
+          style="width: 75%; height: auto; max-width: 400px; min-width: 300px"
+          draggable="false"
+        />
       </div>
     </section>
 

@@ -73,6 +73,19 @@ footer {
   width: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+
+#3d-model-container {
+  width: 100px;
+  height: 100px; /* İstediğiniz yükseklik */
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+
 body {
   font-family: "EB Garamond", serif;
   background-color: var(--background_color);
