@@ -13,7 +13,6 @@ class PortfolioApp {
             this.initTypingAnimation();
             this.initScrollAnimations();
             this.initProjectFilters();
-            this.initContactForm();
             this.initThemeToggle();
             this.initSmoothScroll();
         });
@@ -153,6 +152,8 @@ class PortfolioApp {
         const type = () => {
             const currentText = textArray[textArrayIndex];
             
+            if (!typingText) return; // Add safety check
+            
             if (isDeleting) {
                 typingText.textContent = currentText.substring(0, charIndex - 1);
                 charIndex--;
@@ -246,76 +247,6 @@ class PortfolioApp {
                 });
             });
         });
-    }
-
-    // Contact form handling
-    initContactForm() {
-        const contactForm = document.getElementById('contact-form');
-        if (!contactForm) return;
-
-        contactForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const formData = new FormData(contactForm);
-            const formButton = contactForm.querySelector('.form-submit');
-            const buttonText = formButton.querySelector('span');
-            const buttonIcon = formButton.querySelector('i');
-            
-            // Get form values
-            const name = formData.get('name');
-            const email = formData.get('email');
-            const subject = formData.get('subject');
-            const message = formData.get('message');
-
-            // Basic validation
-            if (!name || !email || !subject || !message) {
-                this.showNotification('Please fill in all fields', 'error');
-                return;
-            }
-
-            if (!this.isValidEmail(email)) {
-                this.showNotification('Please enter a valid email address', 'error');
-                return;
-            }
-
-            // Update button state
-            buttonText.textContent = 'Sending...';
-            buttonIcon.className = 'fas fa-spinner fa-spin';
-            formButton.disabled = true;
-
-            try {
-                // Create mailto link
-                const mailtoLink = `mailto:mehmetkahyakas5@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
-                    `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
-                )}`;
-
-                // Open default mail client
-                window.location.href = mailtoLink;
-
-                // Show success message
-                this.showNotification('Thank you! Your message has been sent.', 'success');
-                
-                // Reset form
-                contactForm.reset();
-
-            } catch (error) {
-                console.error('Error:', error);
-                this.showNotification('Failed to send message. Please try again.', 'error');
-            } finally {
-                // Reset button
-                setTimeout(() => {
-                    buttonText.textContent = 'Send Message';
-                    buttonIcon.className = 'fas fa-paper-plane';
-                    formButton.disabled = false;
-                }, 1000);
-            }
-        });
-    }
-
-    // Email validation
-    isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
     }
 
     // Notification system

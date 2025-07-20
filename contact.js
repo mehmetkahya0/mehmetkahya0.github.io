@@ -1,5 +1,5 @@
 // Modern Contact Form Handler
-class ContactFormHandler {
+class ContactFormManager {
     constructor() {
         this.init();
     }
@@ -388,7 +388,7 @@ ${name}
 }
 
 // Initialize the contact form handler
-const contactHandler = new ContactFormHandler();
+const contactHandler = new ContactFormManager();
 
 // Export for potential use in other modules
 if (typeof module !== 'undefined' && module.exports) {
