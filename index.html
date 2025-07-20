@@ -7,8 +7,8 @@
     <!-- Primary Meta Tags -->
     <title>Mehmet Kahya | Software Developer & Engineering Student</title>
     <meta name="title" content="Mehmet Kahya | Software Developer & Engineering Student">
-    <meta name="description" content="Software Developer and Electrical-Electronics Engineering student from Turkey. Specializing in web development, AI, and hardware solutions.">
-    <meta name="keywords" content="Mehmet Kahya, Software Developer, Electrical Engineering, Web Development, AI, Portfolio">
+    <meta name="description" content="Software Developer and Electrical-Electronics Engineering student from Turkey. Specializing in AI, web development, and innovative solutions.">
+    <meta name="keywords" content="Mehmet Kahya, Software Developer, Electrical Engineering, Web Development, AI, Portfolio, Python, JavaScript">
     <meta name="author" content="Mehmet Kahya">
     <meta name="robots" content="index, follow">
     
@@ -16,14 +16,14 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://mehmetkahya0.github.io/">
     <meta property="og:title" content="Mehmet Kahya | Software Developer & Engineering Student">
-    <meta property="og:description" content="Software Developer and Electrical-Electronics Engineering student from Turkey. Specializing in web development, AI, and hardware solutions.">
+    <meta property="og:description" content="Software Developer and Electrical-Electronics Engineering student from Turkey. Specializing in AI, web development, and innovative solutions.">
     <meta property="og:image" content="https://mehmetkahya0.github.io/preview.jpg">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://mehmetkahya0.github.io/">
     <meta property="twitter:title" content="Mehmet Kahya | Software Developer & Engineering Student">
-    <meta property="twitter:description" content="Software Developer and Electrical-Electronics Engineering student from Turkey. Specializing in web development, AI, and hardware solutions.">
+    <meta property="twitter:description" content="Software Developer and Electrical-Electronics Engineering student from Turkey. Specializing in AI, web development, and innovative solutions.">
     <meta property="twitter:image" content="https://mehmetkahya0.github.io/preview.jpg">
     
     <!-- Favicon -->
@@ -47,151 +47,715 @@
 
   </head>
   <body>
-    <nav>
-      <div class="logo">portfolio.</div>
-      <ul class="nav-links">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-      <div class="burger">
-        <div class="line1"></div>
-        <div class="line2"></div>
-        <div class="line3"></div>
+    <!-- Cursor Effect -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-blur" id="cursor-blur"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+      <div class="nav-container">
+        <div class="logo">
+          <span class="logo-text">MK</span>
+          <span class="logo-dot">.</span>
+        </div>
+        <ul class="nav-links" id="nav-links">
+          <li><a href="#home" class="nav-link" data-section="home">Home</a></li>
+          <li><a href="#about" class="nav-link" data-section="about">About</a></li>
+          <li><a href="#projects" class="nav-link" data-section="projects">Projects</a></li>
+          <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
+        </ul>
+        <div class="theme-toggle" id="theme-toggle">
+          <i class="fas fa-moon"></i>
+        </div>
+        <div class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </div>
     </nav>
 
+    <!-- Hero Section -->
     <section id="home" class="hero">
-      <div class="hero-content">
-        <h1>Hi, I'm <span class="highlight">Mehmet Kahya</span></h1>
-        <p class="typed-text"></p>
-        <div class="social-links">
-          <a href="https://github.com/mehmetkahya0"><i class="fab fa-github"></i></a>
-          <a href="https://www.linkedin.com/in/mehmet-kahya-0861a4286/"><i class="fab fa-linkedin"></i></a>
-          <a href="mailto:mehmetkahyakas5@gmail.com"
-            ><i class="fas fa-envelope"></i
-          ></a>
+      <div class="hero-background">
+        <div class="floating-shapes">
+          <div class="shape shape-1"></div>
+          <div class="shape shape-2"></div>
+          <div class="shape shape-3"></div>
+          <div class="shape shape-4"></div>
         </div>
       </div>
-    </section>
-
-    <section id="about">
-      <h2>About Me</h2>
-      <div class="about-content">
-        <div class="about-text">
-          <p>
-            Hi there! I'm a 20-year-old Electrical-Electronics Engineering
-            student from Izmir, Turkey, My journey in engineering has become
-            intertwined with my growing passion for software development,
-            creating a unique perspective that bridges hardware and software
-            domains. As a tech enthusiast, I find myself constantly exploring
-            new horizons. My interests span across diverse fields - from diving
-            deep into artificial intelligence and large language models to
-            keeping up with the latest space exploration developments. I'm
-            particularly fascinated by how these technologies are shaping our
-            future and aim to contribute to this evolution through my work and
-            studies. Beyond academics, I'm an avid reader and lifelong learner,
-            always eager to expand my knowledge base. Whether it's staying
-            updated with cutting-edge technology, exploring new programming
-            concepts, or understanding the implications of AI advancements, I'm
-            driven by curiosity and the desire to create meaningful solutions.
-            In my free time, you'll find me coding personal projects, reading
-            about emerging technologies, or engaging with the latest
-            developments in AI and space exploration. I believe in the power of
-            continuous learning and am excited about the possibilities that lie
-            at the intersection of electrical engineering and software
-            development.
-          </p>
+      <div class="hero-container">
+        <div class="hero-content">
+          <div class="hero-text">
+            <p class="greeting">👋 Hello, I'm</p>
+            <h1 class="hero-title">
+              <span class="name-part">Mehmet</span>
+              <span class="name-part highlight">Kahya</span>
+            </h1>
+            <p class="hero-subtitle">
+              <span class="typing-wrapper">
+                <span class="typing-text" id="typing-text"></span>
+                <span class="cursor-typing">|</span>
+              </span>
+            </p>
+            <p class="hero-description">
+              I'm a 20-year-old Electrical-Electronics Engineering student passionate about AI, 
+              space technology, and creating innovative solutions that bridge hardware and software domains.
+            </p>
+            <div class="hero-buttons">
+              <a href="#projects" class="btn btn-primary">
+                <span>View My Work</span>
+                <i class="fas fa-arrow-right"></i>
+              </a>
+              <a href="#contact" class="btn btn-secondary">
+                <span>Let's Talk</span>
+                <i class="fas fa-comments"></i>
+              </a>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="profile-card">
+              <div class="card-glow"></div>
+              <div class="profile-image">
+                <div class="image-placeholder">
+                  <img src="images/profile.jpg" alt="Mehmet Kahya" class="profile-img" />
+                </div>
+              </div>
+              <div class="social-links">
+                <a href="https://github.com/mehmetkahya0" class="social-link" target="_blank">
+                  <i class="fab fa-github"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/mehmet-kahya/" class="social-link" target="_blank">
+                  <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="mailto:mehmetkahyakas5@gmail.com" class="social-link">
+                  <i class="fas fa-envelope"></i>
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="skills">
-          <h3>Skills</h3>
-          <div class="skill-tags">
-            <span>HTML</span>
-            <span>CSS</span>
-            <span>JavaScript</span>
-            <span>Python</span>
-            <span>Figma</span>
-            <span>Fusion360</span>
-            <span>Matlab</span>
-            <span>Arduino</span>
-            <span>C++</span>
-            <span>Proteus</span>
-
-            <!-- Add more skills -->
+        <div class="scroll-indicator">
+          <div class="scroll-text">Scroll Down</div>
+          <div class="scroll-arrow">
+            <i class="fas fa-chevron-down"></i>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="projects">
-      <h2>Projects</h2>
-      <div class="projects-grid">
-        <div class="project">
-          <h3>Temp Mail ⏱️</h3>
-          <h5>⭑ Over 300 star on Github! ⭑</h5>
-          <p>
-            TempMail is a  web application that allows you to generate temporary email addresses and view the emails received by these addresses.
-          </p>
-          <a href="https://github.com/mehmetkahya0/temp-mail">View Project <i class="fa-solid fa-arrow-right"></i></a>
-
+    <!-- About Section -->
+    <section id="about" class="about">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-number">01</span>
+          <h2 class="section-title">About Me</h2>
+          <p class="section-subtitle">Get to know me better</p>
         </div>
-
-        <div class="project">
-          <h3>Huge AI Catalog 📚</h3>
-          <h5>⭑ Over 420 star on Github! ⭑</h5>
-          <p>
-            Huge AI models catalog. A curated list of AI tools, platforms, and resources across various domains.
-          </p>
-          <a href="https://github.com/mehmetkahya0/AI-Catalog">View Project <i class="fa-solid fa-arrow-right"></i></a>
-        </div>
-
-        <div class="project">
-          <h3>Personal RSS News Feed 📰</h3>
-          <p>
-            RSS News Aggregator using JavaScript, HTML, and CSS. Explore news from various sources like The Verge, New York Times, and more. Responsive design, dynamic images, and user feedback.
-          </p>
-          <a href="https://github.com/mehmetkahya0/rss">View Project <i class="fa-solid fa-arrow-right"></i></a>
-        </div>
-
-        <div class="project">
-          <h3>Password Algorithms 🔑</h3>
-          <p>
-            Password Generator, Checker and Hasher with various algorithms.
-          </p>
-          <a href="https://github.com/mehmetkahya0/PasswordAlgorithms">View Project <i class="fa-solid fa-arrow-right"></i></a>
-        </div>
-
-        <div class="project">
-          <h3>Web Resource Downloader Tool 🔧</h3>
-          <p>
-            This is a Python script that downloads all resources (images, scripts, stylesheets, etc.) from a given website.
-          </p>
-          <a href="https://github.com/mehmetkahya0/Web-Resource-Downloader">View Project <i class="fa-solid fa-arrow-right"></i></a>
-        </div>
-
-        <div class="project">
-          <h3>Price Tracker 💵</h3>
-          <p>
-            A powerful and modern GUI application to monitor and track product prices on popular e-commerce platforms. Get notified when prices drop below your target thresholds!
-          </p>
-          <a href="https://github.com/mehmetkahya0/Price-Tracker">View Project <i class="fa-solid fa-arrow-right"></i></a>
+        
+        <div class="about-content">
+          <div class="about-text">
+            <div class="text-block">
+              <h3>Who am I?</h3>
+              <p>
+                I'm a passionate Electrical-Electronics Engineering student from Izmir, Turkey, 
+                with nearly six years of coding experience. My journey bridges the fascinating 
+                worlds of hardware and software, creating unique perspectives and innovative solutions.
+              </p>
+              <p>
+                My interests span from artificial intelligence and space technology to robotics 
+                and backend development. I'm particularly excited about how emerging technologies 
+                are shaping our future, and I strive to contribute to this evolution through my work.
+              </p>
+            </div>
+            
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-number">6+</div>
+                <div class="stat-label">Years Coding</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">GitHub Stars</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">65+</div>
+                <div class="stat-label">Repositories</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">20</div>
+                <div class="stat-label">Years Old</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="skills-section">
+            <h3>Tech Stack & Skills</h3>
+            <div class="skills-grid">
+              <div class="skill-category">
+                <h4>Languages</h4>
+                <div class="skill-list">
+                  <span class="skill-tag python">Python</span>
+                  <span class="skill-tag javascript">JavaScript</span>
+                  <span class="skill-tag cpp">C++</span>
+                  <span class="skill-tag html">HTML5</span>
+                  <span class="skill-tag css">CSS3</span>
+                </div>
+              </div>
+              <div class="skill-category">
+                <h4>Technologies</h4>
+                <div class="skill-list">
+                  <span class="skill-tag">OpenCV</span>
+                  <span class="skill-tag">YOLO</span>
+                  <span class="skill-tag">Arduino</span>
+                  <span class="skill-tag">Matlab</span>
+                  <span class="skill-tag">Git</span>
+                </div>
+              </div>
+              <div class="skill-category">
+                <h4>Tools & Design</h4>
+                <div class="skill-list">
+                  <span class="skill-tag">Figma</span>
+                  <span class="skill-tag">Fusion360</span>
+                  <span class="skill-tag">Proteus</span>
+                  <span class="skill-tag">VS Code</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="contact">
-      <h2>Get in Touch</h2>
-      <form id="contact-form">
-        <input type="text" placeholder="Name" required />
-        <input type="email" placeholder="Email" required />
-        <textarea placeholder="Message" required></textarea>
-        <button type="submit">Send Message</button>
-      </form>
+    <!-- Projects Section -->
+    <section id="projects" class="projects">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-number">02</span>
+          <h2 class="section-title">Featured Projects</h2>
+          <p class="section-subtitle">Some of my recent work</p>
+        </div>
+
+        <div class="projects-grid">
+          <!-- AI Catalog Project -->
+          <div class="project-card featured" data-category="ai">
+            <div class="project-image">
+              <div class="project-overlay">
+                <div class="project-links">
+                  <a href="https://github.com/mehmetkahya0/AI-Catalog" class="project-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                  </a>
+                  <a href="https://github.com/mehmetkahya0/AI-Catalog" class="project-link" target="_blank">
+                    <i class="fas fa-external-link-alt"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="project-tech-stack">
+                <span class="tech-tag">Shell</span>
+                <span class="tech-tag">AI</span>
+                <span class="tech-tag">Catalog</span>
+              </div>
+            </div>
+            <div class="project-content">
+              <div class="project-header">
+                <h3 class="project-title">
+                  <a href="https://github.com/mehmetkahya0/AI-Catalog" target="_blank">AI Catalog 🤖</a>
+                </h3>
+                <div class="project-stats">
+                  <span class="stat"><i class="fas fa-star"></i> 458</span>
+                  <span class="stat"><i class="fas fa-code-branch"></i> 37</span>
+                </div>
+              </div>
+              <p class="project-description">
+                A comprehensive curated list of AI tools, platforms, and resources across various domains. 
+                Features over 458 stars and serves as a go-to resource for AI enthusiasts worldwide.
+              </p>
+              <div class="project-features">
+                <span class="feature">📚 Comprehensive AI Resource</span>
+                <span class="feature">🌟 Community Driven</span>
+                <span class="feature">🔄 Regularly Updated</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- RealVision AI Project -->
+          <div class="project-card" data-category="ai">
+            <div class="project-image">
+              <div class="project-overlay">
+                <div class="project-links">
+                  <a href="https://github.com/mehmetkahya0/RealVision-ObjectUnderstandingAI" class="project-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="project-tech-stack">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">OpenCV</span>
+                <span class="tech-tag">YOLO</span>
+              </div>
+            </div>
+            <div class="project-content">
+              <div class="project-header">
+                <h3 class="project-title">
+                  <a href="https://github.com/mehmetkahya0/RealVision-ObjectUnderstandingAI" target="_blank">RealVision AI 👁️</a>
+                </h3>
+                <div class="project-stats">
+                  <span class="stat"><i class="fas fa-star"></i> 1</span>
+                </div>
+              </div>
+              <p class="project-description">
+                A powerful real-time object detection and understanding application using Python, OpenCV, 
+                and state-of-the-art AI models with dual model support.
+              </p>
+              <div class="project-features">
+                <span class="feature">🎯 Real-time Detection</span>
+                <span class="feature">🧠 Dual AI Models</span>
+                <span class="feature">📱 Cross-platform</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- F1 Race Prediction -->
+          <div class="project-card" data-category="data">
+            <div class="project-image">
+              <div class="project-overlay">
+                <div class="project-links">
+                  <a href="https://github.com/mehmetkahya0/f1-race-prediction" class="project-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="project-tech-stack">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">ML</span>
+                <span class="tech-tag">Data Science</span>
+              </div>
+            </div>
+            <div class="project-content">
+              <div class="project-header">
+                <h3 class="project-title">
+                  <a href="https://github.com/mehmetkahya0/f1-race-prediction" target="_blank">F1 Race Predictor 🏎️</a>
+                </h3>
+                <div class="project-stats">
+                  <span class="stat"><i class="fas fa-star"></i> 27</span>
+                  <span class="stat"><i class="fas fa-code-branch"></i> 2</span>
+                </div>
+              </div>
+              <p class="project-description">
+                A sophisticated Formula 1 race simulation tool that models and predicts race outcomes 
+                with realistic parameters based on driver skills and team performance.
+              </p>
+              <div class="project-features">
+                <span class="feature">🏁 Race Simulation</span>
+                <span class="feature">📊 ML Predictions</span>
+                <span class="feature">⚡ Real-time Data</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Temp Mail -->
+          <div class="project-card" data-category="web">
+            <div class="project-image">
+              <div class="project-overlay">
+                <div class="project-links">
+                  <a href="https://github.com/mehmetkahya0/temp-mail" class="project-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="project-tech-stack">
+                <span class="tech-tag">HTML</span>
+                <span class="tech-tag">CSS</span>
+                <span class="tech-tag">JavaScript</span>
+              </div>
+            </div>
+            <div class="project-content">
+              <div class="project-header">
+                <h3 class="project-title">
+                  <a href="https://github.com/mehmetkahya0/temp-mail" target="_blank">TempMail ⏱️</a>
+                </h3>
+                <div class="project-stats">
+                  <span class="stat"><i class="fas fa-star"></i> 38</span>
+                  <span class="stat"><i class="fas fa-code-branch"></i> 20</span>
+                </div>
+              </div>
+              <p class="project-description">
+                A simple web application for generating temporary email addresses and viewing received emails. 
+                Clean interface with real-time email management.
+              </p>
+              <div class="project-features">
+                <span class="feature">📧 Temp Emails</span>
+                <span class="feature">🔄 Real-time</span>
+                <span class="feature">🎨 Clean UI</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Web Resource Downloader -->
+          <div class="project-card" data-category="tools">
+            <div class="project-image">
+              <div class="project-overlay">
+                <div class="project-links">
+                  <a href="https://github.com/mehmetkahya0/Web-Resource-Downloader" class="project-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="project-tech-stack">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">Web Scraping</span>
+              </div>
+            </div>
+            <div class="project-content">
+              <div class="project-header">
+                <h3 class="project-title">
+                  <a href="https://github.com/mehmetkahya0/Web-Resource-Downloader" target="_blank">Web Resource Downloader 🔧</a>
+                </h3>
+                <div class="project-stats">
+                  <span class="stat"><i class="fas fa-star"></i> 16</span>
+                  <span class="stat"><i class="fas fa-code-branch"></i> 3</span>
+                </div>
+              </div>
+              <p class="project-description">
+                A Python script that downloads all resources (images, scripts, stylesheets) from websites. 
+                Useful for web development and resource management.
+              </p>
+              <div class="project-features">
+                <span class="feature">🌐 Web Scraping</span>
+                <span class="feature">💾 Batch Download</span>
+                <span class="feature">⚙️ Configurable</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Password Algorithms -->
+          <div class="project-card" data-category="security">
+            <div class="project-image">
+              <div class="project-overlay">
+                <div class="project-links">
+                  <a href="https://github.com/mehmetkahya0/PasswordAlgorithms" class="project-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="project-tech-stack">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">Security</span>
+                <span class="tech-tag">Cryptography</span>
+              </div>
+            </div>
+            <div class="project-content">
+              <div class="project-header">
+                <h3 class="project-title">
+                  <a href="https://github.com/mehmetkahya0/PasswordAlgorithms" target="_blank">Password Algorithms 🔐</a>
+                </h3>
+                <div class="project-stats">
+                  <span class="stat"><i class="fas fa-star"></i> 6</span>
+                </div>
+              </div>
+              <p class="project-description">
+                A comprehensive password generator, checker, and hasher with various security algorithms. 
+                Includes strength analysis and multiple encryption methods.
+              </p>
+              <div class="project-features">
+                <span class="feature">🔒 Security Tools</span>
+                <span class="feature">🧮 Multiple Algorithms</span>
+                <span class="feature">📊 Strength Analysis</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hand Gesture Control AI -->
+          <div class="project-card" data-category="ai">
+            <div class="project-image">
+              <div class="project-overlay">
+                <div class="project-links">
+                  <a href="https://github.com/mehmetkahya0/Hand-Gesture-Control-AI" class="project-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="project-tech-stack">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">OpenCV</span>
+                <span class="tech-tag">MediaPipe</span>
+              </div>
+            </div>
+            <div class="project-content">
+              <div class="project-header">
+                <h3 class="project-title">
+                  <a href="https://github.com/mehmetkahya0/Hand-Gesture-Control-AI" target="_blank">Hand Gesture Control AI ✋</a>
+                </h3>
+                <div class="project-stats">
+                  <span class="stat"><i class="fas fa-star"></i> 0</span>
+                  <span class="stat"><i class="fas fa-code-branch"></i> 0</span>
+                </div>
+              </div>
+              <p class="project-description">
+                A Python-based application that allows you to control your computer using hand gestures. 
+                Control volume, media playback, brightness, and more with simple hand movements detected through your camera.
+              </p>
+              <div class="project-features">
+                <span class="feature">🤖 AI Control</span>
+                <span class="feature">📹 Real-time Detection</span>
+                <span class="feature">🎮 System Control</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gallstone Dataset Analysis -->
+          <div class="project-card" data-category="data">
+            <div class="project-image">
+              <div class="project-overlay">
+                <div class="project-links">
+                  <a href="https://github.com/mehmetkahya0/Gallstone_dataset_analysis_project" class="project-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="project-tech-stack">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">Data Science</span>
+                <span class="tech-tag">Machine Learning</span>
+              </div>
+            </div>
+            <div class="project-content">
+              <div class="project-header">
+                <h3 class="project-title">
+                  <a href="https://github.com/mehmetkahya0/Gallstone_dataset_analysis_project" target="_blank">Gallstone Dataset Analysis 🩺</a>
+                </h3>
+                <div class="project-stats">
+                  <span class="stat"><i class="fas fa-star"></i> 0</span>
+                  <span class="stat"><i class="fas fa-code-branch"></i> 0</span>
+                </div>
+              </div>
+              <p class="project-description">
+                Comprehensive analysis of gallstone disease dataset using machine learning and statistical methods. 
+                Features interactive visualizations and decision tree models for medical prediction.
+              </p>
+              <div class="project-features">
+                <span class="feature">🏥 Medical Analysis</span>
+                <span class="feature">📊 Data Visualization</span>
+                <span class="feature">🤖 ML Prediction</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Price Tracker -->
+          <div class="project-card" data-category="tools">
+            <div class="project-image">
+              <div class="project-overlay">
+                <div class="project-links">
+                  <a href="https://github.com/mehmetkahya0/Price-Tracker" class="project-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="project-tech-stack">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">GUI</span>
+                <span class="tech-tag">Tkinter</span>
+              </div>
+            </div>
+            <div class="project-content">
+              <div class="project-header">
+                <h3 class="project-title">
+                  <a href="https://github.com/mehmetkahya0/Price-Tracker" target="_blank">Price Tracker 💰</a>
+                </h3>
+                <div class="project-stats">
+                  <span class="stat"><i class="fas fa-star"></i> 2</span>
+                  <span class="stat"><i class="fas fa-code-branch"></i> 0</span>
+                </div>
+              </div>
+              <p class="project-description">
+                A powerful GUI application to monitor and track product prices on popular e-commerce platforms. 
+                Get notified when prices drop below your target thresholds with modern UI and price history graphs.
+              </p>
+              <div class="project-features">
+                <span class="feature">💲 Price Monitoring</span>
+                <span class="feature">📈 History Graphs</span>
+                <span class="feature">🔔 Notifications</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- RSS Feed Reader -->
+          <div class="project-card" data-category="web">
+            <div class="project-image">
+              <div class="project-overlay">
+                <div class="project-links">
+                  <a href="https://github.com/mehmetkahya0/rss" class="project-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                  </a>
+                  <a href="https://mehmetkahya0.github.io/rss/" class="project-link" target="_blank">
+                    <i class="fas fa-external-link-alt"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="project-tech-stack">
+                <span class="tech-tag">JavaScript</span>
+                <span class="tech-tag">HTML5</span>
+                <span class="tech-tag">CSS3</span>
+              </div>
+            </div>
+            <div class="project-content">
+              <div class="project-header">
+                <h3 class="project-title">
+                  <a href="https://github.com/mehmetkahya0/rss" target="_blank">RSS Feed Reader 📰</a>
+                </h3>
+                <div class="project-stats">
+                  <span class="stat"><i class="fas fa-star"></i> 14</span>
+                  <span class="stat"><i class="fas fa-code-branch"></i> 1</span>
+                </div>
+              </div>
+              <p class="project-description">
+                A modern, lightning-fast RSS feed aggregator with vanilla JavaScript. Features intelligent caching, 
+                multiple CORS proxy support, and a beautiful glass-morphism design with real-time updates.
+              </p>
+              <div class="project-features">
+                <span class="feature">📡 RSS Aggregation</span>
+                <span class="feature">⚡ Fast Caching</span>
+                <span class="feature">🎨 Modern UI</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="projects-cta">
+          <a href="https://github.com/mehmetkahya0" class="btn btn-outline" target="_blank">
+            <span>View All Projects</span>
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+      </div>
     </section>
 
-    <footer>
-      <p>&copy; 2025 Mehmet Kahya. All rights reserved.</p>
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-number">03</span>
+          <h2 class="section-title">Let's Work Together</h2>
+          <p class="section-subtitle">Ready to bring your ideas to life</p>
+        </div>
+
+        <div class="contact-content">
+          <div class="contact-info">
+            <div class="contact-card">
+              <h3>Let's discuss your project</h3>
+              <p>
+                I'm always interested in new opportunities and exciting projects. 
+                Whether you have a question or just want to say hi, feel free to reach out!
+              </p>
+              
+              <div class="contact-methods">
+                <a href="mailto:mehmetkahyakas5@gmail.com" class="contact-method">
+                  <div class="method-icon">
+                    <i class="fas fa-envelope"></i>
+                  </div>
+                  <div class="method-info">
+                    <span class="method-label">Email</span>
+                    <span class="method-value">mehmetkahyakas5@gmail.com</span>
+                  </div>
+                </a>
+                
+                <a href="https://www.linkedin.com/in/mehmet-kahya-0861a4286/" class="contact-method" target="_blank">
+                  <div class="method-icon">
+                    <i class="fab fa-linkedin"></i>
+                  </div>
+                  <div class="method-info">
+                    <span class="method-label">LinkedIn</span>
+                    <span class="method-value">Mehmet Kahya</span>
+                  </div>
+                </a>
+                
+                <div class="contact-method">
+                  <div class="method-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                  </div>
+                  <div class="method-info">
+                    <span class="method-label">Location</span>
+                    <span class="method-value">Izmir, Turkey</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-form-wrapper">
+            <form id="contact-form" class="contact-form">
+              <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+              </div>
+              
+              <button type="submit" class="btn btn-primary form-submit">
+                <span>Send Message</span>
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-info">
+            <div class="footer-logo">
+              <span class="logo-text">MK</span>
+              <span class="logo-dot">.</span>
+            </div>
+            <p class="footer-description">
+              Building innovative solutions at the intersection of hardware and software.
+            </p>
+          </div>
+          
+          <div class="footer-links">
+            <div class="footer-section">
+              <h4>Quick Links</h4>
+              <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+              </ul>
+            </div>
+            
+            <div class="footer-section">
+              <h4>Connect</h4>
+              <ul>
+                <li><a href="https://github.com/mehmetkahya0" target="_blank">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/in/mehmet-kahya/" target="_blank">LinkedIn</a></li>
+                <li><a href="https://instagram.com/mehmettkahya" target="_blank">Instagram</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <div class="footer-bottom">
+          <p>&copy; 2025 Mehmet Kahya. All rights reserved.</p>
+          <p>Designed & Built by Mehmet Kahya</p>
+        </div>
+      </div>
     </footer>
 
     <script src="script.js"></script>
