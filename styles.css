@@ -681,6 +681,53 @@ section {
   background: var(--bg-primary);
 }
 
+.project-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.filter-btn {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  padding: 0.75rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-normal);
+  backdrop-filter: blur(20px);
+}
+
+.filter-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.filter-btn.active {
+  background: var(--gradient-primary);
+  color: white;
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-glow);
+}
+
+@media (max-width: 768px) {
+  .project-filters {
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+  
+  .filter-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+}
+
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
