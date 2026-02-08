@@ -23,9 +23,8 @@ class ContactFormManager {
 
     async handleFormSubmission(form) {
         const formData = new FormData(form);
-        const submitButton = form.querySelector('.form-submit');
-        const buttonText = submitButton.querySelector('span');
-        const buttonIcon = submitButton.querySelector('i');
+        const submitButton = form.querySelector('button[type="submit"]');
+        const buttonText = submitButton.querySelector('span:first-child');
         
         // Get form values
         const name = formData.get('name')?.trim();
@@ -41,7 +40,7 @@ class ContactFormManager {
         }
 
         // Update button state
-        this.updateButtonState(submitButton, buttonText, buttonIcon, 'sending');
+        this.updateButtonState(submitButton, buttonText, 'sending');
 
         try {
             // Create enhanced mailto link
@@ -65,7 +64,7 @@ class ContactFormManager {
         } finally {
             // Reset button
             setTimeout(() => {
-                this.updateButtonState(submitButton, buttonText, buttonIcon, 'default');
+                this.updateButtonState(submitButton, buttonText, 'default');
             }, 2000);
         }
     }
@@ -134,33 +133,26 @@ ${name}
         return `mailto:mehmetkahyakas5@gmail.com?subject=${encodeURIComponent(enhancedSubject)}&body=${encodeURIComponent(enhancedMessage)}`;
     }
 
-    updateButtonState(button, textElement, iconElement, state) {
+    updateButtonState(button, textElement, state) {
         const states = {
             default: {
                 text: 'Send Message',
-                icon: 'fas fa-paper-plane',
                 disabled: false
             },
             sending: {
                 text: 'Opening Email Client...',
-                icon: 'fas fa-spinner fa-spin',
                 disabled: true
             },
             success: {
                 text: 'Message Prepared!',
-                icon: 'fas fa-check',
                 disabled: true
             }
         };
 
         const currentState = states[state] || states.default;
         
-        textElement.textContent = currentState.text;
-        iconElement.className = currentState.icon;
-        button.disabled = currentState.disabled;
-        
-        button.classList.toggle('loading', state === 'sending');
-        button.classList.toggle('success', state === 'success');
+        if (textElement) textElement.textContent = currentState.text;
+        if (button) button.disabled = currentState.disabled;
     }
 
     setupFormValidation() {
@@ -330,25 +322,28 @@ ${name}
                 display: flex;
                 align-items: center;
                 gap: 0.75rem;
-                padding: 1rem;
+                padding: 1rem 1.25rem;
                 background: ${colors[type] || colors.info};
                 color: white;
                 border-radius: 0.5rem;
-                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-                max-width: 400px;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                font-size: 0.9rem;
+                line-height: 1.5;
             ">
-                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
-                <span style="flex: 1;">${message}</span>
+                <span style="flex: 1; word-break: break-word;">${message}</span>
                 <button class="notification-close" style="
-                    background: none;
+                    background: rgba(255, 255, 255, 0.2);
                     border: none;
                     color: white;
                     cursor: pointer;
-                    padding: 0.25rem;
+                    padding: 0.25rem 0.5rem;
                     border-radius: 0.25rem;
                     transition: background-color 0.2s;
-                ">
-                    <i class="fas fa-times"></i>
+                    font-size: 1rem;
+                    line-height: 1;
+                    flex-shrink: 0;
+                " onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">
+                    &times;
                 </button>
             </div>
         `;
@@ -359,28 +354,61 @@ ${name}
             top: 2rem;
             right: 2rem;
             z-index: 10000;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
+            max-width: 420px;
+            width: calc(100vw - 4rem);
+            transform: translateX(calc(100% + 2rem));
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         `;
+
+        // Add media query for mobile
+        const isMobile = window.innerWidth < 768;
+        if (isMobile) {
+            notification.style.cssText = `
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                right: 1rem;
+                z-index: 10000;
+                max-width: none;
+                width: auto;
+                transform: translateY(-150%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            `;
+        }
 
         document.body.appendChild(notification);
 
+        // Check if mobile for animation
+        const isMobile = window.innerWidth < 768;
+
         // Animate in
         setTimeout(() => {
-            notification.style.transform = 'translateX(0)';
+            if (isMobile) {
+                notification.style.transform = 'translateY(0)';
+            } else {
+                notification.style.transform = 'translateX(0)';
+            }
         }, 100);
 
         // Close button functionality
         const closeBtn = notification.querySelector('.notification-close');
         closeBtn.addEventListener('click', () => {
-            notification.style.transform = 'translateX(100%)';
+            if (isMobile) {
+                notification.style.transform = 'translateY(-150%)';
+            } else {
+                notification.style.transform = 'translateX(calc(100% + 2rem))';
+            }
             setTimeout(() => notification.remove(), 300);
         });
 
         // Auto remove after 5 seconds
         setTimeout(() => {
             if (notification.parentNode) {
-                notification.style.transform = 'translateX(100%)';
+                if (isMobile) {
+                    notification.style.transform = 'translateY(-150%)';
+                } else {
+                    notification.style.transform = 'translateX(calc(100% + 2rem))';
+                }
                 setTimeout(() => notification.remove(), 300);
             }
         }, 5000);
