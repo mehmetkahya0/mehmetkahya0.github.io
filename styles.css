@@ -669,6 +669,93 @@ ul {
 }
 
 /* ============================================
+   EXPERIENCE SECTION
+   ============================================ */
+.experience {
+  padding: 120px 0;
+  background: var(--color-bg-alt);
+  border-top: 1px solid var(--color-border);
+}
+
+.experience-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.experience-item {
+  display: flex;
+  gap: 20px;
+  padding: 28px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: var(--transition);
+}
+
+.experience-item:hover {
+  border-color: #ccc;
+}
+
+.experience-logo {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.experience-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.experience-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 6px;
+}
+
+.experience-header h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+.experience-date {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.experience-company {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.experience-desc {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+  letter-spacing: -0.01em;
+}
+
+/* ============================================
    PROJECTS SECTION — YC Company Grid Style
    ============================================ */
 .projects {
@@ -1289,10 +1376,17 @@ ul {
   }
 
   .about,
+  .experience,
   .projects,
   .skills,
   .contact {
     padding: 80px 0;
+  }
+
+  .experience-item {
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px;
   }
 
   .projects-grid {
