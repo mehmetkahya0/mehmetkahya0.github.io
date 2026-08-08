@@ -237,24 +237,26 @@ ${name}
 
     showFieldError(field, message) {
         this.clearFieldError(field);
-        
+
         field.classList.add('error');
-        
+        field.setAttribute('aria-invalid', 'true');
+
+        const errorId = `${field.id}-error`;
+        field.setAttribute('aria-describedby', errorId);
+
         const errorElement = document.createElement('div');
         errorElement.className = 'field-error';
+        errorElement.id = errorId;
+        errorElement.setAttribute('role', 'alert');
         errorElement.textContent = message;
-        errorElement.style.cssText = `
-            color: var(--danger-color);
-            font-size: 0.85rem;
-            margin-top: 0.25rem;
-            animation: fadeInUp 0.3s ease;
-        `;
-        
+
         field.parentNode.appendChild(errorElement);
     }
 
     clearFieldError(field) {
         field.classList.remove('error');
+        field.removeAttribute('aria-invalid');
+        field.removeAttribute('aria-describedby');
         const errorElement = field.parentNode.querySelector('.field-error');
         if (errorElement) {
             errorElement.remove();
@@ -273,28 +275,16 @@ ${name}
         const maxLength = 500; // Set a reasonable max length
         const countElement = document.createElement('div');
         countElement.className = 'character-count';
-        countElement.style.cssText = `
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-align: right;
-            margin-top: 0.25rem;
-        `;
-        
+
         textarea.parentNode.appendChild(countElement);
-        
+
         const updateCount = () => {
             const remaining = maxLength - textarea.value.length;
             countElement.textContent = `${textarea.value.length}/${maxLength}`;
-            
-            if (remaining < 50) {
-                countElement.style.color = 'var(--warning-color)';
-            } else if (remaining < 0) {
-                countElement.style.color = 'var(--danger-color)';
-            } else {
-                countElement.style.color = 'var(--text-muted)';
-            }
+            countElement.classList.toggle('danger', remaining < 0);
+            countElement.classList.toggle('warning', remaining >= 0 && remaining < 50);
         };
-        
+
         textarea.addEventListener('input', updateCount);
         updateCount();
     }
@@ -309,109 +299,30 @@ ${name}
         // Create notification element
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
-        
-        const colors = {
-            success: '#10b981',
-            error: '#ef4444',
-            warning: '#f59e0b',
-            info: '#6366f1'
-        };
-
+        notification.setAttribute('role', type === 'error' ? 'alert' : 'status');
+        notification.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
         notification.innerHTML = `
-            <div class="notification-content" style="
-                display: flex;
-                align-items: center;
-                gap: 0.75rem;
-                padding: 1rem 1.25rem;
-                background: ${colors[type] || colors.info};
-                color: white;
-                border-radius: 0.5rem;
-                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-                font-size: 0.9rem;
-                line-height: 1.5;
-            ">
-                <span style="flex: 1; word-break: break-word;">${message}</span>
-                <button class="notification-close" style="
-                    background: rgba(255, 255, 255, 0.2);
-                    border: none;
-                    color: white;
-                    cursor: pointer;
-                    padding: 0.25rem 0.5rem;
-                    border-radius: 0.25rem;
-                    transition: background-color 0.2s;
-                    font-size: 1rem;
-                    line-height: 1;
-                    flex-shrink: 0;
-                " onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'">
-                    &times;
-                </button>
-            </div>
+            <span class="notification-dot"></span>
+            <span class="notification-message">${message}</span>
+            <button class="notification-close" aria-label="Dismiss notification">&times;</button>
         `;
-
-        // Position notification
-        notification.style.cssText = `
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            z-index: 10000;
-            max-width: 420px;
-            width: calc(100vw - 4rem);
-            transform: translateX(calc(100% + 2rem));
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        `;
-
-        // Add media query for mobile
-        const isMobile = window.innerWidth < 768;
-        if (isMobile) {
-            notification.style.cssText = `
-                position: fixed;
-                top: 1rem;
-                left: 1rem;
-                right: 1rem;
-                z-index: 10000;
-                max-width: none;
-                width: auto;
-                transform: translateY(-150%);
-                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            `;
-        }
 
         document.body.appendChild(notification);
 
-        // Check if mobile for animation
-        const isMobile = window.innerWidth < 768;
+        const dismiss = () => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        };
 
         // Animate in
-        setTimeout(() => {
-            if (isMobile) {
-                notification.style.transform = 'translateY(0)';
-            } else {
-                notification.style.transform = 'translateX(0)';
-            }
-        }, 100);
-
-        // Close button functionality
-        const closeBtn = notification.querySelector('.notification-close');
-        closeBtn.addEventListener('click', () => {
-            if (isMobile) {
-                notification.style.transform = 'translateY(-150%)';
-            } else {
-                notification.style.transform = 'translateX(calc(100% + 2rem))';
-            }
-            setTimeout(() => notification.remove(), 300);
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => notification.classList.add('show'));
         });
 
+        notification.querySelector('.notification-close').addEventListener('click', dismiss);
+
         // Auto remove after 5 seconds
-        setTimeout(() => {
-            if (notification.parentNode) {
-                if (isMobile) {
-                    notification.style.transform = 'translateY(-150%)';
-                } else {
-                    notification.style.transform = 'translateX(calc(100% + 2rem))';
-                }
-                setTimeout(() => notification.remove(), 300);
-            }
-        }, 5000);
+        setTimeout(dismiss, 5000);
     }
 }
 
@@ -420,5 +331,5 @@ const contactHandler = new ContactFormManager();
 
 // Export for potential use in other modules
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = ContactFormHandler;
+    module.exports = ContactFormManager;
 }

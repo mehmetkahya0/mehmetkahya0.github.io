@@ -10,14 +10,21 @@
   --color-accent: #ff6600;
   --color-accent-hover: #e85d00;
   --color-accent-light: #fff4eb;
+  --color-accent-text: #b84900;
   --color-text: #0f0f0f;
   --color-text-secondary: #4a4a4a;
-  --color-text-muted: #8a8a8a;
+  --color-text-muted: #6e6e6e;
+  --color-text-muted-inverse: #9a9a9a;
   --color-text-light: #ffffff;
   --color-border: #e8e8e8;
   --color-border-light: #f2f2f2;
   --color-card: #ffffff;
   --color-banner-bg: #0a0a0a;
+
+  --color-danger: #d1272c;
+  --color-danger-light: #fdf0f0;
+  --color-warning: #9a6208;
+  --color-success: #157a4d;
 
   --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --max-width: 1140px;
@@ -167,9 +174,9 @@ ul {
   padding: 7px 16px;
   margin-left: 16px;
   background: var(--color-accent);
-  color: var(--color-text-light);
+  color: var(--color-text);
   font-size: 0.82rem;
-  font-weight: 600;
+  font-weight: 700;
   border-radius: var(--radius-full);
   transition: var(--transition);
   letter-spacing: -0.01em;
@@ -186,11 +193,15 @@ ul {
 .hamburger {
   display: none;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 5px;
+  width: 44px;
+  height: 44px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px;
+  padding: 0;
 }
 
 .hamburger span {
@@ -223,7 +234,8 @@ ul {
 
 .btn-primary {
   background: var(--color-accent);
-  color: white;
+  color: var(--color-text);
+  font-weight: 700;
 }
 
 .btn-primary:hover {
@@ -249,12 +261,13 @@ ul {
 
 .btn-outline:hover {
   border-color: var(--color-accent);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .btn-cta {
   background: var(--color-accent);
-  color: white;
+  color: var(--color-text);
+  font-weight: 700;
   padding: 14px 36px;
   font-size: 0.95rem;
 }
@@ -377,7 +390,12 @@ ul {
 
 /* Reduce motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .blob { animation: none !important; }
+  .blob,
+  .banner-content,
+  .hero-highlight,
+  .hero-image {
+    animation: none !important;
+  }
 }
 
 .hero .container,
@@ -398,7 +416,7 @@ ul {
   display: inline-block;
   padding: 6px 14px;
   background: var(--color-accent-light);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   font-size: 0.8rem;
   font-weight: 600;
   border-radius: var(--radius-full);
@@ -416,7 +434,23 @@ ul {
 }
 
 .hero-highlight {
-  color: var(--color-accent);
+  display: inline-block;
+  color: var(--color-accent-text);
+  animation: heroResolve 720ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* The idea sharpens into the product: resolves from soft to full focus on load. */
+@keyframes heroResolve {
+  from {
+    filter: blur(14px);
+    opacity: 0.4;
+    transform: scale(1.04);
+  }
+  to {
+    filter: blur(0);
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .hero-description {
@@ -484,6 +518,7 @@ ul {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  animation: heroResolve 720ms cubic-bezier(0.16, 1, 0.3, 1) 100ms both;
 }
 
 .hero-social {
@@ -509,7 +544,7 @@ ul {
 
 .social-pill:hover {
   border-color: var(--color-accent);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .social-pill svg {
@@ -571,7 +606,7 @@ ul {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   margin-bottom: 16px;
 }
 
@@ -654,7 +689,7 @@ ul {
   flex-shrink: 0;
 }
 
-.detail-info h4 {
+.detail-info h3 {
   font-size: 0.88rem;
   font-weight: 700;
   color: var(--color-text);
@@ -705,7 +740,7 @@ ul {
   align-items: center;
   justify-content: center;
   background: var(--color-accent-light);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   border-radius: var(--radius-sm);
   font-size: 0.82rem;
   font-weight: 800;
@@ -743,7 +778,7 @@ ul {
 .experience-company {
   font-size: 0.88rem;
   font-weight: 600;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   margin-bottom: 12px;
   letter-spacing: -0.01em;
 }
@@ -789,7 +824,7 @@ ul {
   display: inline-block;
   padding: 4px 10px;
   background: var(--color-accent);
-  color: white;
+  color: var(--color-text);
   font-size: 0.7rem;
   font-weight: 700;
   border-radius: var(--radius-full);
@@ -879,7 +914,7 @@ ul {
 .project-card-stars {
   font-size: 0.78rem;
   font-weight: 700;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 .project-card-title {
@@ -949,7 +984,7 @@ ul {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   margin-bottom: 18px;
 }
 
@@ -973,7 +1008,7 @@ ul {
 
 .skill-item:hover {
   border-color: var(--color-accent);
-  color: var(--color-accent);
+  color: var(--color-accent-text);
 }
 
 /* ============================================
@@ -1093,6 +1128,47 @@ ul {
   min-height: 110px;
 }
 
+.form-group input.error,
+.form-group textarea.error {
+  border-color: var(--color-danger);
+  background: var(--color-danger-light);
+}
+
+.form-group input.error:focus,
+.form-group textarea.error:focus {
+  box-shadow: 0 0 0 3px rgba(209, 39, 44, 0.1);
+}
+
+.field-error {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-danger);
+  margin-top: 6px;
+  letter-spacing: -0.01em;
+  animation: fieldErrorIn 0.2s ease;
+}
+
+@keyframes fieldErrorIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.character-count {
+  font-size: 0.76rem;
+  color: var(--color-text-muted);
+  text-align: right;
+  margin-top: 6px;
+  letter-spacing: -0.01em;
+}
+
+.character-count.warning {
+  color: var(--color-warning);
+}
+
+.character-count.danger {
+  color: var(--color-danger);
+}
+
 /* ============================================
    CTA SECTION — YC "Apply" Style
    ============================================ */
@@ -1109,7 +1185,7 @@ ul {
 
 .cta-content .cta-label {
   font-size: 0.85rem;
-  color: var(--color-text-muted);
+  color: var(--color-text-muted-inverse);
   margin-bottom: 16px;
   font-style: italic;
 }
@@ -1156,12 +1232,12 @@ ul {
   letter-spacing: -0.02em;
 }
 
-.footer-links-group h4 {
+.footer-links-group h3 {
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #666;
+  color: #828282;
   margin-bottom: 16px;
 }
 
@@ -1186,7 +1262,7 @@ ul {
 
 .footer-bottom p {
   font-size: 0.78rem;
-  color: #555;
+  color: #828282;
   letter-spacing: -0.01em;
 }
 
@@ -1195,44 +1271,93 @@ ul {
    ============================================ */
 .notification {
   position: fixed;
-  bottom: 24px;
+  top: 24px;
   right: 24px;
-  padding: 14px 20px;
+  z-index: 10000;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: 400px;
+  width: calc(100vw - 48px);
+  padding: 16px 18px;
   background: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
-  font-size: 0.85rem;
+  transform: translateX(calc(100% + 24px));
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.notification.show {
+  transform: translateX(0);
+}
+
+.notification-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.notification-success .notification-dot {
+  background: var(--color-success);
+}
+
+.notification-error .notification-dot {
+  background: var(--color-danger);
+}
+
+.notification-warning .notification-dot {
+  background: var(--color-warning);
+}
+
+.notification-message {
+  flex: 1;
+  font-size: 0.88rem;
   font-weight: 500;
-  z-index: 9999;
-  animation: slideUp 0.25s ease;
+  line-height: 1.5;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
 }
 
-.notification.success {
-  border-left: 3px solid #10b981;
+.notification-close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: -12px -8px -12px 0;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: var(--transition);
 }
 
-.notification.error {
-  border-left: 3px solid #ef4444;
+.notification-close:hover {
+  background: var(--color-bg-alt);
+  color: var(--color-text);
 }
 
-@keyframes slideUp {
-  from { transform: translateY(16px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
+@media (max-width: 768px) {
+  .notification {
+    top: 16px;
+    right: 16px;
+    left: 16px;
+    max-width: none;
+    width: auto;
+    transform: translateY(-150%);
+  }
 
-/* ============================================
-   SCROLL ANIMATIONS
-   ============================================ */
-.fade-in {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.fade-in.visible {
-  opacity: 1;
-  transform: translateY(0);
+  .notification.show {
+    transform: translateY(0);
+  }
 }
 
 /* ============================================

@@ -54,7 +54,9 @@
     />
 
     <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="apple-touch-icon" href="favicon.png" />
     <link rel="canonical" href="https://mehmetkahya0.github.io/" />
 
     <!-- GoatCounter Analytics -->
@@ -105,7 +107,13 @@
             </svg>
             GitHub
           </a>
-          <button class="hamburger" id="hamburger" aria-label="Menu">
+          <button
+            class="hamburger"
+            id="hamburger"
+            aria-label="Menu"
+            aria-expanded="false"
+            aria-controls="nav-links"
+          >
             <span></span>
             <span></span>
             <span></span>
@@ -242,12 +250,12 @@
     </section>
 
     <!-- About Section -->
-    <section id="about" class="about">
+    <section id="about" class="about" aria-labelledby="about-heading">
       <div class="container">
         <div class="section-label">About</div>
         <div class="about-grid">
           <div class="about-text">
-            <h2 class="section-title">
+            <h2 class="section-title" id="about-heading">
               Passionate about AI, space technology, and creating innovative
               solutions.
             </h2>
@@ -267,28 +275,28 @@
             <div class="detail-card">
               <div class="detail-icon">&#127891;</div>
               <div class="detail-info">
-                <h4>Education</h4>
+                <h3>Education</h3>
                 <p>Electrical-Electronics Engineering</p>
               </div>
             </div>
             <div class="detail-card">
               <div class="detail-icon">&#128205;</div>
               <div class="detail-info">
-                <h4>Location</h4>
+                <h3>Location</h3>
                 <p>Izmir, Turkey</p>
               </div>
             </div>
             <div class="detail-card">
               <div class="detail-icon">&#128187;</div>
               <div class="detail-info">
-                <h4>Focus</h4>
+                <h3>Focus</h3>
                 <p>AI, Web Dev, IoT, Robotics</p>
               </div>
             </div>
             <div class="detail-card">
               <div class="detail-icon">&#128640;</div>
               <div class="detail-info">
-                <h4>Status</h4>
+                <h3>Status</h3>
                 <p>Open to opportunities</p>
               </div>
             </div>
@@ -298,10 +306,10 @@
     </section>
 
     <!-- Experience Section -->
-    <section id="experience" class="experience">
+    <section id="experience" class="experience" aria-labelledby="experience-heading">
       <div class="container">
         <div class="section-label">Experience</div>
-        <h2 class="section-title">Work Experience</h2>
+        <h2 class="section-title" id="experience-heading">Work Experience</h2>
         <p class="section-subtitle">
           Real-world engineering experience alongside my personal projects
         </p>
@@ -333,10 +341,10 @@
     </section>
 
     <!-- Projects Section -->
-    <section id="projects" class="projects">
+    <section id="projects" class="projects" aria-labelledby="projects-heading">
       <div class="container">
         <div class="section-label">Projects</div>
-        <h2 class="section-title">Featured Work</h2>
+        <h2 class="section-title" id="projects-heading">Featured Work</h2>
         <p class="section-subtitle">
           Open-source projects that solve real problems
         </p>
@@ -704,10 +712,10 @@
     </section>
 
     <!-- Skills Section -->
-    <section id="skills" class="skills">
+    <section id="skills" class="skills" aria-labelledby="skills-heading">
       <div class="container">
         <div class="section-label">Skills</div>
-        <h2 class="section-title">Tech Stack &amp; Expertise</h2>
+        <h2 class="section-title" id="skills-heading">Tech Stack &amp; Expertise</h2>
 
         <div class="skills-grid">
           <div class="skill-group">
@@ -770,12 +778,12 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="contact">
+    <section id="contact" class="contact" aria-labelledby="contact-heading">
       <div class="container">
         <div class="contact-wrapper">
           <div class="contact-info">
             <div class="section-label">Contact</div>
-            <h2 class="section-title">Let's work together.</h2>
+            <h2 class="section-title" id="contact-heading">Let's work together.</h2>
             <p class="contact-description">
               I'm always open to new opportunities, collaborations, and
               interesting projects. Feel free to reach out!
@@ -887,7 +895,7 @@
           </div>
 
           <div class="footer-links-group">
-            <h4>Navigation</h4>
+            <h3>Navigation</h3>
             <a href="#about">About</a>
             <a href="#experience">Experience</a>
             <a href="#projects">Projects</a>
@@ -896,7 +904,7 @@
           </div>
 
           <div class="footer-links-group">
-            <h4>Projects</h4>
+            <h3>Projects</h3>
             <a href="https://github.com/mehmetkahya0/temp-mail" target="_blank"
               >TempMail</a
             >
@@ -916,7 +924,7 @@
           </div>
 
           <div class="footer-links-group">
-            <h4>Connect</h4>
+            <h3>Connect</h3>
             <a href="https://github.com/mehmetkahya0" target="_blank">GitHub</a>
             <a href="https://www.linkedin.com/in/mehmet-kahya/" target="_blank"
               >LinkedIn</a
