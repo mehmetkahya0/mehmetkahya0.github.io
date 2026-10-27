@@ -712,6 +712,33 @@ function initCardLinks() {
   });
 }
 
+/* Favicon: my pixel bust blinks and the star glints now and then (frames from _favicon.py) */
+function initFavicon() {
+  if (reduceMotion) return;
+  const link = document.querySelector('link[rel="icon"][type="image/svg+xml"]');
+  if (!link) return;
+  const strip = new Image();
+  strip.src = '/images/favicon-frames.png';
+  strip.onload = () => {
+    const c = document.createElement('canvas');
+    c.width = c.height = 32;
+    const ctx = c.getContext('2d');
+    const urls = [0, 1, 2].map(k => {
+      ctx.clearRect(0, 0, 32, 32);
+      ctx.drawImage(strip, k * 32, 0, 32, 32, 0, 0, 32, 32);
+      return c.toDataURL('image/png');
+    });
+    // 0 rest, 1 blink, 2 star glint: rest, blink, rest, glint, rest, double blink
+    const seq = [...Array(14).fill(0), 1, ...Array(10).fill(0), 2, 2, 2, ...Array(14).fill(0), 1, 0, 1];
+    link.type = 'image/png';
+    let i = 0;
+    setInterval(() => {
+      link.href = urls[seq[i]];
+      i = (i + 1) % seq.length;
+    }, 180);
+  };
+}
+
 function initClocks() {
   const clocks = document.querySelectorAll('.clock');
   if (!clocks.length) return;
@@ -810,6 +837,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initPointerFx();
   initCardLinks();
   initClocks();
+  initFavicon();
   initToc();
   initCodeBlocks();
   initBlogFilter();

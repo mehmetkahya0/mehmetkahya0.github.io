@@ -143,9 +143,10 @@ def head(title: str, description: str, url: str, kind: str = "website", extra: s
     <meta property="twitter:title" content="{t}" />
     <meta property="twitter:description" content="{d}" />
     <meta property="twitter:image" content="{SITE}/preview.jpg" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="alternate" type="application/rss+xml" title="Mehmet Kahya — Writing" href="/blog/feed.xml" />
     <script data-goatcounter="https://mehmetkahya.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
