@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#06121b" />
+    <title>A LAN webcam with WebRTC and Socket.IO — Mehmet Kahya</title>
+    <meta name="description" content="Turning any device into a wireless camera on your local network: rooms and signaling with Socket.IO, peer-to-peer video with WebRTC, live connection stats, and the lessons I&#x27;d apply if I rebuilt it today." />
+    <meta name="author" content="Mehmet Kahya" />
+    <link rel="canonical" href="https://mehmetkahya0.github.io/blog/local-web-camera.html" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://mehmetkahya0.github.io/blog/local-web-camera.html" />
+    <meta property="og:title" content="A LAN webcam with WebRTC and Socket.IO — Mehmet Kahya" />
+    <meta property="og:description" content="Turning any device into a wireless camera on your local network: rooms and signaling with Socket.IO, peer-to-peer video with WebRTC, live connection stats, and the lessons I&#x27;d apply if I rebuilt it today." />
+    <meta property="og:image" content="https://mehmetkahya0.github.io/preview.jpg" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="A LAN webcam with WebRTC and Socket.IO — Mehmet Kahya" />
+    <meta property="twitter:description" content="Turning any device into a wireless camera on your local network: rooms and signaling with Socket.IO, peer-to-peer video with WebRTC, live connection stats, and the lessons I&#x27;d apply if I rebuilt it today." />
+    <meta property="twitter:image" content="https://mehmetkahya0.github.io/preview.jpg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="alternate" type="application/rss+xml" title="Mehmet Kahya — Writing" href="/blog/feed.xml" />
+    <script data-goatcounter="https://mehmetkahya.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "A LAN webcam with WebRTC and Socket.IO", "description": "Turning any device into a wireless camera on your local network: rooms and signaling with Socket.IO, peer-to-peer video with WebRTC, live connection stats, and the lessons I'd apply if I rebuilt it today.", "datePublished": "2026-10-27", "author": {"@type": "Person", "name": "Mehmet Kahya", "url": "https://mehmetkahya0.github.io"}, "mainEntityOfPage": "https://mehmetkahya0.github.io/blog/local-web-camera.html", "keywords": "Networking, JavaScript, WebRTC"}</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- SVG sprite: hairline icons -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="i-arrow-ur" viewBox="0 0 24 24"><path d="M7 17 17 7M8.5 7H17v8.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14m-6-6 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.25 4.1 1 5.85L12 16.9l-5.25 2.75 1-5.85L3.5 9.7l5.9-.9L12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" /></symbol>
+      <symbol id="i-fork" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="6.5" cy="5.5" r="2" /><circle cx="17.5" cy="5.5" r="2" /><circle cx="12" cy="18.5" r="2" /><path d="M6.5 7.5v1.5a3 3 0 0 0 3 3h5a3 3 0 0 0 3-3V7.5M12 12v4.5" /></g></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" /><circle cx="12" cy="10" r="2.3" /></g></symbol>
+      <symbol id="i-cap" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M2.5 9 12 4.5 21.5 9 12 13.5 2.5 9Z" /><path d="M6.5 11v4.6c0 1.3 2.5 2.9 5.5 2.9s5.5-1.6 5.5-2.9V11M21.5 9v5" /></g></symbol>
+      <symbol id="i-cpu" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="6" width="12" height="12" rx="2" /><rect x="9.5" y="9.5" width="5" height="5" rx=".8" /><path d="M9 3v3m6-3v3M9 18v3m6-3v3M3 9h3m-3 6h3m12-6h3m-3 6h3" stroke-linecap="round" /></g></symbol>
+      <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6h4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="m3.5 7 8.5 6 8.5-6" /></g></symbol>
+      <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.56-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.16-1.18 3.16-1.18.63 1.59.23 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z" /></symbol>
+      <symbol id="i-linkedin" viewBox="0 0 24 24"><path fill="currentColor" d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z" /></symbol>
+    </svg>
+
+    <!-- ============ Header ============ -->
+    <header class="nav-wrap">
+      <nav class="nav" id="navbar" aria-label="Primary">
+        <ul class="nav-links">
+          <li><a href="/#about" class="nav-link">About</a></li>
+          <li><a href="/#experience" class="nav-link">Experience</a></li>
+          <li><a href="/#projects" class="nav-link">Projects</a></li>
+          <li><a href="/#skills" class="nav-link">Stack</a></li>
+          <li><a href="/blog/" class="nav-link is-active" aria-current="page">Blog</a></li>
+        </ul>
+        <a href="/" class="nav-logo" aria-label="Mehmet Kahya — home">
+          <svg class="nav-logo-mark" viewBox="0 0 7 7" aria-hidden="true" shape-rendering="crispEdges">
+            <path fill="currentColor" d="M3 0h1v2H3zM3 5h1v2H3zM0 3h2v1H0zM5 3h2v1H5zM2 2h3v3H2zM1 1h1v1H1zM5 1h1v1H5zM1 5h1v1H1zM5 5h1v1H5z" />
+          </svg>
+          <span class="nav-logo-text">Mehmet Kahya</span>
+        </a>
+        <div class="nav-right">
+          <a href="/#contact" class="nav-cta">Let's talk</a>
+          <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+            <span></span><span></span>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Fullscreen menu (mobile) -->
+    <div class="menu" id="menu" aria-hidden="true">
+      <ol class="menu-links">
+        <li><a href="/#about"><span class="menu-num">01</span>About</a></li>
+        <li><a href="/#experience"><span class="menu-num">02</span>Experience</a></li>
+        <li><a href="/#projects"><span class="menu-num">03</span>Projects</a></li>
+        <li><a href="/#skills"><span class="menu-num">04</span>Stack</a></li>
+        <li><a href="/blog/"><span class="menu-num">05</span>Blog</a></li>
+        <li><a href="/#contact"><span class="menu-num">06</span>Contact</a></li>
+      </ol>
+      <div class="menu-foot">
+        <a href="https://github.com/mehmetkahya0" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/mehmet-kahya/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:mehmetkahyakas5@gmail.com">Email</a>
+      </div>
+    </div>
+
+    <main id="main">
+      <article class="post">
+        <header class="post-hero" id="top">
+          <div class="container">
+            <div class="post-hero-inner">
+              <a class="post-back reveal" href="/blog/"><svg><use href="#i-arrow-r" /></svg>All posts</a>
+              <div class="post-meta reveal">
+                <span class="eyebrow">Networking</span>
+                <span class="mono"><time datetime="2026-10-27">Oct 27, 2026</time> · 4 min read</span>
+              </div>
+              <h1 class="post-title reveal">A LAN webcam with <em>WebRTC and Socket.IO</em></h1>
+              <p class="post-lede reveal">Turning any device into a wireless camera on your local network: rooms and signaling with Socket.IO, peer-to-peer video with WebRTC, live connection stats, and the lessons I&#x27;d apply if I rebuilt it today.</p>
+              <div class="post-actions reveal">
+                <a href="https://github.com/mehmetkahya0/local-web-camera" target="_blank" rel="noopener" class="btn btn-light magnetic"><span>View on GitHub</span><span class="btn-orb"><svg><use href="#i-github" /></svg></span></a>
+              </div>
+            </div>
+            <div class="bezel post-cover reveal">
+              <div class="bezel-core">
+                <div class="cover" data-kind="rings" data-seed="2" aria-hidden="true"><canvas></canvas></div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="container post-layout">
+          <aside class="post-toc" aria-label="On this page">
+            <h2>On this page</h2>
+            <ol>
+              <li><a href="#the-big-picture">The big picture</a></li>
+              <li><a href="#rooms-and-signaling">Rooms and signaling</a></li>
+              <li><a href="#the-media-path">The media path</a></li>
+              <li><a href="#seeing-what-the-connection-is-doing">Seeing what the connection is doing</a></li>
+              <li><a href="#what-i-would-change-today">What I would change today</a></li>
+              <li><a href="#what-i-learned">What I learned</a></li>
+            </ol>
+          </aside>
+          <div class="prose">
+<p>
+  <strong>Local Web Camera</strong> answers a simple wish: point an old phone or laptop at something and watch it
+  from another device in the house, with no app store, no account and no cloud service in between. Open a page on the
+  device with the camera, share a link, open it on the viewer, done.
+</p>
+<p>
+  Building it means understanding how WebRTC really fits together. This post covers how signaling, ICE and the media path fit together, and then, honestly, what I
+  would change if I wrote it again today.
+</p>
+
+<h2 id="the-big-picture">The big picture</h2>
+<p>
+  WebRTC sends video directly between browsers, but browsers can't find each other on their own. They need a
+  <em>signaling</em> channel to exchange two kinds of messages: <strong>session descriptions</strong> (SDP offers and
+  answers that describe codecs and media) and <strong>ICE candidates</strong> (possible network addresses to reach each
+  other). WebRTC deliberately doesn't specify how signaling works, so you bring your own. Here it is Socket.IO on a
+  small Express server.
+</p>
+<figure class="diagram">
+<pre data-lang="text"><code>  Host (camera)                Node server                 Viewer
+ ┌─────────────┐   join-room   ┌─────────────┐  join-room  ┌─────────────┐
+ │ getUserMedia│ ────────────▶ │  Socket.IO  │ ◀────────── │             │
+ │             │   offer/ICE   │  rooms map  │  answer/ICE │             │
+ │ RTCPeerConn │ ◀───────────▶ │  (relay)    │ ◀─────────▶ │ RTCPeerConn │
+ └──────┬──────┘               └─────────────┘             └──────▲──────┘
+        │                video + audio (DTLS-SRTP, P2P)            │
+        └──────────────────────────────────────────────────────────┘</code></pre>
+<figcaption>The server only relays small signaling messages; video flows directly between the two devices.</figcaption>
+</figure>
+
+<h2 id="rooms-and-signaling">Rooms and signaling</h2>
+<p>
+  The server keeps an in-memory map of rooms. Each room maps socket ids to a small record that includes which streams a
+  peer has started. When someone joins, existing members hear about the newcomer, and the newcomer receives the list of
+  existing users:
+</p>
+<pre data-lang="js"><code>socket.on('join-room', (roomId) =&gt; {
+  if (!rooms.has(roomId)) rooms.set(roomId, new Map());
+  const room = rooms.get(roomId);
+  room.set(socket.id, { peerId: socket.id, streams: new Set() });
+  socket.join(roomId);
+
+  socket.to(roomId).emit('user-connected', socket.id);
+  socket.emit('existing-users', Array.from(room.keys()).filter(id =&gt; id !== socket.id));
+});
+
+// SDP and ICE are relayed untouched to the other peers in the room
+socket.on('offer', (offer, roomId) =&gt; socket.to(roomId).emit('offer', offer));
+socket.on('answer', (answer, roomId) =&gt; socket.to(roomId).emit('answer', answer));
+socket.on('ice-candidate', (c, roomId) =&gt; socket.to(roomId).emit('ice-candidate', c));</code></pre>
+<p>
+  The server never inspects media and never stores anything. On disconnect it tells the room that the peer's streams
+  stopped, removes the peer, and deletes the room when it becomes empty. There is also a tiny admin "console" over the
+  same socket that can list rooms and users or clear everything, which is handy when debugging connections.
+</p>
+<p>
+  A host creates a room with a random id and shares a link of the form <code>http://&lt;host-ip&gt;:8080?room=&lt;id&gt;</code>.
+  The viewer page reads <code>room</code> from <code>URLSearchParams</code> and joins automatically. To help with that
+  link, the server walks <code>os.networkInterfaces()</code>, picks the first non-internal IPv4 address and exposes it
+  at <code>/config</code>.
+</p>
+
+<h2 id="the-media-path">The media path</h2>
+<p>The host requests the camera with constraints that prefer HD but accept less on weaker devices:</p>
+<pre data-lang="js"><code>localStream = await navigator.mediaDevices.getUserMedia({
+  video: {
+    width: { ideal: 1280, max: 1920 },
+    frameRate: { ideal: 30, max: 60 },
+    facingMode: 'user'
+  },
+  audio: true
+});</code></pre>
+<p>
+  Using <code>ideal</code> rather than <code>exact</code> is the important part. <code>exact</code> constraints make
+  <code>getUserMedia</code> fail outright on a camera that can't meet them, while <code>ideal</code> lets the browser get
+  as close as it can.
+</p>
+
+<h3>ICE: finding a path</h3>
+<p>
+  On a home network the two devices can usually reach each other directly through their local addresses ("host"
+  candidates), so the video never leaves the LAN. The peer connection is still configured with several public STUN
+  servers and a TURN server, so a connection can be established across trickier NATs too. STUN lets a device discover
+  its public address; TURN relays the media when no direct path exists.
+</p>
+<p>
+  The app listens to <code>iceConnectionState</code> and <code>connectionState</code>, prints a timestamped
+  connection log in the UI, and treats <code>failed</code> or <code>disconnected</code> as a cue to attempt a
+  reconnect. On the signaling side, the Socket.IO client is configured with automatic reconnection (five attempts) and
+  generous ping timeouts, so a phone that briefly drops Wi-Fi recovers on its own.
+</p>
+
+<h2 id="seeing-what-the-connection-is-doing">Seeing what the connection is doing</h2>
+<p>
+  "The video is choppy" is not a bug report you can act on. So both the host and viewer pages poll
+  <code>RTCPeerConnection.getStats()</code> and plot live charts with Chart.js: frames per second, bytes received
+  (bitrate) and packets lost, over a sliding window of data points. Charts update with <code>update('none')</code> to
+  skip animations, so drawing them doesn't compete with video decoding. A rising packet-loss line is usually the
+  first sign of weak Wi-Fi.
+</p>
+
+<h2 id="what-i-would-change-today">What I would change today</h2>
+<p>
+  Rereading the code with fresh eyes, there are things I would do differently. They are
+  worth writing down because they are common mistakes:
+</p>
+<ul>
+  <li><strong>Serve a <code>public/</code> folder, not the project root.</strong> The server uses
+    <code>express.static(__dirname)</code>, which makes <em>every</em> file in the project downloadable, including
+    <code>server.js</code> and the TLS key. Static serving should be limited to a dedicated folder of client files.</li>
+  <li><strong>Never commit private keys or <code>node_modules</code>.</strong> A self-signed key for local development
+    should be generated on first run, for example with <code>mkcert</code>, and listed in <code>.gitignore</code>.
+    Dependencies belong in <code>package-lock.json</code>, not in the repository.</li>
+  <li><strong>Secure contexts.</strong> Browsers only allow <code>getUserMedia</code> on HTTPS or
+    <code>localhost</code>. Serving over HTTPS on the LAN would let <em>any</em> device be the camera, not just the one
+    running the server.</li>
+  <li><strong>Address messages to a peer.</strong> Offers and answers are broadcast to the whole room today, which works
+    for one viewer. Sending them to a specific socket id would make several viewers per room possible.</li>
+  <li><strong>Unguessable room ids and an origin allow-list.</strong> <code>Math.random()</code> ids and a wildcard CORS
+    policy are fine on a trusted home network, but <code>crypto.randomUUID()</code> and a restricted origin cost nothing.</li>
+</ul>
+
+<h2 id="what-i-learned">What I learned</h2>
+<p>
+  WebRTC looks intimidating because it bundles many protocols (SDP, ICE, STUN, TURN, DTLS, SRTP), but the mental model
+  is small: <em>exchange descriptions, exchange candidates, let the browsers do the rest</em>. Once that clicked, the
+  remaining work was ordinary engineering: reconnects, state handling and visibility into what the connection is
+  actually doing.
+</p>
+            <hr />
+            <ul class="chips" aria-label="Tags"><li>Networking</li><li>JavaScript</li><li>WebRTC</li></ul>
+          </div>
+        </div>
+
+        <footer class="post-end container">
+          <nav class="post-nav" aria-label="More posts">
+            <a class="post-nav-link prev" href="/blog/f1-race-predictor.html"><span class="mono">← Previous</span><span>Predicting F1 races with simulation, ML and real telemetry</span></a><a class="post-nav-link next" href="/blog/web-resource-downloader.html"><span class="mono">Next →</span><span>Web Resource Downloader: a tiny scraper, revisited</span></a>
+          </nav>
+        </footer>
+      </article>
+    </main>
+
+    <!-- ============ Footer ============ -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <p class="footer-tag">Make something<br /><em>people want.</em></p>
+          </div>
+          <nav class="footer-col" aria-label="Footer navigation">
+            <h3 class="mono">Navigation</h3>
+            <a href="/#about">About</a>
+            <a href="/#experience">Experience</a>
+            <a href="/#projects">Projects</a>
+            <a href="/#skills">Stack</a>
+            <a href="/blog/">Blog</a>
+            <a href="/#contact">Contact</a>
+          </nav>
+          <div class="footer-col">
+            <h3 class="mono">Projects</h3>
+            <a href="https://github.com/mehmetkahya0/AI-Catalog" target="_blank" rel="noopener">AI Catalog</a>
+            <a href="https://github.com/mehmetkahya0/temp-mail" target="_blank" rel="noopener">TempMail</a>
+            <a href="https://github.com/mehmetkahya0/vision-uav-sim" target="_blank" rel="noopener">UAV Simulator</a>
+            <a href="https://github.com/mehmetkahya0/chain-prompt" target="_blank" rel="noopener">Chain Prompt</a>
+            <a href="https://github.com/mehmetkahya0/f1-race-prediction" target="_blank" rel="noopener">F1 Predictor</a>
+          </div>
+          <div class="footer-col">
+            <h3 class="mono">Connect</h3>
+            <a href="https://github.com/mehmetkahya0" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://www.linkedin.com/in/mehmet-kahya/" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="mailto:mehmetkahyakas5@gmail.com">Email</a>
+          </div>
+        </div>
+
+        <div class="footer-mark" aria-hidden="true">Mehmet Kahya</div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2026 Mehmet Kahya. All rights reserved.</p>
+          <p class="mono">Izmir, TR · <span class="clock" data-tz="Europe/Istanbul">--:--</span></p>
+          <a href="#top" class="to-top">Back to top <svg><use href="#i-arrow-ur" /></svg></a>
+        </div>
+      </div>
+    </footer>
+
+    <div class="read-progress" aria-hidden="true"></div>
+    <script src="/script.js"></script>
+  </body>
+</html>

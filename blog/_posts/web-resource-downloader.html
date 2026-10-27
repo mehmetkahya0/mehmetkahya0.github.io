@@ -1,0 +1,144 @@
+<!--
+title: A 140-line scraper, <em>and what I'd fix today</em>
+card_title: Web Resource Downloader: a tiny scraper, revisited
+description: Web Resource Downloader grabs images, scripts and media from a website with requests and BeautifulSoup. A walkthrough of how it works, plus an honest code review of my own older code.
+date: 2026-10-27
+tags: Python, Web
+cover: nodes
+seed: 5
+repo: https://github.com/mehmetkahya0/Web-Resource-Downloader
+order: 8
+-->
+<p>
+  <strong>Web Resource Downloader</strong> is a small Python command-line tool: give it a URL and a folder, and it
+  downloads the resources the page references (images, scripts, media), then follows the same-site links on that page
+  and does the same there. It has more than 20 stars, and its code fits on one screen.
+</p>
+<p>
+  Small projects are great teaching material because you can see the whole thing at once. This post walks through how
+  it works, then does something I think more developers should do in public: an honest review of my own older code,
+  with the fixes I would make today.
+</p>
+
+<h2>Usage</h2>
+<pre data-lang="sh"><code>python main.py https://example.com ./downloads --extensions png jpg js --log run.log</code></pre>
+<ul>
+  <li><code>url</code> and <code>folder</code> are required positional arguments.</li>
+  <li><code>--extensions</code> limits downloads to the given file types.</li>
+  <li><code>--log</code> mirrors the results into a log file.</li>
+  <li><code>--delete</code> removes the folder after the run, which is handy for measuring a site without keeping
+    the files.</li>
+</ul>
+<p>
+  Each run prints a table of what happened to every resource (downloaded, skipped or failed, with a timestamp) and
+  writes it to <code>output.txt</code> and, as Markdown, to <code>output.md</code>, so the results can be pasted into an
+  issue or a report.
+</p>
+
+<h2>How it works</h2>
+<p>The whole program is four small functions and a <code>main()</code>:</p>
+<ol>
+  <li><strong><code>get_html(url)</code></strong> fetches the page with <code>requests</code> and fails loudly on HTTP
+    errors.</li>
+  <li><strong><code>get_links(html, base_url)</code></strong> collects every <code>&lt;a href&gt;</code>, resolves it to an
+    absolute URL and keeps only links on the same host, so the crawl never wanders off to other sites.</li>
+  <li><strong><code>get_resources(html, base_url, args)</code></strong> finds every element with a <code>src</code>
+    attribute (images, scripts, video, audio, iframes) and keeps those whose extension matches the filter.</li>
+  <li><strong><code>download_resources(folder, resources)</code></strong> streams each file to disk in 8 KB chunks and
+    records the result in a <code>PrettyTable</code>.</li>
+</ol>
+<pre data-lang="py"><code>def get_links(html, base_url):
+    soup = BeautifulSoup(html, 'html.parser')
+    links = set()
+    for link in soup.find_all('a', href=True):
+        url = convert_to_absolute_url(link['href'], base_url)
+        if '://' in url and urllib.parse.urlparse(base_url).netloc != urllib.parse.urlparse(url).netloc:
+            continue
+        links.add(url)
+    return links</code></pre>
+<p>
+  Two choices hold up well. <code>urljoin</code> handles every relative-URL shape correctly (<code>img.png</code>,
+  <code>/img.png</code>, <code>../img.png</code>, <code>//cdn.host/img.png</code>), which hand-written string
+  concatenation always gets wrong somewhere. Streaming with <code>iter_content</code> keeps memory flat even for large
+  videos, because a file is never held in memory as a whole.
+</p>
+
+<h2>A code review of my own code</h2>
+<p>
+  Reading this code again with more experience, I see several things I would change. None of them are exotic; they are
+  the kind of issues that show up in most first versions of a scraper, which is why they are worth listing.
+</p>
+
+<h3>1. The default filter downloads nothing</h3>
+<p>
+  The help text says "if not provided, all resources will be downloaded", but <code>--extensions</code> defaults to an
+  empty list, and the filter is a plain membership test:
+</p>
+<pre data-lang="py"><code>if url.split('.')[-1] in args.extensions:   # always False when the list is empty
+    resources.append(url)</code></pre>
+<p>
+  The fix is one condition: <code>if not args.extensions or ext in args.extensions</code>. While at it, the extension
+  should come from <code>urlparse(url).path</code>, because <code>image.png?v=3</code> currently produces the
+  "extension" <code>png?v=3</code>.
+</p>
+
+<h3>2. Stylesheets are never found</h3>
+<p>
+  Resources are collected from <code>src</code> attributes only, but stylesheets are referenced with
+  <code>&lt;link rel="stylesheet" href&gt;</code>, and responsive images often live in <code>srcset</code>. A complete
+  version would also read <code>link[href]</code>, <code>srcset</code> candidates and <code>url()</code> references
+  inside the downloaded CSS.
+</p>
+
+<h3>3. Filenames can collide, or escape the folder</h3>
+<p>
+  The local filename is the last path segment of the URL. Two different <code>/a/logo.png</code> and
+  <code>/b/logo.png</code> files overwrite each other, and a URL ending in a slash yields an empty name. Mirroring the
+  URL path inside the target folder, after normalizing it and rejecting <code>..</code> segments, fixes both problems
+  and keeps every write safely inside the chosen directory.
+</p>
+
+<h3>4. One session, timeouts and politeness</h3>
+<ul>
+  <li>Every request opens a new connection. A shared <code>requests.Session()</code> reuses connections and is much
+    faster for many small files.</li>
+  <li>There is no <code>timeout=</code>, so one hanging server stalls the whole run.</li>
+  <li>A well-behaved crawler sends a descriptive <code>User-Agent</code>, respects <code>robots.txt</code> and adds a
+    small delay between requests.</li>
+  <li>The same resource referenced on several pages is downloaded again each time. A <code>seen</code> set would
+    avoid that.</li>
+</ul>
+
+<h3>5. Errors should not kill the crawl</h3>
+<p>
+  <code>get_html()</code> calls <code>sys.exit(1)</code> on any request error. That is right for the starting URL, but
+  when following links, one broken page ends the entire run. Returning <code>None</code> and logging the failure would
+  let the crawl continue.
+</p>
+
+<h2>What a rewrite would look like</h2>
+<pre data-lang="py"><code>session = requests.Session()
+session.headers["User-Agent"] = "WebResourceDownloader/2.0 (+github.com/mehmetkahya0)"
+
+def wanted(url: str, exts: set[str]) -&gt; bool:
+    ext = Path(urlparse(url).path).suffix.lstrip(".").lower()
+    return not exts or ext in exts
+
+def local_path(folder: Path, url: str) -&gt; Path:
+    rel = Path(unquote(urlparse(url).path.lstrip("/")) or "index")
+    target = (folder / rel).resolve()
+    if folder.resolve() not in target.parents:
+        raise ValueError(f"unsafe path: {url}")
+    return target</code></pre>
+<p>
+  Add concurrency with a small thread pool (downloads are I/O-bound, so threads work well here) and a progress bar,
+  and the tool would go from "works on my test page" to something you can point at real sites.
+</p>
+
+<h2>Why write this post</h2>
+<p>
+  It would have been easy to only write about my newest, most polished projects. But looking back at older code and
+  naming what you would do differently is one of the clearest ways to see how much you have grown. This little tool
+  taught me URL resolution, streaming downloads and argument parsing. Revisiting it reminded me that edge cases, not
+  happy paths, are where most of the engineering lives.
+</p>

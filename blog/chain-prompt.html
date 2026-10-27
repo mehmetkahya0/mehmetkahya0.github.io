@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#06121b" />
+    <title>Chain Prompt: driving Claude Code with its own hooks — Mehmet Kahya</title>
+    <meta name="description" content="How I built an Electron app that queues prompts for the real interactive claude CLI and advances the chain from Claude Code&#x27;s own lifecycle hooks, not from guessing at terminal output." />
+    <meta name="author" content="Mehmet Kahya" />
+    <link rel="canonical" href="https://mehmetkahya0.github.io/blog/chain-prompt.html" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://mehmetkahya0.github.io/blog/chain-prompt.html" />
+    <meta property="og:title" content="Chain Prompt: driving Claude Code with its own hooks — Mehmet Kahya" />
+    <meta property="og:description" content="How I built an Electron app that queues prompts for the real interactive claude CLI and advances the chain from Claude Code&#x27;s own lifecycle hooks, not from guessing at terminal output." />
+    <meta property="og:image" content="https://mehmetkahya0.github.io/preview.jpg" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Chain Prompt: driving Claude Code with its own hooks — Mehmet Kahya" />
+    <meta property="twitter:description" content="How I built an Electron app that queues prompts for the real interactive claude CLI and advances the chain from Claude Code&#x27;s own lifecycle hooks, not from guessing at terminal output." />
+    <meta property="twitter:image" content="https://mehmetkahya0.github.io/preview.jpg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="alternate" type="application/rss+xml" title="Mehmet Kahya — Writing" href="/blog/feed.xml" />
+    <script data-goatcounter="https://mehmetkahya.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Chain Prompt: driving Claude Code with its own hooks", "description": "How I built an Electron app that queues prompts for the real interactive claude CLI and advances the chain from Claude Code's own lifecycle hooks, not from guessing at terminal output.", "datePublished": "2026-10-27", "author": {"@type": "Person", "name": "Mehmet Kahya", "url": "https://mehmetkahya0.github.io"}, "mainEntityOfPage": "https://mehmetkahya0.github.io/blog/chain-prompt.html", "keywords": "Developer tools, TypeScript, Electron"}</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- SVG sprite: hairline icons -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="i-arrow-ur" viewBox="0 0 24 24"><path d="M7 17 17 7M8.5 7H17v8.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14m-6-6 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.25 4.1 1 5.85L12 16.9l-5.25 2.75 1-5.85L3.5 9.7l5.9-.9L12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" /></symbol>
+      <symbol id="i-fork" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="6.5" cy="5.5" r="2" /><circle cx="17.5" cy="5.5" r="2" /><circle cx="12" cy="18.5" r="2" /><path d="M6.5 7.5v1.5a3 3 0 0 0 3 3h5a3 3 0 0 0 3-3V7.5M12 12v4.5" /></g></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" /><circle cx="12" cy="10" r="2.3" /></g></symbol>
+      <symbol id="i-cap" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M2.5 9 12 4.5 21.5 9 12 13.5 2.5 9Z" /><path d="M6.5 11v4.6c0 1.3 2.5 2.9 5.5 2.9s5.5-1.6 5.5-2.9V11M21.5 9v5" /></g></symbol>
+      <symbol id="i-cpu" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="6" width="12" height="12" rx="2" /><rect x="9.5" y="9.5" width="5" height="5" rx=".8" /><path d="M9 3v3m6-3v3M9 18v3m6-3v3M3 9h3m-3 6h3m12-6h3m-3 6h3" stroke-linecap="round" /></g></symbol>
+      <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6h4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="m3.5 7 8.5 6 8.5-6" /></g></symbol>
+      <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.56-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.16-1.18 3.16-1.18.63 1.59.23 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z" /></symbol>
+      <symbol id="i-linkedin" viewBox="0 0 24 24"><path fill="currentColor" d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z" /></symbol>
+    </svg>
+
+    <!-- ============ Header ============ -->
+    <header class="nav-wrap">
+      <nav class="nav" id="navbar" aria-label="Primary">
+        <ul class="nav-links">
+          <li><a href="/#about" class="nav-link">About</a></li>
+          <li><a href="/#experience" class="nav-link">Experience</a></li>
+          <li><a href="/#projects" class="nav-link">Projects</a></li>
+          <li><a href="/#skills" class="nav-link">Stack</a></li>
+          <li><a href="/blog/" class="nav-link is-active" aria-current="page">Blog</a></li>
+        </ul>
+        <a href="/" class="nav-logo" aria-label="Mehmet Kahya — home">
+          <svg class="nav-logo-mark" viewBox="0 0 7 7" aria-hidden="true" shape-rendering="crispEdges">
+            <path fill="currentColor" d="M3 0h1v2H3zM3 5h1v2H3zM0 3h2v1H0zM5 3h2v1H5zM2 2h3v3H2zM1 1h1v1H1zM5 1h1v1H5zM1 5h1v1H1zM5 5h1v1H5z" />
+          </svg>
+          <span class="nav-logo-text">Mehmet Kahya</span>
+        </a>
+        <div class="nav-right">
+          <a href="/#contact" class="nav-cta">Let's talk</a>
+          <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+            <span></span><span></span>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Fullscreen menu (mobile) -->
+    <div class="menu" id="menu" aria-hidden="true">
+      <ol class="menu-links">
+        <li><a href="/#about"><span class="menu-num">01</span>About</a></li>
+        <li><a href="/#experience"><span class="menu-num">02</span>Experience</a></li>
+        <li><a href="/#projects"><span class="menu-num">03</span>Projects</a></li>
+        <li><a href="/#skills"><span class="menu-num">04</span>Stack</a></li>
+        <li><a href="/blog/"><span class="menu-num">05</span>Blog</a></li>
+        <li><a href="/#contact"><span class="menu-num">06</span>Contact</a></li>
+      </ol>
+      <div class="menu-foot">
+        <a href="https://github.com/mehmetkahya0" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/mehmet-kahya/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:mehmetkahyakas5@gmail.com">Email</a>
+      </div>
+    </div>
+
+    <main id="main">
+      <article class="post">
+        <header class="post-hero" id="top">
+          <div class="container">
+            <div class="post-hero-inner">
+              <a class="post-back reveal" href="/blog/"><svg><use href="#i-arrow-r" /></svg>All posts</a>
+              <div class="post-meta reveal">
+                <span class="eyebrow">Developer tools</span>
+                <span class="mono"><time datetime="2026-10-27">Oct 27, 2026</time> · 8 min read</span>
+              </div>
+              <h1 class="post-title reveal">Chain Prompt: driving Claude Code <em>with its own hooks</em></h1>
+              <p class="post-lede reveal">How I built an Electron app that queues prompts for the real interactive claude CLI and advances the chain from Claude Code&#x27;s own lifecycle hooks, not from guessing at terminal output.</p>
+              <div class="post-actions reveal">
+                <a href="https://github.com/mehmetkahya0/chain-prompt" target="_blank" rel="noopener" class="btn btn-light magnetic"><span>View on GitHub</span><span class="btn-orb"><svg><use href="#i-github" /></svg></span></a>
+              </div>
+            </div>
+            <div class="bezel post-cover reveal">
+              <div class="bezel-core">
+                <div class="cover" data-kind="queue" data-seed="4" aria-hidden="true"><canvas></canvas></div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="container post-layout">
+          <aside class="post-toc" aria-label="On this page">
+            <h2>On this page</h2>
+            <ol>
+              <li><a href="#the-problem-with-watching-the-terminal">The problem with watching the terminal</a></li>
+              <li><a href="#architecture-at-a-glance">Architecture at a glance</a></li>
+              <li><a href="#injecting-hooks-without-touching-your-settings">Injecting hooks without touching your settings</a></li>
+              <li><a href="#the-chain-state-machine">The chain state machine</a></li>
+              <li><a href="#typing-into-a-tui-reliably">Typing into a TUI reliably</a></li>
+              <li><a href="#things-i-had-to-verify-not-assume">Things I had to verify, not assume</a></li>
+              <li><a href="#built-for-unattended-runs">Built for unattended runs</a></li>
+              <li><a href="#how-i-test-something-that-drives-an-ai">How I test something that drives an AI</a></li>
+              <li><a href="#limitations-and-what-is-next">Limitations and what is next</a></li>
+            </ol>
+          </aside>
+          <div class="prose">
+<p>
+  Long Claude Code tasks rarely come as one prompt. They come as a sequence: <em>plan → implement → run the tests →
+  review with fresh eyes → write the changelog</em>. Each step only makes sense after the previous one has finished,
+  which means somebody has to sit at the terminal, wait for the turn to end and type the next prompt.
+</p>
+<p>
+  <strong>Chain Prompt</strong> removes that babysitting. You queue the whole sequence, pick a folder and press Start.
+  The app runs the <em>real</em> interactive <code>claude</code> inside a real pseudo-terminal, types each prompt the
+  moment the previous turn finishes, and pings you when the chain is done, when Claude needs a permission, or when
+  something goes wrong. This post is about how it knows a step is finished, because that turned out to be the whole
+  project.
+</p>
+
+<h2 id="the-problem-with-watching-the-terminal">The problem with watching the terminal</h2>
+<p>
+  The obvious approach is screen scraping: read the terminal output, wait until the spinner disappears and the input
+  box comes back, then send the next prompt. I rejected it early. Claude Code's TUI redraws constantly, the exact
+  strings change between versions, and a regex that matches "the turn is over" will eventually match in the middle of a
+  turn too. An automation tool that sends a prompt at the wrong moment is worse than no tool at all.
+</p>
+<p>
+  Claude Code already has a reliable signal for this: <strong>hooks</strong>. When a turn ends it fires
+  <code>Stop</code>; when you submit a prompt it fires <code>UserPromptSubmit</code>; when it waits for a permission it
+  fires <code>Notification</code>. If the app can receive those events, it never has to guess.
+</p>
+
+<h2 id="architecture-at-a-glance">Architecture at a glance</h2>
+<p>The app is Electron with a deliberately small surface:</p>
+<ul>
+  <li><strong>Main process</strong>: a loopback HTTP <code>HookServer</code>, a <code>SessionManager</code> that owns one
+    <code>node-pty</code> running claude, and the <code>ChainRunner</code> state machine.</li>
+  <li><strong>Renderer</strong>: vanilla TypeScript for the queue UI plus <code>xterm.js</code> with the fit addon, so
+    the terminal is a real terminal you can type into, scroll and copy from.</li>
+  <li><strong>Preload</strong>: a narrow, typed API between the two. The renderer runs with
+    <code>contextIsolation</code>, <code>sandbox: true</code>, no Node integration and a strict CSP.</li>
+</ul>
+<figure class="diagram">
+<pre data-lang="text"><code>  claude (in node-pty)                       Chain Prompt (Electron main)
+ ┌──────────────────────┐   POST /hook/&lt;launchId&gt;/Stop   ┌────────────────┐
+ │ hooks from           │ ─────────────────────────────▶ │ HookServer     │
+ │ --settings tmp.json  │   x-chain-prompt-token: …      │ 127.0.0.1:rand │
+ └──────────▲───────────┘                                └───────┬────────┘
+            │ bracketed paste + Enter                            │ 'hook' event
+            │                                            ┌───────▼────────┐
+            └────────────────────────────────────────────│ ChainRunner    │
+                                                         │ state machine  │
+                                                         └────────────────┘</code></pre>
+<figcaption>Progress is driven only by hook events coming back from the session the app launched.</figcaption>
+</figure>
+
+<h2 id="injecting-hooks-without-touching-your-settings">Injecting hooks without touching your settings</h2>
+<p>
+  I did not want to edit anyone's <code>~/.claude/settings.json</code>. Claude Code accepts a
+  <code>--settings &lt;file&gt;</code> flag, and hooks from that file are <em>merged</em> with the user's and the
+  project's hooks rather than replacing them. So every launch gets its own temporary settings file in the OS temp
+  directory, written with mode <code>0600</code> and deleted when the session ends.
+</p>
+<p>Each hook is a small curl command that forwards the hook's JSON input (which arrives on stdin) to the app:</p>
+<pre data-lang="ts"><code>// curl fallback: the hook input arrives on stdin and is forwarded as the body.
+// Only double quotes are used so the line works in sh, cmd and PowerShell;
+// on Windows `curl.exe` avoids PowerShell's `curl` alias.
+const curl = (opts.platform ?? process.platform) === 'win32' ? 'curl.exe' : 'curl'
+const command =
+  `${curl} -s -m 5 -X POST -H "content-type: application/json" ` +
+  `-H "${TOKEN_HEADER}: ${opts.token}" --data-binary "@-" "${url}"`
+return { type: 'command', command, timeout: 10 }</code></pre>
+<p>
+  Claude Code also supports native <code>type: "http"</code> hooks, and the app can use them. While checking against
+  <code>--debug</code> output I found that HTTP hooks are not supported for <code>SessionStart</code> and
+  <code>SessionEnd</code>, so those two always fall back to curl. Small detail, but without it the app would
+  never learn that claude is ready.
+</p>
+
+<h3>A loopback server that only trusts its own sessions</h3>
+<p>
+  The <code>HookServer</code> binds to <code>127.0.0.1</code> on port <code>0</code>, so the OS picks a free port.
+  Every request must carry a random 24-byte token generated per app run, compared in constant time; anything else
+  gets a <code>403</code>. The URL encodes which launch the event came from:
+</p>
+<pre data-lang="text"><code>POST http://127.0.0.1:&lt;port&gt;/hook/&lt;launchId&gt;/&lt;EventName&gt;</code></pre>
+<p>
+  That <code>launchId</code> matters more than it looks. When the app restarts claude (for a fresh context, say), the
+  old process can still deliver a late <code>SessionEnd</code>. Because every launch has its own id, stragglers from a
+  killed session are simply ignored. The server also always answers with an empty 2xx, which Claude Code reads as
+  "success, no decision": the app only observes and never influences what Claude does.
+</p>
+
+<h2 id="the-chain-state-machine">The chain state machine</h2>
+<p>
+  <code>ChainRunner</code> turns hook events into step transitions. The rules sound simple, but each one fixes a
+  real failure mode I ran into:
+</p>
+<table>
+  <thead><tr><th>Event</th><th>Meaning for the chain</th></tr></thead>
+  <tbody>
+    <tr><td><code>UserPromptSubmit</code></td><td>Our prompt was accepted. Until this arrives, the step is not really running.</td></tr>
+    <tr><td><code>Stop</code></td><td>The step is done; schedule the next one after a configurable delay.</td></tr>
+    <tr><td><code>Notification</code></td><td>If the type is a permission or input prompt, the step switches to <em>Needs you</em> and you get a notification.</td></tr>
+    <tr><td><code>PostToolUse</code></td><td>Claude is working again after you answered, so go back to <em>Running</em>.</td></tr>
+    <tr><td><code>StopFailure</code></td><td>An API error. The step fails and the chain pauses on it.</td></tr>
+    <tr><td><code>SessionEnd</code> / pty exit</td><td>The session died mid-step. Fail and pause.</td></tr>
+  </tbody>
+</table>
+<p>
+  The most important guard is a single boolean. A <code>Stop</code> that arrives <em>before</em> our prompt was
+  accepted belongs to an earlier turn, and treating it as "done" would skip a step instantly:
+</p>
+<pre data-lang="ts"><code>case 'Stop':
+  // A Stop before our prompt was accepted belongs to an earlier turn.
+  if (this.submitted) this.completeStep(step, String(p.last_assistant_message ?? ''))
+  break</code></pre>
+<p>
+  Async sequences such as "start claude, wait until ready, send <code>/clear</code>, wait again, paste the prompt" can be
+  cancelled halfway by Pause or Stop. Instead of threading abort signals through everything, the runner keeps a
+  generation counter. Every command bumps <code>gen</code>, and every await point checks
+  <code>g !== this.gen</code> before continuing. It is a cheap, very effective way to make stale continuations
+  harmless.
+</p>
+
+<h2 id="typing-into-a-tui-reliably">Typing into a TUI reliably</h2>
+<p>
+  Sending a multi-line prompt to an interactive program is surprisingly easy to get wrong: the first newline submits the
+  prompt early. The fix is <strong>bracketed paste</strong>. The prompt is wrapped in <code>ESC[200~ … ESC[201~</code>,
+  so the TUI treats it as one pasted block, and Enter is sent separately after a short delay that scales with the
+  prompt length:
+</p>
+<pre data-lang="ts"><code>pastePrompt(text: string): void {
+  const body = text.replace(/\r\n/g, '\n').replace(/\x1b\[20[01]~/g, '')
+  this.write(`\x1b[200~${body}\x1b[201~`)
+}
+
+// later, in the runner:
+session.pastePrompt(step.prompt)
+await sleep(Math.min(3000, 400 + Math.floor(step.prompt.length / 20)))
+session.pressEnter()</code></pre>
+<p>
+  If no <code>UserPromptSubmit</code> arrives within 8 seconds, Enter is sent once more; if that also fails, the step is
+  marked as failed with a message that points at the likely cause (curl missing, hooks disabled, or an
+  <code>allowedHttpHookUrls</code> list blocking HTTP hooks).
+</p>
+
+<h3>"Ready" is a hook plus a quiet terminal</h3>
+<p>
+  <code>SessionStart</code> fires slightly before the TUI has finished drawing its input box. So "ready" means
+  <em>a SessionStart newer than the last action has arrived</em> <strong>and</strong> the terminal has been quiet for
+  700 ms. The same logic handles <code>/clear</code>, which fires <code>SessionEnd</code> followed by
+  <code>SessionStart</code> with <code>source: clear</code>. That is exactly the signal for "the fresh context is ready".
+</p>
+
+<h2 id="things-i-had-to-verify-not-assume">Things I had to verify, not assume</h2>
+<ul>
+  <li><strong>Folder trust.</strong> Claude asks "Do you trust this folder?" in a new directory, defaulting to
+    <em>No, exit</em>, and <code>SessionStart</code> only fires after you confirm. The app never answers that dialog for
+    you; after 20 seconds it notifies you to confirm in the terminal, and the chain starts by itself afterwards.</li>
+  <li><strong>Nested sessions.</strong> If you launch the app from inside a Claude Code session, variables like
+    <code>CLAUDECODE</code> and <code>CLAUDE_CODE_*</code> leak into the child, which then behaves like a nested
+    session. They are stripped from the pty environment.</li>
+  <li><strong>Shells per OS.</strong> On Windows claude runs through <code>powershell.exe -NoExit</code>, which resolves
+    <code>.exe</code>, <code>.cmd</code> and <code>.ps1</code> shims. On macOS and Linux it runs through
+    <code>$SHELL -i -l -c</code> so <code>.zshrc</code> / <code>.profile</code> PATH additions apply, then drops into a
+    normal shell so the terminal stays usable.</li>
+  <li><strong>Locale on macOS.</strong> Apps opened from Finder get no <code>LANG</code>, which made claude's UI fall
+    back to ASCII. The app sets <code>en_US.UTF-8</code> when nothing is set, like Terminal.app does.</li>
+</ul>
+
+<h2 id="built-for-unattended-runs">Built for unattended runs</h2>
+<p>
+  The point of a chain is to walk away, so failure handling matters as much as the happy path. API errors, a claude
+  exit, an unaccepted prompt or a stall (no terminal output for N minutes) all pause the chain on the exact step and
+  notify you, on the desktop and optionally on your phone via <a href="https://ntfy.sh">ntfy</a>. Electron's
+  <code>powerSaveBlocker</code> keeps the machine awake while a chain runs. The queue is persisted, and a step that was
+  running when the app closed reopens as <em>Interrupted</em>, so you can resume from it.
+</p>
+<p>
+  Every run writes a human-readable <code>.log</code> and a machine-readable <code>.json</code> into
+  <code>&lt;folder&gt;/.chain-prompt/logs/</code>, with a <code>.gitignore</code> so logs never end up in your
+  repository. Chains themselves are plain JSON templates:
+</p>
+<pre data-lang="json"><code>{
+  "format": "chain-prompt",
+  "version": 1,
+  "name": "feature-workflow",
+  "steps": [
+    { "prompt": "Read the codebase and write a short implementation plan for TODO.md to PLAN.md." },
+    { "prompt": "Implement the plan in PLAN.md step by step." },
+    { "prompt": "Run the test suite and fix every failing test you introduced." },
+    { "prompt": "Review the diff with fresh eyes and fix what you find.", "newSession": true }
+  ]
+}</code></pre>
+
+<h2 id="how-i-test-something-that-drives-an-ai">How I test something that drives an AI</h2>
+<p>There are three layers, each proving something the others cannot:</p>
+<table>
+  <thead><tr><th>Suite</th><th>Needs claude</th><th>What it proves</th></tr></thead>
+  <tbody>
+    <tr><td><code>test:unit</code></td><td>No</td><td>30 state-machine checks: chaining on <code>Stop</code>, ignoring a stale <code>Stop</code>, permission → <em>Needs you</em> → running, pause/resume, Esc to stop, stall auto-pause, restore as <em>Interrupted</em>.</td></tr>
+    <tr><td><code>test:chain</code></td><td>Yes</td><td>A real 3-step chain without Electron: multi-line prompts arrive intact, steps run in order, logs are written.</td></tr>
+    <tr><td><code>test:e2e</code></td><td>Yes</td><td>Drives the packaged Electron app with Playwright, then quits mid-step and relaunches to check the step comes back as <em>Interrupted</em>.</td></tr>
+  </tbody>
+</table>
+<p>
+  My favorite test is the third step of <code>test:chain</code>. Step 1 asks Claude to reply with exactly
+  <code>ALPHA</code>; step 3 starts with a fresh context and asks which word it was told to reply with first. The
+  expected answer is <code>UNKNOWN</code>, which proves that <code>/clear</code> really reset the context instead of
+  just looking like it did.
+</p>
+
+<h2 id="limitations-and-what-is-next">Limitations and what is next</h2>
+<ul>
+  <li>If Claude asks <em>you</em> a question and ends its turn, that is also a <code>Stop</code>, so the next prompt is
+    sent. For unattended chains, tell Claude in the prompt to make reasonable assumptions instead of asking.</li>
+  <li>One folder and one session at a time. Running several chains in parallel is the obvious next feature.</li>
+  <li>Public ntfy topics are readable by anyone who knows the name, so choose an unguessable one.</li>
+</ul>
+<p>
+  The biggest lesson was to trust the tool's own lifecycle events over anything you can see on screen. Once the app
+  stopped guessing and started listening, the rest became ordinary state-machine engineering. Builds for Windows and
+  macOS (Apple Silicon and Intel) are on the GitHub releases page.
+</p>
+            <hr />
+            <ul class="chips" aria-label="Tags"><li>Developer tools</li><li>TypeScript</li><li>Electron</li></ul>
+          </div>
+        </div>
+
+        <footer class="post-end container">
+          <nav class="post-nav" aria-label="More posts">
+            <span></span><a class="post-nav-link next" href="/blog/youtube-pip-subtitles.html"><span class="mono">Next →</span><span>Bringing YouTube captions into Picture-in-Picture</span></a>
+          </nav>
+        </footer>
+      </article>
+    </main>
+
+    <!-- ============ Footer ============ -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <p class="footer-tag">Make something<br /><em>people want.</em></p>
+          </div>
+          <nav class="footer-col" aria-label="Footer navigation">
+            <h3 class="mono">Navigation</h3>
+            <a href="/#about">About</a>
+            <a href="/#experience">Experience</a>
+            <a href="/#projects">Projects</a>
+            <a href="/#skills">Stack</a>
+            <a href="/blog/">Blog</a>
+            <a href="/#contact">Contact</a>
+          </nav>
+          <div class="footer-col">
+            <h3 class="mono">Projects</h3>
+            <a href="https://github.com/mehmetkahya0/AI-Catalog" target="_blank" rel="noopener">AI Catalog</a>
+            <a href="https://github.com/mehmetkahya0/temp-mail" target="_blank" rel="noopener">TempMail</a>
+            <a href="https://github.com/mehmetkahya0/vision-uav-sim" target="_blank" rel="noopener">UAV Simulator</a>
+            <a href="https://github.com/mehmetkahya0/chain-prompt" target="_blank" rel="noopener">Chain Prompt</a>
+            <a href="https://github.com/mehmetkahya0/f1-race-prediction" target="_blank" rel="noopener">F1 Predictor</a>
+          </div>
+          <div class="footer-col">
+            <h3 class="mono">Connect</h3>
+            <a href="https://github.com/mehmetkahya0" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://www.linkedin.com/in/mehmet-kahya/" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="mailto:mehmetkahyakas5@gmail.com">Email</a>
+          </div>
+        </div>
+
+        <div class="footer-mark" aria-hidden="true">Mehmet Kahya</div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2026 Mehmet Kahya. All rights reserved.</p>
+          <p class="mono">Izmir, TR · <span class="clock" data-tz="Europe/Istanbul">--:--</span></p>
+          <a href="#top" class="to-top">Back to top <svg><use href="#i-arrow-ur" /></svg></a>
+        </div>
+      </div>
+    </footer>
+
+    <div class="read-progress" aria-hidden="true"></div>
+    <script src="/script.js"></script>
+  </body>
+</html>

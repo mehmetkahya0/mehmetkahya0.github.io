@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#06121b" />
+    <title>Predicting F1 races with simulation, ML and real telemetry — Mehmet Kahya</title>
+    <meta name="description" content="Inside my F1 race predictor: a lap-by-lap stochastic simulator with tyre and weather models, a three-model scikit-learn ensemble, and FastF1 data blended into one prediction." />
+    <meta name="author" content="Mehmet Kahya" />
+    <link rel="canonical" href="https://mehmetkahya0.github.io/blog/f1-race-predictor.html" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://mehmetkahya0.github.io/blog/f1-race-predictor.html" />
+    <meta property="og:title" content="Predicting F1 races with simulation, ML and real telemetry — Mehmet Kahya" />
+    <meta property="og:description" content="Inside my F1 race predictor: a lap-by-lap stochastic simulator with tyre and weather models, a three-model scikit-learn ensemble, and FastF1 data blended into one prediction." />
+    <meta property="og:image" content="https://mehmetkahya0.github.io/preview.jpg" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Predicting F1 races with simulation, ML and real telemetry — Mehmet Kahya" />
+    <meta property="twitter:description" content="Inside my F1 race predictor: a lap-by-lap stochastic simulator with tyre and weather models, a three-model scikit-learn ensemble, and FastF1 data blended into one prediction." />
+    <meta property="twitter:image" content="https://mehmetkahya0.github.io/preview.jpg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="alternate" type="application/rss+xml" title="Mehmet Kahya — Writing" href="/blog/feed.xml" />
+    <script data-goatcounter="https://mehmetkahya.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Predicting F1 races with simulation, ML and real telemetry", "description": "Inside my F1 race predictor: a lap-by-lap stochastic simulator with tyre and weather models, a three-model scikit-learn ensemble, and FastF1 data blended into one prediction.", "datePublished": "2026-10-27", "author": {"@type": "Person", "name": "Mehmet Kahya", "url": "https://mehmetkahya0.github.io"}, "mainEntityOfPage": "https://mehmetkahya0.github.io/blog/f1-race-predictor.html", "keywords": "Simulation, Python, Machine learning"}</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- SVG sprite: hairline icons -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="i-arrow-ur" viewBox="0 0 24 24"><path d="M7 17 17 7M8.5 7H17v8.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14m-6-6 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.25 4.1 1 5.85L12 16.9l-5.25 2.75 1-5.85L3.5 9.7l5.9-.9L12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" /></symbol>
+      <symbol id="i-fork" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="6.5" cy="5.5" r="2" /><circle cx="17.5" cy="5.5" r="2" /><circle cx="12" cy="18.5" r="2" /><path d="M6.5 7.5v1.5a3 3 0 0 0 3 3h5a3 3 0 0 0 3-3V7.5M12 12v4.5" /></g></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" /><circle cx="12" cy="10" r="2.3" /></g></symbol>
+      <symbol id="i-cap" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M2.5 9 12 4.5 21.5 9 12 13.5 2.5 9Z" /><path d="M6.5 11v4.6c0 1.3 2.5 2.9 5.5 2.9s5.5-1.6 5.5-2.9V11M21.5 9v5" /></g></symbol>
+      <symbol id="i-cpu" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="6" width="12" height="12" rx="2" /><rect x="9.5" y="9.5" width="5" height="5" rx=".8" /><path d="M9 3v3m6-3v3M9 18v3m6-3v3M3 9h3m-3 6h3m12-6h3m-3 6h3" stroke-linecap="round" /></g></symbol>
+      <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6h4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="m3.5 7 8.5 6 8.5-6" /></g></symbol>
+      <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.56-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.16-1.18 3.16-1.18.63 1.59.23 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z" /></symbol>
+      <symbol id="i-linkedin" viewBox="0 0 24 24"><path fill="currentColor" d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z" /></symbol>
+    </svg>
+
+    <!-- ============ Header ============ -->
+    <header class="nav-wrap">
+      <nav class="nav" id="navbar" aria-label="Primary">
+        <ul class="nav-links">
+          <li><a href="/#about" class="nav-link">About</a></li>
+          <li><a href="/#experience" class="nav-link">Experience</a></li>
+          <li><a href="/#projects" class="nav-link">Projects</a></li>
+          <li><a href="/#skills" class="nav-link">Stack</a></li>
+          <li><a href="/blog/" class="nav-link is-active" aria-current="page">Blog</a></li>
+        </ul>
+        <a href="/" class="nav-logo" aria-label="Mehmet Kahya — home">
+          <svg class="nav-logo-mark" viewBox="0 0 7 7" aria-hidden="true" shape-rendering="crispEdges">
+            <path fill="currentColor" d="M3 0h1v2H3zM3 5h1v2H3zM0 3h2v1H0zM5 3h2v1H5zM2 2h3v3H2zM1 1h1v1H1zM5 1h1v1H5zM1 5h1v1H1zM5 5h1v1H5z" />
+          </svg>
+          <span class="nav-logo-text">Mehmet Kahya</span>
+        </a>
+        <div class="nav-right">
+          <a href="/#contact" class="nav-cta">Let's talk</a>
+          <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+            <span></span><span></span>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Fullscreen menu (mobile) -->
+    <div class="menu" id="menu" aria-hidden="true">
+      <ol class="menu-links">
+        <li><a href="/#about"><span class="menu-num">01</span>About</a></li>
+        <li><a href="/#experience"><span class="menu-num">02</span>Experience</a></li>
+        <li><a href="/#projects"><span class="menu-num">03</span>Projects</a></li>
+        <li><a href="/#skills"><span class="menu-num">04</span>Stack</a></li>
+        <li><a href="/blog/"><span class="menu-num">05</span>Blog</a></li>
+        <li><a href="/#contact"><span class="menu-num">06</span>Contact</a></li>
+      </ol>
+      <div class="menu-foot">
+        <a href="https://github.com/mehmetkahya0" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/mehmet-kahya/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:mehmetkahyakas5@gmail.com">Email</a>
+      </div>
+    </div>
+
+    <main id="main">
+      <article class="post">
+        <header class="post-hero" id="top">
+          <div class="container">
+            <div class="post-hero-inner">
+              <a class="post-back reveal" href="/blog/"><svg><use href="#i-arrow-r" /></svg>All posts</a>
+              <div class="post-meta reveal">
+                <span class="eyebrow">Simulation</span>
+                <span class="mono"><time datetime="2026-10-27">Oct 27, 2026</time> · 6 min read</span>
+              </div>
+              <h1 class="post-title reveal">Predicting F1 races with <em>simulation, ML and real telemetry</em></h1>
+              <p class="post-lede reveal">Inside my F1 race predictor: a lap-by-lap stochastic simulator with tyre and weather models, a three-model scikit-learn ensemble, and FastF1 data blended into one prediction.</p>
+              <div class="post-actions reveal">
+                <a href="https://github.com/mehmetkahya0/f1-race-prediction" target="_blank" rel="noopener" class="btn btn-light magnetic"><span>View on GitHub</span><span class="btn-orb"><svg><use href="#i-github" /></svg></span></a>
+              </div>
+            </div>
+            <div class="bezel post-cover reveal">
+              <div class="bezel-core">
+                <div class="cover" data-kind="streaks" data-seed="11" aria-hidden="true"><canvas></canvas></div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="container post-layout">
+          <aside class="post-toc" aria-label="On this page">
+            <h2>On this page</h2>
+            <ol>
+              <li><a href="#the-data-model">The data model</a></li>
+              <li><a href="#layer-1-a-lap-by-lap-race-simulator">Layer 1: a lap-by-lap race simulator</a></li>
+              <li><a href="#layer-2-a-three-model-ml-ensemble">Layer 2: a three-model ML ensemble</a></li>
+              <li><a href="#layer-3-real-data-from-fastf1">Layer 3: real data from FastF1</a></li>
+              <li><a href="#blending-the-three">Blending the three</a></li>
+              <li><a href="#how-well-does-it-work">How well does it work?</a></li>
+              <li><a href="#visualizing-the-race">Visualizing the race</a></li>
+              <li><a href="#what-i-would-do-next">What I would do next</a></li>
+            </ol>
+          </aside>
+          <div class="prose">
+<p>
+  Formula 1 is a wonderful modelling problem. Car pace, driver skill, tyre wear, fuel load, weather, pit strategy and
+  pure chance all interact over sixty-odd laps, and every Sunday reality checks your assumptions. My
+  <strong>F1 Race Predictor</strong> is a Python project that tries to capture enough of that to make useful
+  predictions, and to explain <em>why</em> it predicts what it does.
+</p>
+<p>
+  It combines three very different sources of signal: a lap-by-lap probabilistic race simulator, a small ensemble of
+  machine-learning models, and real timing data pulled from the FastF1 library. This post walks through each layer and
+  the honest limitations of each.
+</p>
+
+<h2 id="the-data-model">The data model</h2>
+<p>
+  Everything starts with plain Python classes for drivers, teams and tracks, updated for the 2026 grid: eleven teams
+  including the new Cadillac entry, twenty-two drivers and a twenty-four-race calendar. A driver is a bundle of
+  ratings on a 1–100 scale:
+</p>
+<pre data-lang="py"><code>class Driver:
+    def __init__(self, name, team, number, nationality, age, experience,
+                 skill_wet, skill_dry, skill_overtaking, consistency, aggression,
+                 tire_management=80, racecraft=80, qualifying_pace=80):
+        ...</code></pre>
+<p>
+  Teams carry car performance, reliability and pit-stop efficiency. The 2026 regulations add attributes such as
+  <code>energy_recovery</code> for the bigger MGU-K and <code>active_aero</code> for the new movable aerodynamics.
+  Tracks carry length, lap count, a tyre-wear rating and an energy-demand rating. Keeping this as plain data makes it
+  easy to tweak a single number and immediately see its effect on a race.
+</p>
+
+<h2 id="layer-1-a-lap-by-lap-race-simulator">Layer 1: a lap-by-lap race simulator</h2>
+<p>
+  The heart of the project is <code>RaceSimulator</code>. Qualifying produces a grid, then the race is simulated lap by
+  lap. Each driver's lap time is a sum of interpretable terms:
+</p>
+<pre data-lang="py"><code>lap_time = (base_time           # from track length
+            + driver_time_delta # up to 2.5 s from driver skill
+            + car_time_delta    # up to 2.0 s from car performance
+            + weather_impact    # wet-weather skill matters a lot more in the rain
+            + tire_impact       # grows with tyre age, track wear and tyre management
+            + fuel_impact       # negative: cars get faster as fuel burns off
+            + random_factor     # Gaussian noise, smaller for consistent drivers
+           ) * track_modifier</code></pre>
+<p>
+  Two details make the output feel realistic. First, randomness is <strong>controlled</strong>: the standard deviation
+  of the noise shrinks with a driver's consistency rating, so consistent drivers produce tight lap times while
+  erratic ones sometimes shine and sometimes fade. Second, the fuel term is negative and grows with the lap number, so
+  stints naturally get faster before tyre wear takes over.
+</p>
+<p>
+  Because the simulation is stochastic, a single race is one sample. Run it many times and you get a distribution of
+  outcomes, which is far more honest than a single "this driver wins" answer.
+</p>
+
+<h3>Tyres and strategy</h3>
+<p>
+  Tyre behaviour lives in <code>strategy.py</code>. Each compound has a pace offset and a base degradation rate per
+  lap:
+</p>
+<table>
+  <thead><tr><th>Compound</th><th>Pace vs soft</th><th>Degradation / lap</th></tr></thead>
+  <tbody>
+    <tr><td>Soft</td><td>baseline</td><td>3.0%</td></tr>
+    <tr><td>Medium</td><td>+0.4 s</td><td>2.2%</td></tr>
+    <tr><td>Hard</td><td>+0.8 s</td><td>1.5%</td></tr>
+    <tr><td>Intermediate</td><td>+2.0 s</td><td>2.5%</td></tr>
+    <tr><td>Wet</td><td>+3.0 s</td><td>2.0%</td></tr>
+  </tbody>
+</table>
+<p>
+  The base rate is then multiplied by the track's wear rating, a temperature factor (hot tracks above 45 °C eat tyres
+  30% faster, cold ones below 15 °C 20% slower) and a weather factor. Slicks on a wet track degrade five times faster,
+  and wet tyres on a dry track six times faster, which is how the model "decides" when a tyre choice is wrong.
+  <code>PitStopStrategy</code> builds a plan from these numbers, including undercut and overcut opportunities, and pit
+  stops take longer or shorter depending on the team's pit crew rating.
+</p>
+
+<h3>Weather and incidents</h3>
+<p>
+  Weather is generated per track and month: dry conditions come with a 0–15% rain chance, mixed conditions with 40–80%
+  and wet ones with 70–100%. Incidents add the chaos that makes F1 F1: mechanical failures (more likely when a team's
+  combined reliability and energy-recovery score is low), collisions, penalties and energy-system problems. Without
+  them, the fastest car would win every simulated race, which is not how the real sport works.
+</p>
+
+<h2 id="layer-2-a-three-model-ml-ensemble">Layer 2: a three-model ML ensemble</h2>
+<p>
+  The second opinion comes from <code>ml_predictor.py</code>: three scikit-learn regressors that predict a finishing
+  position from features such as grid position, driver ratings, car performance, track characteristics and whether
+  the race is wet.
+</p>
+<pre data-lang="py"><code>self.rf_model = RandomForestRegressor(n_estimators=100, max_depth=10, min_samples_split=5,
+                                      min_samples_leaf=2, random_state=42, n_jobs=-1)
+self.gb_model = GradientBoostingRegressor(n_estimators=100, max_depth=6, learning_rate=0.1,
+                                          min_samples_split=5, random_state=42)
+self.nn_model = MLPRegressor(hidden_layer_sizes=(64, 32, 16), activation='relu', solver='adam',
+                             learning_rate='adaptive', max_iter=500, random_state=42,
+                             early_stopping=True)</code></pre>
+<p>
+  Predictions are blended with fixed weights (Random Forest 0.40, Gradient Boosting 0.35, neural network 0.25) and
+  the spread between the three models becomes a confidence score: when they agree, confidence goes up. Each driver also
+  gets a probability distribution over positions, modelled as a Gaussian around the ensemble prediction.
+</p>
+<div class="callout">
+  <span class="callout-label">Honest caveat</span>
+  The models are trained on 5,000 <em>synthetic</em> samples generated from F1 domain rules: grid position as the
+  strongest predictor, adjusted by car and driver performance, wet-weather skill and overtaking ability, plus Gaussian
+  noise. That makes the ML layer a smooth, learned version of my own assumptions rather than an independent source of
+  truth. Training on real historical results is the single biggest improvement on my list.
+</div>
+
+<h2 id="layer-3-real-data-from-fastf1">Layer 3: real data from FastF1</h2>
+<p>
+  The third layer grounds everything in reality. <code>real_data_integration.py</code> uses the
+  <a href="https://github.com/theOehrly/Fast-F1">FastF1</a> library to load event schedules and recent race sessions,
+  then derives driver and team form and track-specific data. FastF1's on-disk cache is enabled, so the first run is
+  slow and every run after that is fast. Loading is wrapped in a terminal loading screen with FastF1's verbose logging
+  suppressed, because a prediction tool shouldn't scroll hundreds of log lines past you.
+</p>
+
+<h2 id="blending-the-three">Blending the three</h2>
+<p>The enhanced model combines everything with explicit weights:</p>
+<pre data-lang="py"><code>REAL_DATA_WEIGHT = 0.50  # how much to trust recent real-world form
+SIMULATION_WEIGHT = 0.25
+ML_WEIGHT = 0.25</code></pre>
+<p>
+  Real data gets the largest share because current form beats any static rating. The simulator and the ML ensemble
+  each contribute a quarter, the simulator for race dynamics such as tyres, weather and incidents, and the ensemble
+  for a smoothed statistical view.
+</p>
+
+<h2 id="how-well-does-it-work">How well does it work?</h2>
+<p>
+  I tested the simulator against sixteen races of the 2025 season while developing it. The project README keeps the
+  full table; the summary:
+</p>
+<table>
+  <thead><tr><th>Metric</th><th>Result</th></tr></thead>
+  <tbody>
+    <tr><td>Winner predicted correctly</td><td>56.3%</td></tr>
+    <tr><td>Average podium accuracy</td><td>68.8%</td></tr>
+    <tr><td>Drivers within ±3 positions</td><td>82.4%</td></tr>
+    <tr><td>Mean absolute error</td><td>2.3 positions</td></tr>
+  </tbody>
+</table>
+<p>
+  It is strongest at street circuits like Monaco, where track characteristics dominate, and weakest where races were
+  decided by things no model sees coming: first-lap collisions, a disqualification after the race, or a team finding
+  pace that nobody expected. Sixteen races is a small sample, so I read these numbers as "clearly better than
+  guessing", not as a precise accuracy figure.
+</p>
+
+<h2 id="visualizing-the-race">Visualizing the race</h2>
+<p>
+  Numbers alone are hard to trust, so the project produces matplotlib/seaborn charts: position changes across the race,
+  lap-time progression, tyre-degradation curves, driver radar charts and team heatmaps. The position chart in particular
+  is a great debugging tool. If a driver jumps ten places in one lap without a pit stop or an incident, the model has a
+  bug.
+</p>
+
+<h2 id="what-i-would-do-next">What I would do next</h2>
+<ul>
+  <li><strong>Train on real history.</strong> Replace the synthetic training set with several seasons of FastF1 race
+    results and evaluate with a proper time-based split, training on earlier races and testing on later ones.</li>
+  <li><strong>Learn the blend weights.</strong> The 50/25/25 split is hand-tuned; fitting it on held-out races would be
+    more principled.</li>
+  <li><strong>Calibrated probabilities.</strong> Report win and podium probabilities from many simulation runs, and
+    check their calibration against reality.</li>
+</ul>
+<p>
+  The project taught me that the hardest part of prediction is not the model but being honest about uncertainty.
+  A good F1 predictor should be confident at Monaco and humble at Spa in the rain.
+</p>
+<p><em>All predictions are for entertainment and educational purposes.</em></p>
+            <hr />
+            <ul class="chips" aria-label="Tags"><li>Simulation</li><li>Python</li><li>Machine learning</li></ul>
+          </div>
+        </div>
+
+        <footer class="post-end container">
+          <nav class="post-nav" aria-label="More posts">
+            <a class="post-nav-link prev" href="/blog/tempmail.html"><span class="mono">← Previous</span><span>TempMail: a disposable inbox in vanilla JavaScript</span></a><a class="post-nav-link next" href="/blog/local-web-camera.html"><span class="mono">Next →</span><span>A LAN webcam with WebRTC and Socket.IO</span></a>
+          </nav>
+        </footer>
+      </article>
+    </main>
+
+    <!-- ============ Footer ============ -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <p class="footer-tag">Make something<br /><em>people want.</em></p>
+          </div>
+          <nav class="footer-col" aria-label="Footer navigation">
+            <h3 class="mono">Navigation</h3>
+            <a href="/#about">About</a>
+            <a href="/#experience">Experience</a>
+            <a href="/#projects">Projects</a>
+            <a href="/#skills">Stack</a>
+            <a href="/blog/">Blog</a>
+            <a href="/#contact">Contact</a>
+          </nav>
+          <div class="footer-col">
+            <h3 class="mono">Projects</h3>
+            <a href="https://github.com/mehmetkahya0/AI-Catalog" target="_blank" rel="noopener">AI Catalog</a>
+            <a href="https://github.com/mehmetkahya0/temp-mail" target="_blank" rel="noopener">TempMail</a>
+            <a href="https://github.com/mehmetkahya0/vision-uav-sim" target="_blank" rel="noopener">UAV Simulator</a>
+            <a href="https://github.com/mehmetkahya0/chain-prompt" target="_blank" rel="noopener">Chain Prompt</a>
+            <a href="https://github.com/mehmetkahya0/f1-race-prediction" target="_blank" rel="noopener">F1 Predictor</a>
+          </div>
+          <div class="footer-col">
+            <h3 class="mono">Connect</h3>
+            <a href="https://github.com/mehmetkahya0" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://www.linkedin.com/in/mehmet-kahya/" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="mailto:mehmetkahyakas5@gmail.com">Email</a>
+          </div>
+        </div>
+
+        <div class="footer-mark" aria-hidden="true">Mehmet Kahya</div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2026 Mehmet Kahya. All rights reserved.</p>
+          <p class="mono">Izmir, TR · <span class="clock" data-tz="Europe/Istanbul">--:--</span></p>
+          <a href="#top" class="to-top">Back to top <svg><use href="#i-arrow-ur" /></svg></a>
+        </div>
+      </div>
+    </footer>
+
+    <div class="read-progress" aria-hidden="true"></div>
+    <script src="/script.js"></script>
+  </body>
+</html>

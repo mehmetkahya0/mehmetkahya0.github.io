@@ -1,0 +1,144 @@
+<!--
+title: AI Catalog: <em>a README that became a website</em>
+card_title: AI Catalog: a README that became a website
+description: My most-starred project is a curated list of 500+ AI tools across 40+ categories. Here is how it stays maintainable, and how a zero-build website turns the README itself into a searchable catalog.
+date: 2026-10-27
+tags: Open source, JavaScript
+cover: tiles
+seed: 7
+repo: https://github.com/mehmetkahya0/AI-Catalog
+demo: https://mehmetkahya0.github.io/AI-Catalog/
+order: 4
+-->
+<p>
+  <strong>AI Catalog</strong> is the most-starred repository on my profile: close to 500 stars and more than 120 forks
+  at the time of writing. It is a curated list of AI models, tools and platforms, more than 500 entries across over
+  40 categories, from text-to-image generators and LLMs to SQL assistants, voice cloning and autonomous agents.
+</p>
+<p>
+  A curated list sounds like the least technical project imaginable. In practice, keeping hundreds of entries
+  consistent, reviewable and actually <em>usable</em> turned into an interesting engineering problem. This post covers
+  the format, the tooling around it, and the website that turns the README into a searchable catalog without a single
+  build step.
+</p>
+
+<h2>One file as the source of truth</h2>
+<p>
+  The whole catalog lives in <code>README.md</code>. That was a deliberate choice: GitHub renders it, people can star
+  and fork it, and contributors only need to know Markdown to open a pull request. Every entry follows the same shape:
+</p>
+<pre data-lang="text"><code>- **[Tool name](https://tool.url)** 🆓🔄 - One short line describing what it does</code></pre>
+<p>
+  The emoji after the link are a small but very effective schema. They encode pricing and status at a glance:
+</p>
+<table>
+  <thead><tr><th>Marker</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td>🆓</td><td>Completely free</td></tr>
+    <tr><td>💰</td><td>Paid (subscription or one-time)</td></tr>
+    <tr><td>🔄</td><td>Freemium: free tier with paid upgrades</td></tr>
+    <tr><td>🆕</td><td>Recently added</td></tr>
+    <tr><td>🔥</td><td>Popular, highly recommended by the community</td></tr>
+  </tbody>
+</table>
+<p>
+  Categories are <code>##</code> headings; finer groupings use <code>###</code> and <code>####</code>. The LLM section,
+  for example, splits into commercial models, open-source models, self-hosted solutions and research projects. A short
+  <code>&gt;</code> blockquote under a heading can describe the category.
+</p>
+
+<h2>Tooling that keeps the list honest</h2>
+<p>
+  The bigger a list gets, the more it drifts: duplicated entries, missing pricing markers, descriptions that turn into
+  paragraphs. The repository ships three small shell scripts to fight that drift.
+</p>
+<ul>
+  <li><strong><code>scripts/add-tool.sh</code></strong> asks for the name, URL, description and pricing type, then
+    prints a correctly formatted line. Contributors copy it instead of hand-formatting.</li>
+  <li><strong><code>scripts/validate.sh</code></strong> is a quality gate built from <code>grep</code> and
+    <code>awk</code>. It flags malformed entries, tools without a pricing marker, descriptions over 100 characters,
+    and duplicate names.</li>
+  <li><strong><code>scripts/stats.sh</code></strong> counts tools and categories for the "Quick stats" section.</li>
+</ul>
+<pre data-lang="sh"><code># Check for missing pricing indicators
+tools_without_pricing=$(grep -n "^\s*-\s*\*\*\[.*\].*\*\*\s*-" README.md | grep -v "🆓\|💰\|🔄\|🆕\|🔥")
+
+# Check for duplicate entries
+duplicates=$(grep -o "\*\*\[.*\]" README.md | sort | uniq -d)</code></pre>
+<p>
+  Around the scripts sits the usual open-source scaffolding, which matters a lot once strangers start contributing:
+  issue templates for bug reports, feature requests and <em>tool submissions</em>, a pull-request template, a
+  contributing guide, a code of conduct and a roadmap. The tool-submission template alone saves a lot of back-and-forth,
+  because it asks for exactly the fields an entry needs.
+</p>
+
+<h2>The website: parsing the README at runtime</h2>
+<p>
+  A 500-entry Markdown file is great to browse on GitHub and painful to <em>search</em>. So the repository also contains
+  a single <code>index.html</code>, served on GitHub Pages, that turns the README into a fast, filterable catalog. The
+  key design decision: <strong>no generated data file</strong>. The page fetches the README itself and parses it in the
+  browser, so the site can never go stale. Merge a pull request and the website is updated.
+</p>
+<pre data-lang="js"><code>const SOURCES = ['README.md', 'https://raw.githubusercontent.com/mehmetkahya0/AI-Catalog/main/README.md'];</code></pre>
+<p>
+  It tries the README served next to the page first and falls back to the raw GitHub URL, so the same file works on
+  Pages and when opened from a fork.
+</p>
+
+<h3>A line-by-line parser</h3>
+<p>
+  The parser walks the Markdown one line at a time and keeps a little state: the current category, the current
+  sub-group and an optional description. A few rules carry most of the weight:
+</p>
+<ul>
+  <li>Headings like "Table of contents", "Contributing" or "License" are skipped with one regular expression, so only
+    real categories become filters.</li>
+  <li><code>###</code> headings that start with a letter (for example "Summarizer") are categories of their own, while
+    emoji-led ones ("🔥 Commercial LLMs") are treated as sub-groups inside their parent. Unicode property escapes
+    (<code>\p{L}</code>) make that distinction a single test.</li>
+  <li>Each list item is matched against the entry pattern. The emoji block becomes boolean flags
+    (<code>free</code>, <code>freemium</code>, <code>paid</code>, <code>isNew</code>, <code>hot</code>), and the text
+    after <code> - </code> becomes the description.</li>
+</ul>
+<pre data-lang="js"><code>if ((m = item.match(/^\*{0,2}\[([^\]]+)\]\(([^)\s]+)\)\*{0,2}\s*(.*)$/))) [, name, url, rest] = m;
+// ...
+tools.push({
+  name, url, desc: dm ? dm[1].trim() : '', category, sub,
+  free: tags.includes('🆓'), freemium: tags.includes('🔄'), paid: tags.includes('💰'),
+  isNew: tags.includes('🆕'), hot: tags.includes('🔥'),
+});</code></pre>
+
+<h3>Search, filters and small touches</h3>
+<p>
+  The UI combines a category sidebar (a select on mobile), a search box and pricing/status filter chips. Search matches
+  the name, description, category, sub-group and URL, and highlights matches with <code>&lt;mark&gt;</code>. The query
+  is regex-escaped first, so typing <code>c++</code> doesn't throw. Every string from the README is HTML-escaped before
+  rendering, since contributors control that content.
+</p>
+<p>
+  Each card shows the tool's favicon (fetched from Google's favicon service and removed silently if it fails), the
+  host name and its badges. Entries without a URL fall back to a web search for the tool's name. A light/dark theme
+  toggle remembers your choice in <code>localStorage</code>, wrapped in <code>try/catch</code> for browsers that block
+  storage.
+</p>
+
+<h2>What maintaining it taught me</h2>
+<ul>
+  <li><strong>Curation is the product.</strong> Adding tools is easy; deciding what <em>not</em> to add, and pruning
+    tools that died, is what keeps a list worth starring.</li>
+  <li><strong>Make the right thing the easy thing.</strong> A formatter script and a submission template did more for
+    consistency than any amount of review comments.</li>
+  <li><strong>Keep data and presentation in one place.</strong> Parsing the README at runtime means there is exactly
+    one thing to update, which is the main reason the website has never drifted from the list.</li>
+</ul>
+
+<h2>What is next</h2>
+<p>
+  The obvious next step is automation: a GitHub Action that runs <code>validate.sh</code> on every pull request and a
+  scheduled job that checks links for dead tools. The validator is already script-shaped, so wiring it into CI is
+  mostly configuration.
+</p>
+<p>
+  If you know a tool that belongs in the catalog, the submission template is the fastest way in, and a star helps more
+  people find it.
+</p>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Mehmet Kahya — Writing</title>
+    <link>https://mehmetkahya0.github.io/blog/</link>
+    <description>Technical deep dives into Mehmet Kahya's open-source projects.</description>
+    <language>en</language>
+    <item>
+      <title>Chain Prompt: driving Claude Code with its own hooks</title>
+      <link>https://mehmetkahya0.github.io/blog/chain-prompt.html</link>
+      <guid>https://mehmetkahya0.github.io/blog/chain-prompt.html</guid>
+      <pubDate>Tue, 27 Oct 2026 09:00:00 +0300</pubDate>
+      <description>How I built an Electron app that queues prompts for the real interactive claude CLI and advances the chain from Claude Code&#x27;s own lifecycle hooks, not from guessing at terminal output.</description>
+    </item>
+    <item>
+      <title>Subtitles that follow you into Picture-in-Picture</title>
+      <link>https://mehmetkahya0.github.io/blog/youtube-pip-subtitles.html</link>
+      <guid>https://mehmetkahya0.github.io/blog/youtube-pip-subtitles.html</guid>
+      <pubDate>Tue, 27 Oct 2026 09:00:00 +0300</pubDate>
+      <description>Native PiP only takes the raw video element, so YouTube&#x27;s captions stay behind. This Chrome extension uses the Document Picture-in-Picture API to render synced subtitles inside the floating window.</description>
+    </item>
+    <item>
+      <title>Streaming Windows audio to a HomePod</title>
+      <link>https://mehmetkahya0.github.io/blog/homepod-streamer.html</link>
+      <guid>https://mehmetkahya0.github.io/blog/homepod-streamer.html</guid>
+      <pubDate>Tue, 27 Oct 2026 09:00:00 +0300</pubDate>
+      <description>Apple doesn&#x27;t make AirPlay senders for Windows, so I built one in Python: WASAPI loopback capture, a jitter buffer, an endless WAV stream and a reconnecting RAOP session through pyatv.</description>
+    </item>
+    <item>
+      <title>AI Catalog: a README that became a website</title>
+      <link>https://mehmetkahya0.github.io/blog/ai-catalog.html</link>
+      <guid>https://mehmetkahya0.github.io/blog/ai-catalog.html</guid>
+      <pubDate>Tue, 27 Oct 2026 09:00:00 +0300</pubDate>
+      <description>My most-starred project is a curated list of 500+ AI tools across 40+ categories. Here is how it stays maintainable, and how a zero-build website turns the README itself into a searchable catalog.</description>
+    </item>
+    <item>
+      <title>TempMail: a disposable inbox in vanilla JavaScript</title>
+      <link>https://mehmetkahya0.github.io/blog/tempmail.html</link>
+      <guid>https://mehmetkahya0.github.io/blog/tempmail.html</guid>
+      <pubDate>Tue, 27 Oct 2026 09:00:00 +0300</pubDate>
+      <description>How TempMail turns the Guerrilla Mail API into a fast, multi-inbox web app with no framework and no backend, and what it takes to safely render emails from strangers in the browser.</description>
+    </item>
+    <item>
+      <title>Predicting F1 races with simulation, ML and real telemetry</title>
+      <link>https://mehmetkahya0.github.io/blog/f1-race-predictor.html</link>
+      <guid>https://mehmetkahya0.github.io/blog/f1-race-predictor.html</guid>
+      <pubDate>Tue, 27 Oct 2026 09:00:00 +0300</pubDate>
+      <description>Inside my F1 race predictor: a lap-by-lap stochastic simulator with tyre and weather models, a three-model scikit-learn ensemble, and FastF1 data blended into one prediction.</description>
+    </item>
+    <item>
+      <title>A LAN webcam with WebRTC and Socket.IO</title>
+      <link>https://mehmetkahya0.github.io/blog/local-web-camera.html</link>
+      <guid>https://mehmetkahya0.github.io/blog/local-web-camera.html</guid>
+      <pubDate>Tue, 27 Oct 2026 09:00:00 +0300</pubDate>
+      <description>Turning any device into a wireless camera on your local network: rooms and signaling with Socket.IO, peer-to-peer video with WebRTC, live connection stats, and the lessons I&#x27;d apply if I rebuilt it today.</description>
+    </item>
+    <item>
+      <title>A 140-line scraper, and what I&#x27;d fix today</title>
+      <link>https://mehmetkahya0.github.io/blog/web-resource-downloader.html</link>
+      <guid>https://mehmetkahya0.github.io/blog/web-resource-downloader.html</guid>
+      <pubDate>Tue, 27 Oct 2026 09:00:00 +0300</pubDate>
+      <description>Web Resource Downloader grabs images, scripts and media from a website with requests and BeautifulSoup. A walkthrough of how it works, plus an honest code review of my own older code.</description>
+    </item>
+  </channel>
+</rss>

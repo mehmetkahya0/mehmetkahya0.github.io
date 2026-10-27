@@ -1,0 +1,168 @@
+<!--
+title: Subtitles that follow you <em>into Picture-in-Picture</em>
+card_title: Bringing YouTube captions into Picture-in-Picture
+description: Native PiP only takes the raw video element, so YouTube's captions stay behind. This Chrome extension uses the Document Picture-in-Picture API to render synced subtitles inside the floating window.
+date: 2026-10-27
+tags: Browser, JavaScript
+cover: pip
+seed: 6
+repo: https://github.com/mehmetkahya0/youtube-pip-subtitles
+order: 2
+-->
+<p>
+  Picture-in-Picture is perfect for keeping a lecture or a talk on screen while you work. The annoying part: the moment
+  a YouTube video pops out, the subtitles vanish. They stay behind on the main page, rendered on top of a player you can no longer
+  see. For non-native speakers, or anyone in a noisy room, that makes PiP almost useless.
+</p>
+<p>
+  <strong>YouTube PiP Subtitles</strong> is a small Manifest V3 extension that fixes this. It opens a Picture-in-Picture
+  window that contains both the video <em>and</em> a subtitle overlay kept in sync with playback, styled however you
+  like. This post explains why the obvious fixes don't work and what the extension does instead.
+</p>
+
+<h2>Why captions disappear in PiP</h2>
+<p>
+  YouTube does not burn captions into the video stream. It renders them as HTML elements
+  (<code>.ytp-caption-segment</code> and friends) positioned over the <code>&lt;video&gt;</code> element. The classic
+  <code>video.requestPictureInPicture()</code> API only takes the raw video element and gives you a floating window that
+  can show <em>nothing else</em>: no HTML, no overlays, no styling. So whatever lives in the DOM around the video,
+  captions included, stays on the page.
+</p>
+<p>
+  Any real fix therefore needs a PiP window that can render arbitrary HTML. Chrome 116 added exactly that:
+  <strong>Document Picture-in-Picture</strong>. <code>documentPictureInPicture.requestWindow()</code> opens an
+  always-on-top window with its own <code>document</code>, which you can fill like any page.
+</p>
+
+<h2>The pipeline</h2>
+<figure class="diagram">
+<pre data-lang="text"><code> 1. Find the caption tracks for the current video
+ 2. Fetch the chosen track as JSON3 from the timedtext endpoint
+ 3. Parse events into  { start, end, text }  cues
+ 4. Open a Document PiP window and put the video in it
+ 5. Every 100 ms: read video.currentTime → find active cues → render
+ 6. If no cue data is available, read YouTube's own caption DOM instead</code></pre>
+<figcaption>Captions are treated as data, not as DOM to be moved around.</figcaption>
+</figure>
+
+<h3>Getting the caption data</h3>
+<p>
+  YouTube's player response lists the available caption tracks under
+  <code>captions.playerCaptionsTracklistRenderer.captionTracks</code>, each with a <code>baseUrl</code> pointing to the
+  timedtext endpoint. The extension picks a track (Turkish first, then English, then whatever is available) and asks
+  for the JSON3 format by appending <code>&amp;fmt=json3</code>. JSON3 gives millisecond timings per event, which makes
+  parsing almost trivial:
+</p>
+<pre data-lang="js"><code>function parseCaptionJSON3(data) {
+  if (!data?.events) return [];
+  return data.events
+    .filter(ev => ev.segs &amp;&amp; ev.tStartMs !== undefined)
+    .map(ev => ({
+      start: ev.tStartMs / 1000,
+      end:   (ev.tStartMs + (ev.dDurationMs || 3000)) / 1000,
+      text:  ev.segs.map(s => s.utf8 || '').join('').trim(),
+    }))
+    .filter(ev => ev.text &amp;&amp; ev.text !== '\n');
+}</code></pre>
+<p>
+  The <code>dDurationMs || 3000</code> fallback covers events that come without a duration, which happens with some
+  auto-generated tracks.
+</p>
+
+<h3>Opening the window</h3>
+<p>
+  The PiP window is sized from the video's real aspect ratio (480 px wide), then filled with a wrapper, the video and an
+  overlay element for the subtitles. Putting the <em>video</em> into a different document is the delicate part, and
+  the extension tries two strategies:
+</p>
+<ol>
+  <li><strong><code>captureStream()</code></strong> on the page's video, fed into a new muted
+    <code>&lt;video&gt;</code> inside the PiP window. The original element stays where YouTube expects it.</li>
+  <li>If that fails or yields no video track, which happens on many videos because of CORS and DRM restrictions, the
+    real <code>&lt;video&gt;</code> element is <strong>moved</strong> into the PiP document. Its original parent and
+    sibling are remembered so it can be put back exactly where it was when the window closes
+    (<code>pagehide</code>).</li>
+</ol>
+
+<h2>Keeping text in sync</h2>
+<p>
+  Sync is a 100 ms interval that reads <code>currentTime</code> and renders every cue whose window contains it.
+  Overlapping cues are joined, and the DOM is only touched when the text actually changes. Slightly simplified from
+  <code>content.js</code>:
+</p>
+<pre data-lang="js"><code>syncInterval = setInterval(() =&gt; {
+  const vid = streamOk ? video : (win.document?.querySelector('video') || video);
+  const t = vid.currentTime;
+  let text = '';
+
+  if (captionData.length &gt; 0) {
+    const matches = captionData.filter(c =&gt; t &gt;= c.start &amp;&amp; t &lt; c.end);
+    text = matches.map(c =&gt; c.text).join(' ').trim();
+  }
+  if (!text) text = getDOMCaptions();   // fallback: YouTube's own caption DOM
+
+  if (text === lastText) return;
+  lastText = text;
+  pipSubEl.innerHTML = text ? renderLines(text) : '';   // lines are HTML-escaped
+}, 100);</code></pre>
+<p>
+  Why <code>setInterval</code> and not <code>requestAnimationFrame</code>? rAF is throttled or paused when a document
+  is not visible or focused, and the whole point of PiP is that the main tab is usually in the background. A plain
+  interval keeps polling steadily, and 100 ms is well below the threshold where a subtitle feels late.
+</p>
+<p>
+  Every line goes through an HTML-escaping helper before it is inserted. Caption text is third-party data, and
+  <code>innerHTML</code> with unescaped text from the network is a classic XSS hole.
+</p>
+
+<h3>The DOM fallback</h3>
+<p>
+  When there is no prefetched cue data, the extension reads YouTube's visible caption elements instead. It tries a
+  few selectors (<code>.ytp-caption-segment</code>, <code>.captions-text</code>,
+  <code>[class*="caption-visual-line"]</code>) and keeps only elements that are actually visible according to
+  <code>getComputedStyle</code>. That is why you should switch captions on with YouTube's own CC button first: the
+  fallback can only mirror what the player is rendering.
+</p>
+
+<h2>Living inside a single-page app</h2>
+<p>
+  YouTube never does a full page load when you click another video, so <code>DOMContentLoaded</code> fires once and
+  never again. The extension watches for URL changes with a <code>MutationObserver</code> on
+  <code>document.body</code>. When the URL changes it resets the cue data and the selected track, then re-runs
+  initialization after a short delay so the new player has time to mount. The buttons (one in the player's toolbar
+  next to the native PiP button and one floating "PiP + Subtitles" button that appears on hover) are injected with
+  retry loops for the same reason: the controls may not exist yet when the script runs.
+</p>
+
+<h2>Customization that applies live</h2>
+<p>
+  The popup lets you set font size (10–32 px), font family, text color, background opacity and position (top or
+  bottom). Settings are stored in <code>chrome.storage.sync</code>, so they follow you across devices, and a
+  <code>chrome.storage.onChanged</code> listener restyles the open PiP window immediately, with no reopen needed.
+</p>
+
+<h2>Permissions and privacy</h2>
+<p>
+  The manifest asks for very little: the <code>storage</code> permission and a content script on
+  <code>youtube.com</code>. The only other host it talks to is my GoatCounter instance, which receives anonymous
+  page-path pings such as "extension active" and "PiP opened" so I can see whether the feature is used. No video data,
+  captions or personal data leave the browser.
+</p>
+
+<h2>What I would improve next</h2>
+<p>Writing this post made me look at the code with fresh eyes, and a few improvements stand out:</p>
+<ul>
+  <li><strong>Reading the player response from the page's world.</strong> Content scripts run in an isolated JavaScript
+    world, so page globals such as <code>ytInitialPlayerResponse</code> are usually not visible to them. In practice
+    the DOM fallback carries a lot of the work today. MV3 supports injecting a script into the page's main world
+    (<code>world: "MAIN"</code>), which could hand the track list back reliably.</li>
+  <li><strong>A track picker.</strong> The language preference is fixed today; the popup could list every available
+    track, including auto-translations.</li>
+  <li><strong>Binary search for cues.</strong> Filtering the whole cue array ten times per second is fine for normal
+    videos, but a sorted array plus binary search would make multi-hour streams cheaper.</li>
+</ul>
+<p>
+  The extension needs Chrome or Edge 116+, since Firefox and Safari don't ship Document PiP yet. It is a good example
+  of a pattern I keep coming back to: when the platform won't let you move the UI, move the <em>data</em> and render
+  it yourself.
+</p>

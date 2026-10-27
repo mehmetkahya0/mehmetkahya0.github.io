@@ -1,0 +1,162 @@
+<!--
+title: TempMail: a disposable inbox <em>in vanilla JavaScript</em>
+card_title: TempMail: a disposable inbox in vanilla JavaScript
+description: How TempMail turns the Guerrilla Mail API into a fast, multi-inbox web app with no framework and no backend, and what it takes to safely render emails from strangers in the browser.
+date: 2026-10-27
+tags: Web, JavaScript, Privacy
+cover: orb
+seed: 3
+repo: https://github.com/mehmetkahya0/temp-mail
+demo: https://mehmetkahya0.github.io/temp-mail/
+order: 5
+-->
+<p>
+  Every "sign up to download" form asks for an email address it will spam forever. <strong>TempMail</strong> gives you a
+  throwaway inbox in one click: a real address that receives real mail, which you can read, star and delete, then
+  simply forget. It is my second most-starred project, with more than 180 stars and 80 forks.
+</p>
+<p>
+  The interesting constraint is that there is <em>no backend of my own</em>. TempMail is a static site on GitHub Pages:
+  HTML, CSS and around 2,400 lines of vanilla JavaScript talking directly to the Guerrilla Mail API. This post is about
+  how that works, and about the part people underestimate: displaying HTML email from strangers safely.
+</p>
+
+<h2>Architecture: a static client on top of a public API</h2>
+<p>
+  Guerrilla Mail exposes a simple AJAX API where every call is <code>ajax.php?f=&lt;function&gt;</code> and a session
+  token (<code>sid_token</code>) ties requests to one mailbox. TempMail uses a handful of functions:
+</p>
+<table>
+  <thead><tr><th>Call</th><th>Used for</th></tr></thead>
+  <tbody>
+    <tr><td><code>get_email_address</code></td><td>Create a new inbox and get its session token</td></tr>
+    <tr><td><code>set_email_user</code></td><td>Pick a custom username and one of seven domains</td></tr>
+    <tr><td><code>get_email_list</code></td><td>Poll the inbox</td></tr>
+    <tr><td><code>fetch_email</code></td><td>Load a full message body</td></tr>
+    <tr><td><code>fetch_attachment</code></td><td>Download attachments</td></tr>
+    <tr><td><code>del_email</code></td><td>Delete one or many messages</td></tr>
+  </tbody>
+</table>
+<p>
+  Everything else (sessions, caching, tagging, the UI) lives in the browser. Configuration such as timeouts, retry
+  counts, storage keys and the domain list sits in one <code>config.js</code>, so behaviour can be tuned without
+  touching the logic.
+</p>
+
+<h3>Network calls that fail gracefully</h3>
+<p>
+  A free public API will sometimes be slow or down. Every request goes through a small wrapper that adds a hard timeout
+  with <code>AbortController</code>, so a hanging request never freezes the UI. On top of that, startup retries with a
+  growing delay, a failed address generation retries once by itself, and an online/offline indicator tells you what is
+  going on:
+</p>
+<pre data-lang="js"><code>async function fetchWithTimeout(url, options = {}, timeout = CONFIG.REQUEST_TIMEOUT) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() =&gt; controller.abort(), timeout);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') throw new Error('Request timed out');
+    throw error;
+  }
+}</code></pre>
+
+<h2>Rendering email from strangers, safely</h2>
+<p>
+  An inbox is an unusual web app: its main content is HTML written by <em>anyone on the internet</em>. Dropping an email
+  body into <code>innerHTML</code> would let any sender run JavaScript on my domain. TempMail sanitizes every body before
+  it touches the page:
+</p>
+<ol>
+  <li>Parse the HTML with <code>DOMParser</code> into an inert document. Nothing executes during parsing.</li>
+  <li>Remove dangerous elements outright: <code>script</code>, <code>iframe</code>, <code>object</code>,
+    <code>embed</code>, <code>form</code> and form controls.</li>
+  <li>Strip every <code>on*</code> event-handler attribute and any attribute whose value starts with
+    <code>javascript:</code>.</li>
+  <li>Rewrite relative image and link URLs to absolute Guerrilla Mail URLs, and force external links to open in a new
+    tab with <code>rel="noopener noreferrer"</code>.</li>
+</ol>
+<pre data-lang="js"><code>const doc = new DOMParser().parseFromString(html, 'text/html');
+
+['script', 'iframe', 'object', 'embed', 'form', 'input', 'textarea', 'select']
+  .forEach(tag =&gt; doc.querySelectorAll(tag).forEach(el =&gt; el.remove()));
+
+doc.querySelectorAll('*').forEach(el =&gt; {
+  for (const attr of [...el.attributes]) {
+    if (attr.name.startsWith('on') || attr.value.startsWith('javascript:')) {
+      el.removeAttribute(attr.name);
+    }
+  }
+});</code></pre>
+<p>
+  Plain-text fields such as subjects and sender names go through a separate escape function instead, because text
+  should never be interpreted as markup in the first place.
+</p>
+<div class="callout">
+  <span class="callout-label">Lesson</span>
+  A block-list sanitizer is a solid first line of defence, but HTML has many dark corners (SVG, <code>srcdoc</code>,
+  CSS <code>url()</code> tricks). If I hardened it further, I would render bodies inside a sandboxed
+  <code>&lt;iframe srcdoc&gt;</code> without <code>allow-scripts</code>, so even a missed vector couldn't execute.
+</div>
+
+<h2>Multiple inboxes, one tab</h2>
+<p>
+  Version 4 added tabbed mailboxes: up to five disposable addresses at once, each with its own session token,
+  countdown timer and refresh settings. Sessions are stored as an array in <code>localStorage</code> under
+  <code>temp_mail_sessions_v4</code>, and older single-session data is migrated automatically on first load, so
+  upgrading never loses an inbox. The five-session cap is deliberate. Each inbox polls the API, and an unbounded
+  number of tabs would quietly hammer a free service.
+</p>
+<p>
+  New-mail detection keeps a set of known message ids per inbox. When a poll returns an id that isn't in the set, the
+  app knows it is genuinely new and can raise a browser notification (if you granted permission) instead of
+  re-announcing old mail after every refresh.
+</p>
+
+<h2>Small features that make it feel fast</h2>
+<ul>
+  <li><strong>Command palette</strong> (<kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>K</kbd>) with fuzzy search and full
+    keyboard navigation: copy the address, switch inboxes, regenerate, clear, change language or theme.</li>
+  <li><strong>Semantic tags.</strong> Incoming mail is classified by keywords in the subject and sender, in both English
+    and Turkish, into <em>Verification</em> (codes, OTPs, activation links), <em>Security</em> (logins, 2FA,
+    resets), <em>Testing</em> and <em>Marketing</em>. A "Verifications" filter chip shows the one email you usually
+    came for.</li>
+  <li><strong>Starring</strong> that persists across visits, and quick filters for <em>All</em>, <em>Starred</em> and
+    <em>Verifications</em>.</li>
+  <li><strong>QR code</strong> of the address, so you can use it on your phone.</li>
+  <li><strong>Bilingual UI.</strong> A dictionary-based TR/EN layer picks the language from <code>navigator.language</code>
+    and remembers your choice.</li>
+</ul>
+<p>
+  The classifier is deliberately simple: ordered keyword checks, with verification checked first because it matters
+  most. Simple rules are predictable, fast and easy to extend with a new language. That beats an opaque model for a
+  feature whose job is to surface one-time codes.
+</p>
+
+<h2>Design without a framework</h2>
+<p>
+  The interface is glassmorphic cards over an animated "aurora" background with a subtle SVG film-grain overlay. The
+  colours are HSL-based CSS variables, which makes the dark/light theme switch a matter of swapping a few tokens. No
+  framework and no build step means the page loads fast from GitHub Pages and the code is readable by anyone who
+  opens DevTools, which is part of why so many people fork it.
+</p>
+
+<h2>Dealing with clones</h2>
+<p>
+  Popularity has a downside: copies of the site re-hosted under other names. TempMail includes layered client-side
+  guards that check the hostname and a license flag at startup and periodically at runtime, with a <code>?dev=1</code>
+  escape hatch for local testing. I'm realistic about what this is: client-side checks are a <em>deterrent</em>, not
+  real protection, because anyone determined can strip them. The license and clear attribution do the real work.
+</p>
+
+<h2>What I learned</h2>
+<ul>
+  <li>Treat every byte from the network as hostile, especially when the product's whole purpose is receiving mail from
+    strangers.</li>
+  <li>Vanilla JavaScript scales further than people think, as long as you keep configuration, networking, state and
+    rendering in clearly separated pieces.</li>
+  <li>Be a good citizen to the API you depend on: timeouts, bounded retries and a cap on concurrent pollers.</li>
+</ul>

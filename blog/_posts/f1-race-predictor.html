@@ -1,0 +1,185 @@
+<!--
+title: Predicting F1 races with <em>simulation, ML and real telemetry</em>
+card_title: Predicting F1 races with simulation, ML and real telemetry
+description: Inside my F1 race predictor: a lap-by-lap stochastic simulator with tyre and weather models, a three-model scikit-learn ensemble, and FastF1 data blended into one prediction.
+date: 2026-10-27
+tags: Simulation, Python, Machine learning
+cover: streaks
+seed: 11
+repo: https://github.com/mehmetkahya0/f1-race-prediction
+order: 6
+-->
+<p>
+  Formula 1 is a wonderful modelling problem. Car pace, driver skill, tyre wear, fuel load, weather, pit strategy and
+  pure chance all interact over sixty-odd laps, and every Sunday reality checks your assumptions. My
+  <strong>F1 Race Predictor</strong> is a Python project that tries to capture enough of that to make useful
+  predictions, and to explain <em>why</em> it predicts what it does.
+</p>
+<p>
+  It combines three very different sources of signal: a lap-by-lap probabilistic race simulator, a small ensemble of
+  machine-learning models, and real timing data pulled from the FastF1 library. This post walks through each layer and
+  the honest limitations of each.
+</p>
+
+<h2>The data model</h2>
+<p>
+  Everything starts with plain Python classes for drivers, teams and tracks, updated for the 2026 grid: eleven teams
+  including the new Cadillac entry, twenty-two drivers and a twenty-four-race calendar. A driver is a bundle of
+  ratings on a 1–100 scale:
+</p>
+<pre data-lang="py"><code>class Driver:
+    def __init__(self, name, team, number, nationality, age, experience,
+                 skill_wet, skill_dry, skill_overtaking, consistency, aggression,
+                 tire_management=80, racecraft=80, qualifying_pace=80):
+        ...</code></pre>
+<p>
+  Teams carry car performance, reliability and pit-stop efficiency. The 2026 regulations add attributes such as
+  <code>energy_recovery</code> for the bigger MGU-K and <code>active_aero</code> for the new movable aerodynamics.
+  Tracks carry length, lap count, a tyre-wear rating and an energy-demand rating. Keeping this as plain data makes it
+  easy to tweak a single number and immediately see its effect on a race.
+</p>
+
+<h2>Layer 1: a lap-by-lap race simulator</h2>
+<p>
+  The heart of the project is <code>RaceSimulator</code>. Qualifying produces a grid, then the race is simulated lap by
+  lap. Each driver's lap time is a sum of interpretable terms:
+</p>
+<pre data-lang="py"><code>lap_time = (base_time           # from track length
+            + driver_time_delta # up to 2.5 s from driver skill
+            + car_time_delta    # up to 2.0 s from car performance
+            + weather_impact    # wet-weather skill matters a lot more in the rain
+            + tire_impact       # grows with tyre age, track wear and tyre management
+            + fuel_impact       # negative: cars get faster as fuel burns off
+            + random_factor     # Gaussian noise, smaller for consistent drivers
+           ) * track_modifier</code></pre>
+<p>
+  Two details make the output feel realistic. First, randomness is <strong>controlled</strong>: the standard deviation
+  of the noise shrinks with a driver's consistency rating, so consistent drivers produce tight lap times while
+  erratic ones sometimes shine and sometimes fade. Second, the fuel term is negative and grows with the lap number, so
+  stints naturally get faster before tyre wear takes over.
+</p>
+<p>
+  Because the simulation is stochastic, a single race is one sample. Run it many times and you get a distribution of
+  outcomes, which is far more honest than a single "this driver wins" answer.
+</p>
+
+<h3>Tyres and strategy</h3>
+<p>
+  Tyre behaviour lives in <code>strategy.py</code>. Each compound has a pace offset and a base degradation rate per
+  lap:
+</p>
+<table>
+  <thead><tr><th>Compound</th><th>Pace vs soft</th><th>Degradation / lap</th></tr></thead>
+  <tbody>
+    <tr><td>Soft</td><td>baseline</td><td>3.0%</td></tr>
+    <tr><td>Medium</td><td>+0.4 s</td><td>2.2%</td></tr>
+    <tr><td>Hard</td><td>+0.8 s</td><td>1.5%</td></tr>
+    <tr><td>Intermediate</td><td>+2.0 s</td><td>2.5%</td></tr>
+    <tr><td>Wet</td><td>+3.0 s</td><td>2.0%</td></tr>
+  </tbody>
+</table>
+<p>
+  The base rate is then multiplied by the track's wear rating, a temperature factor (hot tracks above 45 °C eat tyres
+  30% faster, cold ones below 15 °C 20% slower) and a weather factor. Slicks on a wet track degrade five times faster,
+  and wet tyres on a dry track six times faster, which is how the model "decides" when a tyre choice is wrong.
+  <code>PitStopStrategy</code> builds a plan from these numbers, including undercut and overcut opportunities, and pit
+  stops take longer or shorter depending on the team's pit crew rating.
+</p>
+
+<h3>Weather and incidents</h3>
+<p>
+  Weather is generated per track and month: dry conditions come with a 0–15% rain chance, mixed conditions with 40–80%
+  and wet ones with 70–100%. Incidents add the chaos that makes F1 F1: mechanical failures (more likely when a team's
+  combined reliability and energy-recovery score is low), collisions, penalties and energy-system problems. Without
+  them, the fastest car would win every simulated race, which is not how the real sport works.
+</p>
+
+<h2>Layer 2: a three-model ML ensemble</h2>
+<p>
+  The second opinion comes from <code>ml_predictor.py</code>: three scikit-learn regressors that predict a finishing
+  position from features such as grid position, driver ratings, car performance, track characteristics and whether
+  the race is wet.
+</p>
+<pre data-lang="py"><code>self.rf_model = RandomForestRegressor(n_estimators=100, max_depth=10, min_samples_split=5,
+                                      min_samples_leaf=2, random_state=42, n_jobs=-1)
+self.gb_model = GradientBoostingRegressor(n_estimators=100, max_depth=6, learning_rate=0.1,
+                                          min_samples_split=5, random_state=42)
+self.nn_model = MLPRegressor(hidden_layer_sizes=(64, 32, 16), activation='relu', solver='adam',
+                             learning_rate='adaptive', max_iter=500, random_state=42,
+                             early_stopping=True)</code></pre>
+<p>
+  Predictions are blended with fixed weights (Random Forest 0.40, Gradient Boosting 0.35, neural network 0.25) and
+  the spread between the three models becomes a confidence score: when they agree, confidence goes up. Each driver also
+  gets a probability distribution over positions, modelled as a Gaussian around the ensemble prediction.
+</p>
+<div class="callout">
+  <span class="callout-label">Honest caveat</span>
+  The models are trained on 5,000 <em>synthetic</em> samples generated from F1 domain rules: grid position as the
+  strongest predictor, adjusted by car and driver performance, wet-weather skill and overtaking ability, plus Gaussian
+  noise. That makes the ML layer a smooth, learned version of my own assumptions rather than an independent source of
+  truth. Training on real historical results is the single biggest improvement on my list.
+</div>
+
+<h2>Layer 3: real data from FastF1</h2>
+<p>
+  The third layer grounds everything in reality. <code>real_data_integration.py</code> uses the
+  <a href="https://github.com/theOehrly/Fast-F1">FastF1</a> library to load event schedules and recent race sessions,
+  then derives driver and team form and track-specific data. FastF1's on-disk cache is enabled, so the first run is
+  slow and every run after that is fast. Loading is wrapped in a terminal loading screen with FastF1's verbose logging
+  suppressed, because a prediction tool shouldn't scroll hundreds of log lines past you.
+</p>
+
+<h2>Blending the three</h2>
+<p>The enhanced model combines everything with explicit weights:</p>
+<pre data-lang="py"><code>REAL_DATA_WEIGHT = 0.50  # how much to trust recent real-world form
+SIMULATION_WEIGHT = 0.25
+ML_WEIGHT = 0.25</code></pre>
+<p>
+  Real data gets the largest share because current form beats any static rating. The simulator and the ML ensemble
+  each contribute a quarter, the simulator for race dynamics such as tyres, weather and incidents, and the ensemble
+  for a smoothed statistical view.
+</p>
+
+<h2>How well does it work?</h2>
+<p>
+  I tested the simulator against sixteen races of the 2025 season while developing it. The project README keeps the
+  full table; the summary:
+</p>
+<table>
+  <thead><tr><th>Metric</th><th>Result</th></tr></thead>
+  <tbody>
+    <tr><td>Winner predicted correctly</td><td>56.3%</td></tr>
+    <tr><td>Average podium accuracy</td><td>68.8%</td></tr>
+    <tr><td>Drivers within ±3 positions</td><td>82.4%</td></tr>
+    <tr><td>Mean absolute error</td><td>2.3 positions</td></tr>
+  </tbody>
+</table>
+<p>
+  It is strongest at street circuits like Monaco, where track characteristics dominate, and weakest where races were
+  decided by things no model sees coming: first-lap collisions, a disqualification after the race, or a team finding
+  pace that nobody expected. Sixteen races is a small sample, so I read these numbers as "clearly better than
+  guessing", not as a precise accuracy figure.
+</p>
+
+<h2>Visualizing the race</h2>
+<p>
+  Numbers alone are hard to trust, so the project produces matplotlib/seaborn charts: position changes across the race,
+  lap-time progression, tyre-degradation curves, driver radar charts and team heatmaps. The position chart in particular
+  is a great debugging tool. If a driver jumps ten places in one lap without a pit stop or an incident, the model has a
+  bug.
+</p>
+
+<h2>What I would do next</h2>
+<ul>
+  <li><strong>Train on real history.</strong> Replace the synthetic training set with several seasons of FastF1 race
+    results and evaluate with a proper time-based split, training on earlier races and testing on later ones.</li>
+  <li><strong>Learn the blend weights.</strong> The 50/25/25 split is hand-tuned; fitting it on held-out races would be
+    more principled.</li>
+  <li><strong>Calibrated probabilities.</strong> Report win and podium probabilities from many simulation runs, and
+    check their calibration against reality.</li>
+</ul>
+<p>
+  The project taught me that the hardest part of prediction is not the model but being honest about uncertainty.
+  A good F1 predictor should be confident at Monaco and humble at Spa in the rain.
+</p>
+<p><em>All predictions are for entertainment and educational purposes.</em></p>

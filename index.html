@@ -2,21 +2,19 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#06121b" />
 
     <!-- Primary Meta Tags -->
     <title>Mehmet Kahya | Software Developer & Engineering Student</title>
-    <meta
-      name="title"
-      content="Mehmet Kahya | Software Developer & Engineering Student"
-    />
+    <meta name="title" content="Mehmet Kahya | Software Developer & Engineering Student" />
     <meta
       name="description"
-      content="Software Developer and Electrical-Electronics Engineering student from Turkey. Specializing in AI, web development, and innovative solutions."
+      content="Software developer and Electrical-Electronics Engineering student from Izmir, Turkey. Building AI tools, simulators and open-source projects with 1,000+ stars on GitHub."
     />
     <meta
       name="keywords"
-      content="Mehmet Kahya, Software Developer, Electrical Engineering, Web Development, AI, Portfolio, Python, JavaScript"
+      content="Mehmet Kahya, Software Developer, Electrical-Electronics Engineering, AI, Computer Vision, Robotics, Simulation, Open Source, Python, JavaScript, TypeScript"
     />
     <meta name="author" content="Mehmet Kahya" />
     <meta name="robots" content="index, follow" />
@@ -24,34 +22,22 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://mehmetkahya0.github.io/" />
-    <meta
-      property="og:title"
-      content="Mehmet Kahya | Software Developer & Engineering Student"
-    />
+    <meta property="og:title" content="Mehmet Kahya | Software Developer & Engineering Student" />
     <meta
       property="og:description"
-      content="Software Developer and Electrical-Electronics Engineering student from Turkey. Specializing in AI, web development, and innovative solutions."
+      content="Software developer and Electrical-Electronics Engineering student from Izmir, Turkey. Building AI tools, simulators and open-source projects with 1,000+ stars on GitHub."
     />
-    <meta
-      property="og:image"
-      content="https://mehmetkahya0.github.io/preview.jpg"
-    />
+    <meta property="og:image" content="https://mehmetkahya0.github.io/preview.jpg" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://mehmetkahya0.github.io/" />
-    <meta
-      property="twitter:title"
-      content="Mehmet Kahya | Software Developer & Engineering Student"
-    />
+    <meta property="twitter:title" content="Mehmet Kahya | Software Developer & Engineering Student" />
     <meta
       property="twitter:description"
-      content="Software Developer and Electrical-Electronics Engineering student from Turkey. Specializing in AI, web development, and innovative solutions."
+      content="Software developer and Electrical-Electronics Engineering student from Izmir, Turkey. Building AI tools, simulators and open-source projects with 1,000+ stars on GitHub."
     />
-    <meta
-      property="twitter:image"
-      content="https://mehmetkahya0.github.io/preview.jpg"
-    />
+    <meta property="twitter:image" content="https://mehmetkahya0.github.io/preview.jpg" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
@@ -60,11 +46,7 @@
     <link rel="canonical" href="https://mehmetkahya0.github.io/" />
 
     <!-- GoatCounter Analytics -->
-    <script
-      data-goatcounter="https://mehmetkahya.goatcounter.com/count"
-      async
-      src="//gc.zgo.at/count.js"
-    ></script>
+    <script data-goatcounter="https://mehmetkahya.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
     <script id="_waur88">
       var _wau = _wau || [];
@@ -72,869 +54,671 @@
     </script>
     <script async src="//waust.at/d.js"></script>
 
-    <link rel="stylesheet" href="styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <!-- Navigation -->
-    <nav id="navbar">
-      <div class="nav-container">
-        <a href="#" class="logo">
-          <span class="logo-text">Mehmet Kahya</span>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- SVG sprite: hairline icons -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="i-arrow-ur" viewBox="0 0 24 24"><path d="M7 17 17 7M8.5 7H17v8.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14m-6-6 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.25 4.1 1 5.85L12 16.9l-5.25 2.75 1-5.85L3.5 9.7l5.9-.9L12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" /></symbol>
+      <symbol id="i-fork" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="6.5" cy="5.5" r="2" /><circle cx="17.5" cy="5.5" r="2" /><circle cx="12" cy="18.5" r="2" /><path d="M6.5 7.5v1.5a3 3 0 0 0 3 3h5a3 3 0 0 0 3-3V7.5M12 12v4.5" /></g></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" /><circle cx="12" cy="10" r="2.3" /></g></symbol>
+      <symbol id="i-cap" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M2.5 9 12 4.5 21.5 9 12 13.5 2.5 9Z" /><path d="M6.5 11v4.6c0 1.3 2.5 2.9 5.5 2.9s5.5-1.6 5.5-2.9V11M21.5 9v5" /></g></symbol>
+      <symbol id="i-cpu" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="6" width="12" height="12" rx="2" /><rect x="9.5" y="9.5" width="5" height="5" rx=".8" /><path d="M9 3v3m6-3v3M9 18v3m6-3v3M3 9h3m-3 6h3m12-6h3m-3 6h3" stroke-linecap="round" /></g></symbol>
+      <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6h4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="m3.5 7 8.5 6 8.5-6" /></g></symbol>
+      <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.56-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.16-1.18 3.16-1.18.63 1.59.23 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z" /></symbol>
+      <symbol id="i-linkedin" viewBox="0 0 24 24"><path fill="currentColor" d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z" /></symbol>
+    </svg>
+
+    <!-- ============ Header ============ -->
+    <header class="nav-wrap">
+      <nav class="nav" id="navbar" aria-label="Primary">
+        <ul class="nav-links">
+          <li><a href="#about" class="nav-link">About</a></li>
+          <li><a href="#experience" class="nav-link">Experience</a></li>
+          <li><a href="#projects" class="nav-link">Projects</a></li>
+          <li><a href="#skills" class="nav-link">Stack</a></li>
+          <li><a href="/blog/" class="nav-link">Blog</a></li>
+        </ul>
+        <a href="#top" class="nav-logo" aria-label="Mehmet Kahya — home">
+          <svg class="nav-logo-mark" viewBox="0 0 7 7" aria-hidden="true" shape-rendering="crispEdges">
+            <path fill="currentColor" d="M3 0h1v2H3zM3 5h1v2H3zM0 3h2v1H0zM5 3h2v1H5zM2 2h3v3H2zM1 1h1v1H1zM5 1h1v1H5zM1 5h1v1H1zM5 5h1v1H5z" />
+          </svg>
+          <span class="nav-logo-text">Mehmet Kahya</span>
         </a>
         <div class="nav-right">
-          <ul class="nav-links" id="nav-links">
-            <li><a href="#about" class="nav-link">About</a></li>
-            <li><a href="#experience" class="nav-link">Experience</a></li>
-            <li><a href="#projects" class="nav-link">Projects</a></li>
-            <li><a href="#skills" class="nav-link">Skills</a></li>
-            <li><a href="#contact" class="nav-link">Contact</a></li>
-          </ul>
-          <a
-            href="https://github.com/mehmetkahya0"
-            class="nav-cta"
-            target="_blank"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-              />
-            </svg>
-            GitHub
-          </a>
-          <button
-            class="hamburger"
-            id="hamburger"
-            aria-label="Menu"
-            aria-expanded="false"
-            aria-controls="nav-links"
-          >
-            <span></span>
-            <span></span>
-            <span></span>
+          <a href="#contact" class="nav-cta">Let's talk</a>
+          <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+            <span></span><span></span>
           </button>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </header>
 
-    <!-- Hero Section -->
-    <section id="hero" class="hero">
-      <div class="hero-gradient-bg">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-        <div class="blob blob-4"></div>
-        <div class="blob blob-5"></div>
+    <!-- Fullscreen menu (mobile) -->
+    <div class="menu" id="menu" aria-hidden="true">
+      <ol class="menu-links">
+        <li><a href="#about"><span class="menu-num">01</span>About</a></li>
+        <li><a href="#experience"><span class="menu-num">02</span>Experience</a></li>
+        <li><a href="#projects"><span class="menu-num">03</span>Projects</a></li>
+        <li><a href="#skills"><span class="menu-num">04</span>Stack</a></li>
+        <li><a href="/blog/"><span class="menu-num">05</span>Blog</a></li>
+        <li><a href="#contact"><span class="menu-num">06</span>Contact</a></li>
+      </ol>
+      <div class="menu-foot">
+        <a href="https://github.com/mehmetkahya0" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/mehmet-kahya/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:mehmetkahyakas5@gmail.com">Email</a>
       </div>
-      <div class="container">
-        <div class="hero-content">
-          <div class="hero-badge">&#128640; Open to Opportunities</div>
-          <h1 class="hero-title">
-            I turn ideas into<br />
-            <span class="hero-highlight">real products.</span>
-          </h1>
-          <p class="hero-description">
-            Software Developer and Electrical-Electronics Engineering student
-            from Turkey. Building AI-powered tools and open-source projects used
-            by thousands worldwide.
-          </p>
-          <div class="hero-stats">
-            <div class="hero-stat">
-              <span class="hero-stat-number">780+</span>
-              <span class="hero-stat-label">GitHub Stars</span>
-            </div>
-            <div class="hero-stat">
-              <span class="hero-stat-number">70+</span>
-              <span class="hero-stat-label">Repositories</span>
-            </div>
-            <div class="hero-stat">
-              <span class="hero-stat-number">6+</span>
-              <span class="hero-stat-label">Years Coding</span>
-            </div>
-          </div>
-          <div class="hero-actions">
-            <a href="#projects" class="btn btn-primary">View Projects &darr;</a>
-            <a href="#contact" class="btn btn-secondary">Get in Touch</a>
-          </div>
-        </div>
-        <div class="hero-visual">
-          <div class="hero-image-wrapper">
-            <img src="images/pp.jpeg" alt="Mehmet Kahya" class="hero-image" />
-          </div>
-          <div class="hero-social">
-            <a
-              href="https://github.com/mehmetkahya0"
-              target="_blank"
-              class="social-pill"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path
-                  d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-                />
-              </svg>
-              GitHub
-            </a>
-            <a
-              href="https://www.linkedin.com/in/mehmet-kahya/"
-              target="_blank"
-              class="social-pill"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path
-                  d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
-                />
-              </svg>
-              LinkedIn
-            </a>
-            <a href="mailto:mehmetkahyakas5@gmail.com" class="social-pill">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <rect x="2" y="4" width="20" height="16" rx="2" />
-                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-              </svg>
-              Email
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
+    </div>
 
-    <!-- Featured Projects Banner -->
-    <section class="featured-banner">
-      <div class="banner-track">
-        <div class="banner-content">
-          <span class="banner-item">AI-Catalog &mdash; 500+ Stars</span>
-          <span class="banner-dot"></span>
-          <span class="banner-item">TempMail &mdash; 85+ Stars</span>
-          <span class="banner-dot"></span>
-          <span class="banner-item">F1 Race Predictor &mdash; 35+ Stars</span>
-          <span class="banner-dot"></span>
-          <span class="banner-item">RSS Aggregator &mdash; 15+ Stars</span>
-          <span class="banner-dot"></span>
-          <span class="banner-item">Draw Together &mdash; 9+ Stars</span>
-          <span class="banner-dot"></span>
-          <span class="banner-dot"></span>
-          <span class="banner-item">Price Tracker &mdash; 7+ Stars</span>
-          <span class="banner-dot"></span>
-          <span class="banner-item">TempMail &mdash; 85+ Stars</span>
-          <span class="banner-dot"></span>
-          <span class="banner-item">F1 Race Predictor &mdash; 35+ Stars</span>
-          <span class="banner-dot"></span>
-          <span class="banner-item">RSS Aggregator &mdash; 15+ Stars</span>
-          <span class="banner-dot"></span>
-          <span class="banner-item">Draw Together &mdash; 9+ Stars</span>
-          <span class="banner-dot"></span>
-        </div>
-      </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about" aria-labelledby="about-heading">
-      <div class="container">
-        <div class="section-label">About</div>
-        <div class="about-grid">
-          <div class="about-text">
-            <h2 class="section-title" id="about-heading">
-              Passionate about AI, space technology, and creating innovative
-              solutions.
-            </h2>
-            <p class="about-description">
-              As an Electrical-Electronics Engineering student with 7 years of
-              coding experience, I operate at the intersection of hardware and
-              software. My journey is driven by the challenge of bridging the
-              gap between physical systems and digital intelligence to create
-              scalable, real-world solutions. I specialize in architecting
-              AI-powered ecosystems and developing autonomous systems that
-              perceive and react to their environments. Passionate about the
-              future of space technology and robotics, I am committed to pushing
-              the boundaries of multidisciplinary engineering.
-            </p>
+    <main id="main">
+      <!-- ============ Hero ============ -->
+      <section class="hero" id="top">
+        <div class="hero-frame">
+          <div class="hero-scene" aria-hidden="true">
+            <canvas class="scene-layer scene-sky" data-depth="0.2"></canvas>
+            <canvas class="scene-layer scene-clouds" data-depth="0.5"></canvas>
+            <canvas class="scene-layer scene-hill" data-depth="0.9"></canvas>
+            <div class="coder">
+              <span class="coder-code"><i>&lt;/&gt;</i><i>{ }</i><i>01</i><i>=&gt;</i></span>
+              <canvas class="coder-canvas" width="37" height="46"></canvas>
+            </div>
+            <div class="hero-scrim"></div>
           </div>
-          <div class="about-details">
-            <div class="detail-card">
-              <div class="detail-icon">&#127891;</div>
-              <div class="detail-info">
-                <h3>Education</h3>
-                <p>Electrical-Electronics Engineering</p>
-              </div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-icon">&#128205;</div>
-              <div class="detail-info">
-                <h3>Location</h3>
-                <p>Izmir, Turkey</p>
-              </div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-icon">&#128187;</div>
-              <div class="detail-info">
-                <h3>Focus</h3>
-                <p>AI, Web Dev, IoT, Robotics</p>
-              </div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-icon">&#128640;</div>
-              <div class="detail-info">
-                <h3>Status</h3>
-                <p>Open to opportunities</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- Experience Section -->
-    <section id="experience" class="experience" aria-labelledby="experience-heading">
-      <div class="container">
-        <div class="section-label">Experience</div>
-        <h2 class="section-title" id="experience-heading">Work Experience</h2>
-        <p class="section-subtitle">
-          Real-world engineering experience alongside my personal projects
-        </p>
-
-        <div class="experience-list">
-          <div class="experience-item">
-            <div class="experience-logo">CCI</div>
-            <div class="experience-content">
-              <div class="experience-header">
-                <h3>Software Development Intern</h3>
-                <span class="experience-date">Jul 2026 &ndash; Aug 2026</span>
-              </div>
-              <div class="experience-company">
-                Coca-Cola İçecek (CCI) &middot; Digital Technologies &middot;
-                Istanbul, Turkey, CCI Headquarters
-              </div>
-              <p class="experience-desc">
-                Interned with the Digital Technologies team, engineering a
-                Kotlin-based Android mobile application to optimize internal
-                logistics and communications for Coca-Cola staff. Collaborated
-                with cross-functional teams to deliver enterprise-scale software
-                solutions, refine application performance, and enhance
-                operational workflows.
+          <div class="hero-inner">
+            <div class="hero-copy">
+              <h1 class="hero-title reveal">
+                I turn ideas<br />
+                into <em>real products.</em>
+              </h1>
+              <p class="hero-lede reveal">
+                Software developer and Electrical-Electronics Engineering student from Izmir. I love building
+                things that work end to end, from AI tools and simulators to the small utilities that make
+                everyday work easier, and I ship almost all of it as open source.
               </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects" class="projects" aria-labelledby="projects-heading">
-      <div class="container">
-        <div class="section-label">Projects</div>
-        <h2 class="section-title" id="projects-heading">Featured Work</h2>
-        <p class="section-subtitle">
-          Open-source projects that solve real problems
-        </p>
-
-        <!-- Highlight Project -->
-        <div class="project-highlight">
-          <div class="project-highlight-content">
-            <div class="project-highlight-badge">Most Popular</div>
-            <h3>TempMail</h3>
-            <p>
-              Simple and elegant web application to generate temporary email
-              addresses and view received emails. Clean UI with real-time
-              updates. 85+ stars, 44 forks.
-            </p>
-            <div class="project-highlight-stats">
-              <span>&#9733; 85 stars</span>
-              <span>&#128268; 44 forks</span>
-              <span>HTML / CSS / JS</span>
-            </div>
-            <div class="project-highlight-actions">
-              <a
-                href="https://github.com/mehmetkahya0/temp-mail"
-                target="_blank"
-                class="btn btn-primary"
-                >View on GitHub &rarr;</a
-              >
-              <a
-                href="https://mehmetkahya0.github.io/temp-mail/"
-                target="_blank"
-                class="btn btn-secondary"
-                >Live Demo</a
-              >
-            </div>
-          </div>
-        </div>
-
-        <!-- Projects Grid -->
-        <div class="projects-grid">
-          <a
-            href="https://github.com/mehmetkahya0/AI-Catalog"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-card-top">
-              <div class="project-card-lang">Shell / Markdown</div>
-              <div class="project-card-stars">&#9733; 479</div>
-            </div>
-            <h3 class="project-card-title">AI Catalog</h3>
-            <p class="project-card-desc">
-              A comprehensive curated list of AI tools, platforms, and resources
-              across various domains. The go-to resource for AI enthusiasts.
-            </p>
-            <div class="project-card-tags">
-              <span>AI</span>
-              <span>Resources</span>
-              <span>Catalog</span>
-            </div>
-          </a>
-
-          <a
-            href="https://github.com/mehmetkahya0/RealVision-ObjectUnderstandingAI"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-card-top">
-              <div class="project-card-lang">Python / OpenCV</div>
-              <div class="project-card-stars">&#9733; 4</div>
-            </div>
-            <h3 class="project-card-title">RealVision AI</h3>
-            <p class="project-card-desc">
-              Real-time object detection with YOLO v8 + MobileNet-SSD dual model
-              support, tracking, and performance monitoring.
-            </p>
-            <div class="project-card-tags">
-              <span>Vision</span>
-              <span>YOLO</span>
-              <span>OpenCV</span>
-            </div>
-          </a>
-
-          <a
-            href="https://github.com/mehmetkahya0/f1-race-prediction"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-card-top">
-              <div class="project-card-lang">Python</div>
-              <div class="project-card-stars">&#9733; 35</div>
-            </div>
-            <h3 class="project-card-title">F1 Race Predictor</h3>
-            <p class="project-card-desc">
-              Sophisticated F1 race simulation tool that models and predicts
-              race outcomes with realistic driver and team parameters.
-            </p>
-            <div class="project-card-tags">
-              <span>AI</span>
-              <span>Prediction</span>
-              <span>Data Viz</span>
-            </div>
-          </a>
-
-          <a
-            href="https://github.com/mehmetkahya0/Web-Resource-Downloader"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-card-top">
-              <div class="project-card-lang">JavaScript</div>
-              <div class="project-card-stars">&#9733; 3</div>
-            </div>
-            <h3 class="project-card-title">Web Resource Downloader</h3>
-            <p class="project-card-desc">
-              Download images, videos, and media from websites with a simple
-              interface. Batch download support.
-            </p>
-            <div class="project-card-tags">
-              <span>Web</span>
-              <span>Download</span>
-              <span>Tool</span>
-            </div>
-          </a>
-
-          <a
-            href="https://github.com/mehmetkahya0/PasswordAlgorithms"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-card-top">
-              <div class="project-card-lang">Python</div>
-              <div class="project-card-stars">&#9733; 2</div>
-            </div>
-            <h3 class="project-card-title">Password Algorithms</h3>
-            <p class="project-card-desc">
-              Implementation of various password hashing and encryption
-              algorithms. Educational security toolkit.
-            </p>
-            <div class="project-card-tags">
-              <span>Security</span>
-              <span>Crypto</span>
-              <span>Education</span>
-            </div>
-          </a>
-
-          <a
-            href="https://github.com/mehmetkahya0/Vision-Drone-Sim"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-card-top">
-              <div class="project-card-lang">JavaScript / Three.js</div>
-              <div class="project-card-stars">New</div>
-            </div>
-            <h3 class="project-card-title">Vision Drone Simulator</h3>
-            <p class="project-card-desc">
-              Advanced 3D drone flight simulator with realistic physics, AI
-              object detection, and comprehensive telemetry.
-            </p>
-            <div class="project-card-tags">
-              <span>3D</span>
-              <span>Simulation</span>
-              <span>AI</span>
-            </div>
-          </a>
-
-          <a
-            href="https://github.com/mehmetkahya0/win-ios-file-transfer"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-card-top">
-              <div class="project-card-lang">Python</div>
-              <div class="project-card-stars">&#9733; 5</div>
-            </div>
-            <h3 class="project-card-title">Win-iOS File Transfer</h3>
-            <p class="project-card-desc">
-              Seamless file transfer between Windows and iOS devices. Wireless
-              transfer with simple UI.
-            </p>
-            <div class="project-card-tags">
-              <span>iOS</span>
-              <span>Transfer</span>
-              <span>Windows</span>
-            </div>
-          </a>
-
-          <a
-            href="https://github.com/mehmetkahya0/ai-flappy-bird"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-card-top">
-              <div class="project-card-lang">JavaScript</div>
-              <div class="project-card-stars">&#9733; 1</div>
-            </div>
-            <h3 class="project-card-title">AI Flappy Bird</h3>
-            <p class="project-card-desc">
-              AI implementation using neural networks and genetic algorithms.
-              Watch agents learn through evolution!
-            </p>
-            <div class="project-card-tags">
-              <span>Neural Net</span>
-              <span>Genetic Algo</span>
-              <span>Game</span>
-            </div>
-          </a>
-
-          <a
-            href="https://github.com/mehmetkahya0/coffee-shop-business-intelligence"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-card-top">
-              <div class="project-card-lang">Python / Flask</div>
-              <div class="project-card-stars">&#9733; 6</div>
-            </div>
-            <h3 class="project-card-title">Coffee Shop Business</h3>
-            <p class="project-card-desc">
-              Complete coffee shop management system with inventory, orders, and
-              customer tracking. Built with Flask.
-            </p>
-            <div class="project-card-tags">
-              <span>Business</span>
-              <span>Flask</span>
-              <span>Database</span>
-            </div>
-          </a>
-
-          <a
-            href="https://github.com/mehmetkahya0/Gallstone_dataset_analysis_project"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-card-top">
-              <div class="project-card-lang">Python / TensorFlow</div>
-              <div class="project-card-stars">&#9733; 3</div>
-            </div>
-            <h3 class="project-card-title">Gallstone Detection</h3>
-            <p class="project-card-desc">
-              Medical AI model for detecting gallstones in ultrasound images
-              using deep learning and computer vision.
-            </p>
-            <div class="project-card-tags">
-              <span>Medical AI</span>
-              <span>TensorFlow</span>
-              <span>Healthcare</span>
-            </div>
-          </a>
-
-          <a
-            href="https://github.com/mehmetkahya0/local-web-camera"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-card-top">
-              <div class="project-card-lang">Python / OpenCV</div>
-              <div class="project-card-stars">&#9733; 2</div>
-            </div>
-            <h3 class="project-card-title">Local Webcam</h3>
-            <p class="project-card-desc">
-              Turn your webcam into a local security camera. Motion detection,
-              recording, and web interface.
-            </p>
-            <div class="project-card-tags">
-              <span>OpenCV</span>
-              <span>Security</span>
-              <span>Streaming</span>
-            </div>
-          </a>
-
-          <a
-            href="https://github.com/mehmetkahya0/rss"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-card-top">
-              <div class="project-card-lang">JavaScript</div>
-              <div class="project-card-stars">&#9733; 15</div>
-            </div>
-            <h3 class="project-card-title">RSS News Aggregator</h3>
-            <p class="project-card-desc">
-              Explore news from various sources like The Verge, New York Times,
-              and more. Responsive design with dynamic content.
-            </p>
-            <div class="project-card-tags">
-              <span>RSS</span>
-              <span>News</span>
-              <span>Web</span>
-            </div>
-          </a>
-
-          <a
-            href="https://github.com/mehmetkahya0/price-tracker"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-card-top">
-              <div class="project-card-lang">Python</div>
-              <div class="project-card-stars">&#9733; 7</div>
-            </div>
-            <h3 class="project-card-title">Price Tracker</h3>
-            <p class="project-card-desc">
-              Track product prices across multiple e-commerce sites. Get
-              notifications when prices drop.
-            </p>
-            <div class="project-card-tags">
-              <span>Automation</span>
-              <span>Web Scraping</span>
-              <span>Notifications</span>
-            </div>
-          </a>
-
-          <a
-            href="https://github.com/mehmetkahya0/DailySpaceImage"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-card-top">
-              <div class="project-card-lang">Python / API</div>
-              <div class="project-card-stars">&#9733; 4</div>
-            </div>
-            <h3 class="project-card-title">Daily Space Image</h3>
-            <p class="project-card-desc">
-              Display NASA's Astronomy Picture of the Day. Fetches and displays
-              stunning space imagery daily.
-            </p>
-            <div class="project-card-tags">
-              <span>NASA API</span>
-              <span>Space</span>
-              <span>Image</span>
-            </div>
-          </a>
-
-          <a
-            href="https://github.com/mehmetkahya0/draw-together"
-            target="_blank"
-            class="project-card"
-          >
-            <div class="project-card-top">
-              <div class="project-card-lang">JavaScript / WebSocket</div>
-              <div class="project-card-stars">&#9733; 9</div>
-            </div>
-            <h3 class="project-card-title">Draw Together</h3>
-            <p class="project-card-desc">
-              Collaborative whiteboard app. Draw in real-time with friends using
-              WebSocket technology.
-            </p>
-            <div class="project-card-tags">
-              <span>Real-time</span>
-              <span>Collaborative</span>
-              <span>WebSocket</span>
-            </div>
-          </a>
-        </div>
-
-        <div class="projects-cta">
-          <a
-            href="https://github.com/mehmetkahya0?tab=repositories"
-            target="_blank"
-            class="btn btn-outline"
-          >
-            View all repositories on GitHub &rarr;
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section id="skills" class="skills" aria-labelledby="skills-heading">
-      <div class="container">
-        <div class="section-label">Skills</div>
-        <h2 class="section-title" id="skills-heading">Tech Stack &amp; Expertise</h2>
-
-        <div class="skills-grid">
-          <div class="skill-group">
-            <h3 class="skill-group-title">Languages</h3>
-            <div class="skill-items">
-              <div class="skill-item">Python</div>
-              <div class="skill-item">JavaScript</div>
-              <div class="skill-item">C++</div>
-              <div class="skill-item">Swift</div>
-              <div class="skill-item">HTML5</div>
-              <div class="skill-item">CSS3</div>
-              <div class="skill-item">Shell</div>
-            </div>
-          </div>
-
-          <div class="skill-group">
-            <h3 class="skill-group-title">Frameworks &amp; Libraries</h3>
-            <div class="skill-items">
-              <div class="skill-item">React Native</div>
-              <div class="skill-item">Node.js</div>
-              <div class="skill-item">Three.js</div>
-              <div class="skill-item">Expo Go</div>
-              <div class="skill-item">TensorFlow</div>
-              <div class="skill-item">OpenCV</div>
-              <div class="skill-item">FastAPI</div>
-              <div class="skill-item">Streamlit</div>
-            </div>
-          </div>
-
-          <div class="skill-group">
-            <h3 class="skill-group-title">Technologies</h3>
-            <div class="skill-items">
-              <div class="skill-item">Arduino</div>
-              <div class="skill-item">Raspberry Pi</div>
-              <div class="skill-item">Docker</div>
-              <div class="skill-item">Git</div>
-              <div class="skill-item">Home Assistant</div>
-              <div class="skill-item">YOLO</div>
-              <div class="skill-item">MATLAB</div>
-              <div class="skill-item">OpenCV</div>
-            </div>
-          </div>
-
-          <div class="skill-group">
-            <h3 class="skill-group-title">Tools &amp; Design</h3>
-            <div class="skill-items">
-              <div class="skill-item">VS Code</div>
-              <div class="skill-item">Figma</div>
-              <div class="skill-item">Fusion 360</div>
-              <div class="skill-item">Proteus</div>
-              <div class="skill-item">Xcode</div>
-              <div class="skill-item">Seaborn</div>
-              <div class="skill-item">Claude</div>
-              <div class="skill-item">ChatGPT</div>
-              <div class="skill-item">Gemini</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact" aria-labelledby="contact-heading">
-      <div class="container">
-        <div class="contact-wrapper">
-          <div class="contact-info">
-            <div class="section-label">Contact</div>
-            <h2 class="section-title" id="contact-heading">Let's work together.</h2>
-            <p class="contact-description">
-              I'm always open to new opportunities, collaborations, and
-              interesting projects. Feel free to reach out!
-            </p>
-            <div class="contact-links">
-              <a
-                href="mailto:mehmetkahyakas5@gmail.com"
-                class="contact-link-item"
-              >
-                <span class="contact-link-label">Email</span>
-                <span class="contact-link-value"
-                  >mehmetkahyakas5@gmail.com</span
-                >
-              </a>
-              <a
-                href="https://github.com/mehmetkahya0"
-                target="_blank"
-                class="contact-link-item"
-              >
-                <span class="contact-link-label">GitHub</span>
-                <span class="contact-link-value">github.com/mehmetkahya0</span>
-              </a>
-              <a
-                href="https://www.linkedin.com/in/mehmet-kahya/"
-                target="_blank"
-                class="contact-link-item"
-              >
-                <span class="contact-link-label">LinkedIn</span>
-                <span class="contact-link-value"
-                  >linkedin.com/in/mehmet-kahya</span
-                >
-              </a>
-            </div>
-          </div>
-          <div class="contact-form-wrapper">
-            <form id="contact-form" class="contact-form">
-              <div class="form-group">
-                <label for="name">Name</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  placeholder="Your name"
-                  required
-                />
+              <div class="hero-actions reveal">
+                <a href="#projects" class="btn btn-light magnetic">
+                  <span>View projects</span>
+                  <span class="btn-orb"><svg><use href="#i-arrow-down" /></svg></span>
+                </a>
+                <a href="#contact" class="btn btn-ghost magnetic">
+                  <span>Get in touch</span>
+                  <span class="btn-orb"><svg><use href="#i-arrow-ur" /></svg></span>
+                </a>
               </div>
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="your@email.com"
-                  required
-                />
+            </div>
+
+            <div class="hero-foot reveal">
+              <dl class="hero-stats">
+                <div class="hero-stat">
+                  <dt>GitHub stars</dt>
+                  <dd><span class="count" data-to="1000">1,000</span>+</dd>
+                </div>
+                <div class="hero-stat">
+                  <dt>Public repos</dt>
+                  <dd><span class="count" data-to="90">90</span>+</dd>
+                </div>
+                <div class="hero-stat">
+                  <dt>Years coding</dt>
+                  <dd><span class="count" data-to="7">7</span>+</dd>
+                </div>
+              </dl>
+              <div class="hero-meta">
+                <span class="hero-meta-label">Find me on</span>
+                <div class="hero-socials">
+                  <a href="https://github.com/mehmetkahya0" target="_blank" rel="noopener"><svg><use href="#i-github" /></svg>GitHub</a>
+                  <a href="https://www.linkedin.com/in/mehmet-kahya/" target="_blank" rel="noopener"><svg><use href="#i-linkedin" /></svg>LinkedIn</a>
+                  <a href="mailto:mehmetkahyakas5@gmail.com"><svg><use href="#i-mail" /></svg>Email</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Ticker ============ -->
+      <div class="ticker" aria-label="Project highlights">
+        <div class="ticker-track">
+          <ul class="ticker-row">
+            <li>AI Catalog <b>498 ★</b></li>
+            <li>TempMail <b>181 ★</b></li>
+            <li>F1 Race Predictor <b>50 ★</b></li>
+            <li>Local Web Camera <b>23 ★</b></li>
+            <li>Web Resource Downloader <b>20 ★</b></li>
+            <li>RSS Aggregator <b>17 ★</b></li>
+            <li>YouTube PiP Subtitles <b>12 ★</b></li>
+          </ul>
+          <ul class="ticker-row" aria-hidden="true">
+            <li>AI Catalog <b>498 ★</b></li>
+            <li>TempMail <b>181 ★</b></li>
+            <li>F1 Race Predictor <b>50 ★</b></li>
+            <li>Local Web Camera <b>23 ★</b></li>
+            <li>Web Resource Downloader <b>20 ★</b></li>
+            <li>RSS Aggregator <b>17 ★</b></li>
+            <li>YouTube PiP Subtitles <b>12 ★</b></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ============ About ============ -->
+      <section id="about" class="section about" aria-labelledby="about-heading">
+        <div class="container about-grid">
+          <div class="about-copy">
+            <span class="eyebrow reveal">01 — About</span>
+            <h2 class="display reveal" id="about-heading">
+              I work where hardware meets software, <em>and teach machines to see.</em>
+            </h2>
+            <p class="body-lg reveal">
+              I'm an Electrical-Electronics Engineering student who has been writing code for seven years, and I
+              still get the same rush the first time something I built actually works. My GitHub shows that
+              curiosity: more than 90 public repositories, from a curated AI catalog with nearly 500 stars to flight
+              simulators, computer-vision pipelines and a LiDAR-guided robot vacuum.
+            </p>
+            <p class="body-md reveal">
+              I'm most at home in Python and JavaScript/TypeScript, and happy to reach for Kotlin, C++ or Swift when
+              a project calls for it. Lately I've been going deep on AI-assisted development (desktop tools around
+              Claude Code, MCP servers, browser extensions), while the engineer in me keeps pulling toward
+              autonomous systems, robotics and space technology. I'm looking for teams where I can learn fast and
+              ship things people actually use.
+            </p>
+          </div>
+
+          <div class="about-side">
+            <figure class="bezel portrait reveal">
+              <div class="bezel-core portrait-core">
+                <img src="images/pp.jpeg" alt="Portrait of Mehmet Kahya" class="portrait-img" width="600" height="600" />
+                <span class="portrait-grade" aria-hidden="true"></span>
+                <figcaption class="portrait-cap">
+                  <span>Mehmet Kahya</span>
+                  <span class="mono">Izmir · <span class="clock" data-tz="Europe/Istanbul">--:--</span></span>
+                </figcaption>
+              </div>
+            </figure>
+
+            <ul class="facts reveal">
+              <li>
+                <svg><use href="#i-cap" /></svg>
+                <span class="facts-k">Education</span>
+                <span class="facts-v">Electrical-Electronics Engineering</span>
+              </li>
+              <li>
+                <svg><use href="#i-pin" /></svg>
+                <span class="facts-k">Location</span>
+                <span class="facts-v">Izmir, Turkey</span>
+              </li>
+              <li>
+                <svg><use href="#i-cpu" /></svg>
+                <span class="facts-k">Focus</span>
+                <span class="facts-v">AI, Computer Vision, Robotics, Web</span>
+              </li>
+              <li>
+                <svg><use href="#i-pulse" /></svg>
+                <span class="facts-k">Status</span>
+                <span class="facts-v"><span class="live-dot"></span>Open to opportunities</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Experience ============ -->
+      <section id="experience" class="section experience" aria-labelledby="experience-heading">
+        <div class="container">
+          <div class="section-head">
+            <span class="eyebrow reveal">02 — Experience</span>
+            <h2 class="display reveal" id="experience-heading">Work <em>experience.</em></h2>
+            <p class="body-md section-sub reveal">Shipping software inside an enterprise team, alongside my own projects.</p>
+          </div>
+
+          <article class="bezel xp reveal">
+            <div class="bezel-core xp-core">
+              <div class="xp-rail">
+                <div class="xp-logo">
+                  <div class="xp-logo-core"><img src="images/cci-logo.png" alt="Coca-Cola İçecek (CCI) logo" width="276" height="156" /></div>
+                </div>
+                <span class="xp-date mono">Jul 2026 — Aug 2026</span>
+              </div>
+              <div class="xp-body">
+                <h3 class="xp-role">Software Development Intern</h3>
+                <p class="xp-company">
+                  Coca-Cola İçecek (CCI) <span>·</span> Digital Technologies <span>·</span> Istanbul, CCI Headquarters
+                </p>
+                <p class="body-md">
+                  Built a Kotlin Android app with the Digital Technologies team to streamline internal logistics
+                  and communication for CCI staff. Worked with cross-functional teams on enterprise-scale software,
+                  tuned app performance, and helped improve day-to-day operational workflows.
+                </p>
+                <ul class="chips">
+                  <li>Kotlin</li>
+                  <li>Android</li>
+                  <li>Enterprise apps</li>
+                  <li>Logistics</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ Projects ============ -->
+      <section id="projects" class="section projects" aria-labelledby="projects-heading">
+        <div class="container">
+          <div class="section-head section-head-split">
+            <div>
+              <span class="eyebrow reveal">03 — Projects</span>
+              <h2 class="display reveal" id="projects-heading">Featured <em>work.</em></h2>
+            </div>
+            <p class="body-md section-sub reveal">A selection from 90+ public repositories: simulators, AI tools, browser extensions and developer utilities.</p>
+          </div>
+
+          <div class="bento">
+            <a href="https://github.com/mehmetkahya0/AI-Catalog" target="_blank" rel="noopener" class="bezel card card-xl reveal">
+              <div class="bezel-core card-core">
+                <div class="cover" data-kind="tiles" data-seed="7" aria-hidden="true"><canvas></canvas></div>
+                <div class="card-body">
+                  <div class="card-top">
+                    <span class="tag tag-hot">Most starred</span>
+                    <span class="card-stat"><svg><use href="#i-star" /></svg>498 <svg><use href="#i-fork" /></svg>127</span>
+                  </div>
+                  <h3 class="card-title">AI Catalog</h3>
+                  <p class="card-desc">A curated, categorized catalog of AI models, tools and platforms, from LLM assistants and agents to image generation and data science. Browse it on the web or star it on GitHub.</p>
+                  <div class="card-foot">
+                    <span class="mono card-lang">HTML / Markdown</span>
+                    <span class="card-links"><span class="card-link" data-href="https://mehmetkahya0.github.io/AI-Catalog/">Live demo</span><span class="btn-orb"><svg><use href="#i-arrow-ur" /></svg></span></span>
+                  </div>
+                </div>
+              </div>
+            </a>
+            <a href="https://github.com/mehmetkahya0/temp-mail" target="_blank" rel="noopener" class="bezel card card-tall reveal">
+              <div class="bezel-core card-core">
+                <div class="cover" data-kind="orb" data-seed="3" aria-hidden="true"><canvas></canvas></div>
+                <div class="card-body">
+                  <div class="card-top">
+                    <span class="mono card-lang">JavaScript</span>
+                    <span class="card-stat"><svg><use href="#i-star" /></svg>181 <svg><use href="#i-fork" /></svg>83</span>
+                  </div>
+                  <h3 class="card-title">TempMail</h3>
+                  <p class="card-desc">Disposable email in one click. Generate an inbox, watch messages arrive in real time, and keep your real address off spam lists.</p>
+                  <div class="card-foot">
+                    <ul class="chips chips-sm"><li>Web app</li><li>Privacy</li></ul>
+                    <span class="card-links"><span class="card-link" data-href="https://mehmetkahya0.github.io/temp-mail/">Live demo</span><span class="btn-orb"><svg><use href="#i-arrow-ur" /></svg></span></span>
+                  </div>
+                </div>
+              </div>
+            </a>
+            <a href="https://github.com/mehmetkahya0/vision-uav-sim" target="_blank" rel="noopener" class="bezel card reveal">
+              <div class="bezel-core card-core">
+                <div class="cover" data-kind="terrain" data-seed="5" aria-hidden="true"><canvas></canvas></div>
+                <div class="card-body">
+                  <div class="card-top">
+                    <span class="mono card-lang">JS / CesiumJS</span>
+                    <span class="tag">New</span>
+                  </div>
+                  <h3 class="card-title">Vision AI UAV Simulator</h3>
+                  <p class="card-desc">Fixed-wing UAV flight on a 3D globe, with MQ-1-style aerodynamics and real-time object detection running in TensorFlow.js.</p>
+                  <div class="card-foot">
+                    <ul class="chips chips-sm"><li>Simulation</li><li>Vision</li></ul>
+                    <span class="btn-orb"><svg><use href="#i-arrow-ur" /></svg></span>
+                  </div>
+                </div>
+              </div>
+            </a>
+            <a href="https://github.com/mehmetkahya0/f1-race-prediction" target="_blank" rel="noopener" class="bezel card reveal">
+              <div class="bezel-core card-core">
+                <div class="cover" data-kind="streaks" data-seed="11" aria-hidden="true"><canvas></canvas></div>
+                <div class="card-body">
+                  <div class="card-top">
+                    <span class="mono card-lang">Python</span>
+                    <span class="card-stat"><svg><use href="#i-star" /></svg>50</span>
+                  </div>
+                  <h3 class="card-title">F1 Race Predictor</h3>
+                  <p class="card-desc">Simulates Formula 1 races from driver skill, team pace, track character and changing weather, then predicts the finishing order.</p>
+                  <div class="card-foot">
+                    <ul class="chips chips-sm"><li>Simulation</li><li>Data viz</li></ul>
+                    <span class="btn-orb"><svg><use href="#i-arrow-ur" /></svg></span>
+                  </div>
+                </div>
+              </div>
+            </a>
+            <a href="https://github.com/mehmetkahya0/chain-prompt" target="_blank" rel="noopener" class="bezel card reveal">
+              <div class="bezel-core card-core">
+                <div class="cover" data-kind="queue" data-seed="4" aria-hidden="true"><canvas></canvas></div>
+                <div class="card-body">
+                  <div class="card-top">
+                    <span class="mono card-lang">TypeScript / Electron</span>
+                    <span class="tag">New</span>
+                  </div>
+                  <h3 class="card-title">Chain Prompt</h3>
+                  <p class="card-desc">Queue up prompts for Claude Code and walk away. Each one runs in the same session the moment the last finishes, detected through hooks.</p>
+                  <div class="card-foot">
+                    <ul class="chips chips-sm"><li>Desktop app</li><li>Claude Code</li></ul>
+                    <span class="btn-orb"><svg><use href="#i-arrow-ur" /></svg></span>
+                  </div>
+                </div>
+              </div>
+            </a>
+            <a href="https://github.com/mehmetkahya0/threejs-ocean" target="_blank" rel="noopener" class="bezel card card-half reveal">
+              <div class="bezel-core card-core">
+                <div class="cover" data-kind="waves" data-seed="9" aria-hidden="true"><canvas></canvas></div>
+                <div class="card-body">
+                  <div class="card-top">
+                    <span class="mono card-lang">JavaScript / Three.js</span>
+                    <span class="tag">New</span>
+                  </div>
+                  <h3 class="card-title">Ocean Simulation</h3>
+                  <p class="card-desc">A physically based ocean and sky in the browser, with procedural islands, a harbour village and a glider you can fly on thermals.</p>
+                  <div class="card-foot">
+                    <ul class="chips chips-sm"><li>3D</li><li>WebGL</li></ul>
+                    <span class="card-links"><span class="card-link" data-href="https://mehmetkahya0.github.io/threejs-ocean/">Live demo</span><span class="btn-orb"><svg><use href="#i-arrow-ur" /></svg></span></span>
+                  </div>
+                </div>
+              </div>
+            </a>
+            <a href="https://github.com/mehmetkahya0/youtube-pip-subtitles" target="_blank" rel="noopener" class="bezel card card-half reveal">
+              <div class="bezel-core card-core">
+                <div class="cover" data-kind="pip" data-seed="6" aria-hidden="true"><canvas></canvas></div>
+                <div class="card-body">
+                  <div class="card-top">
+                    <span class="mono card-lang">Chrome extension</span>
+                    <span class="card-stat"><svg><use href="#i-star" /></svg>12</span>
+                  </div>
+                  <h3 class="card-title">YouTube PiP Subtitles</h3>
+                  <p class="card-desc">Brings YouTube captions into Picture-in-Picture, where the browser normally leaves them behind on the page.</p>
+                  <div class="card-foot">
+                    <ul class="chips chips-sm"><li>Extension</li><li>YouTube</li></ul>
+                    <span class="btn-orb"><svg><use href="#i-arrow-ur" /></svg></span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <!-- Archive -->
+          <div class="archive">
+            <div class="archive-head reveal">
+              <h3 class="archive-title">More from the lab</h3>
+              <span class="mono archive-count">14 projects</span>
+            </div>
+            <ol class="archive-list">
+              <li class="reveal"><a href="https://github.com/mehmetkahya0/local-web-camera" target="_blank" rel="noopener">
+                <span class="a-idx mono">01</span><span class="a-name">Local Web Camera</span>
+                <span class="a-desc">Peer-to-peer camera streaming across your local network with WebRTC and Socket.IO.</span>
+                <span class="a-lang mono">JS / WebRTC</span><span class="a-stars mono"><svg><use href="#i-star" /></svg>23</span>
+                <span class="a-go"><svg><use href="#i-arrow-ur" /></svg></span></a></li>
+              <li class="reveal"><a href="https://github.com/mehmetkahya0/Web-Resource-Downloader" target="_blank" rel="noopener">
+                <span class="a-idx mono">02</span><span class="a-name">Web Resource Downloader</span>
+                <span class="a-desc">Downloads every image, script and stylesheet from a website in one go.</span>
+                <span class="a-lang mono">Python</span><span class="a-stars mono"><svg><use href="#i-star" /></svg>20</span>
+                <span class="a-go"><svg><use href="#i-arrow-ur" /></svg></span></a></li>
+              <li class="reveal"><a href="https://github.com/mehmetkahya0/rss" target="_blank" rel="noopener">
+                <span class="a-idx mono">03</span><span class="a-name">RSS News Aggregator</span>
+                <span class="a-desc">Headlines from The Verge, NYT and more in one responsive reader.</span>
+                <span class="a-lang mono">JavaScript</span><span class="a-stars mono"><svg><use href="#i-star" /></svg>17</span>
+                <span class="a-go"><svg><use href="#i-arrow-ur" /></svg></span></a></li>
+              <li class="reveal"><a href="https://github.com/mehmetkahya0/PasswordAlgorithms" target="_blank" rel="noopener">
+                <span class="a-idx mono">04</span><span class="a-name">Password Algorithms</span>
+                <span class="a-desc">Password generator and strength checker with a desktop GUI.</span>
+                <span class="a-lang mono">Python</span><span class="a-stars mono"><svg><use href="#i-star" /></svg>9</span>
+                <span class="a-go"><svg><use href="#i-arrow-ur" /></svg></span></a></li>
+              <li class="reveal"><a href="https://github.com/mehmetkahya0/RealVision-ObjectUnderstandingAI" target="_blank" rel="noopener">
+                <span class="a-idx mono">05</span><span class="a-name">RealVision AI</span>
+                <span class="a-desc">Real-time object detection and tracking with YOLOv8 and MobileNet-SSD.</span>
+                <span class="a-lang mono">Python / OpenCV</span><span class="a-stars mono"><svg><use href="#i-star" /></svg>6</span>
+                <span class="a-go"><svg><use href="#i-arrow-ur" /></svg></span></a></li>
+              <li class="reveal"><a href="https://github.com/mehmetkahya0/Price-Tracker" target="_blank" rel="noopener">
+                <span class="a-idx mono">06</span><span class="a-name">Price Tracker</span>
+                <span class="a-desc">Desktop app that watches e-commerce prices and alerts you when they drop.</span>
+                <span class="a-lang mono">Python</span><span class="a-stars mono"><svg><use href="#i-star" /></svg>4</span>
+                <span class="a-go"><svg><use href="#i-arrow-ur" /></svg></span></a></li>
+              <li class="reveal"><a href="https://github.com/mehmetkahya0/robot-vacuum-sim" target="_blank" rel="noopener">
+                <span class="a-idx mono">07</span><span class="a-name">Robot Vacuum Simulator</span>
+                <span class="a-desc">Autonomous vacuum with 360° LiDAR, wall-following and stuck recovery.</span>
+                <span class="a-lang mono">Python</span><span class="a-stars mono"><svg><use href="#i-star" /></svg>3</span>
+                <span class="a-go"><svg><use href="#i-arrow-ur" /></svg></span></a></li>
+              <li class="reveal"><a href="https://github.com/mehmetkahya0/Hand-Gesture-Control-AI" target="_blank" rel="noopener">
+                <span class="a-idx mono">08</span><span class="a-name">Hand Gesture Control</span>
+                <span class="a-desc">Control volume, media and brightness with hand gestures through your camera.</span>
+                <span class="a-lang mono">Python / MediaPipe</span><span class="a-stars mono"><svg><use href="#i-star" /></svg>3</span>
+                <span class="a-go"><svg><use href="#i-arrow-ur" /></svg></span></a></li>
+              <li class="reveal"><a href="https://github.com/mehmetkahya0/ai-flappy-bird" target="_blank" rel="noopener">
+                <span class="a-idx mono">09</span><span class="a-name">AI Flappy Bird</span>
+                <span class="a-desc">Neural networks evolved by a genetic algorithm learn to fly.</span>
+                <span class="a-lang mono">JavaScript</span><span class="a-stars mono"><svg><use href="#i-star" /></svg>2</span>
+                <span class="a-go"><svg><use href="#i-arrow-ur" /></svg></span></a></li>
+              <li class="reveal"><a href="https://github.com/mehmetkahya0/parchment" target="_blank" rel="noopener">
+                <span class="a-idx mono">10</span><span class="a-name">Parchment</span>
+                <span class="a-desc">Chrome extension for clean full-page screenshots, sticky headers removed.</span>
+                <span class="a-lang mono">JavaScript</span><span class="a-stars mono"><svg><use href="#i-star" /></svg>1</span>
+                <span class="a-go"><svg><use href="#i-arrow-ur" /></svg></span></a></li>
+              <li class="reveal"><a href="https://github.com/mehmetkahya0/modern-hacker-news" target="_blank" rel="noopener">
+                <span class="a-idx mono">11</span><span class="a-name">Modern HN</span>
+                <span class="a-desc">A calmer, more readable Hacker News client with new-comment tracking.</span>
+                <span class="a-lang mono">JavaScript</span><span class="a-stars mono"><svg><use href="#i-star" /></svg>1</span>
+                <span class="a-go"><svg><use href="#i-arrow-ur" /></svg></span></a></li>
+              <li class="reveal"><a href="https://github.com/mehmetkahya0/tr-macro-mcp" target="_blank" rel="noopener">
+                <span class="a-idx mono">12</span><span class="a-name">tr-macro-mcp</span>
+                <span class="a-desc">MCP server that gives LLM clients cited Turkish central-bank data.</span>
+                <span class="a-lang mono">Python / MCP</span><span class="a-stars mono"><svg><use href="#i-star" /></svg>1</span>
+                <span class="a-go"><svg><use href="#i-arrow-ur" /></svg></span></a></li>
+              <li class="reveal"><a href="https://github.com/mehmetkahya0/Claude-Code-Status-Indicator-Led" target="_blank" rel="noopener">
+                <span class="a-idx mono">13</span><span class="a-name">Claude Status LED</span>
+                <span class="a-desc">Turns an RGB keyboard into a live status light for Claude Code.</span>
+                <span class="a-lang mono">Python</span><span class="a-stars mono"><svg><use href="#i-star" /></svg>1</span>
+                <span class="a-go"><svg><use href="#i-arrow-ur" /></svg></span></a></li>
+              <li class="reveal"><a href="https://github.com/mehmetkahya0/homepod-streamer" target="_blank" rel="noopener">
+                <span class="a-idx mono">14</span><span class="a-name">HomePod Streamer</span>
+                <span class="a-desc">Streams Windows system audio to a HomePod mini over AirPlay.</span>
+                <span class="a-lang mono">Python</span><span class="a-stars mono"><svg><use href="#i-star" /></svg>1</span>
+                <span class="a-go"><svg><use href="#i-arrow-ur" /></svg></span></a></li>
+            </ol>
+            <div class="archive-cta reveal">
+              <a href="https://github.com/mehmetkahya0?tab=repositories" target="_blank" rel="noopener" class="btn btn-ghost magnetic">
+                <span>All repositories on GitHub</span>
+                <span class="btn-orb"><svg><use href="#i-arrow-ur" /></svg></span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Skills ============ -->
+      <section id="skills" class="section skills" aria-labelledby="skills-heading">
+        <div class="container">
+          <div class="section-head">
+            <span class="eyebrow reveal">04 — Stack</span>
+            <h2 class="display reveal" id="skills-heading">Tech stack <em>&amp; expertise.</em></h2>
+          </div>
+
+          <div class="stack">
+            <div class="bezel stack-card stack-wide reveal">
+              <div class="bezel-core stack-core">
+                <div class="stack-head"><h3>Languages</h3><span class="mono">09</span></div>
+                <ul class="chips chips-lg">
+                  <li>Python</li><li>JavaScript</li><li>TypeScript</li><li>Kotlin</li><li>C++</li><li>Swift</li><li>HTML5</li><li>CSS3</li><li>Shell</li>
+                </ul>
+              </div>
+            </div>
+            <div class="bezel stack-card reveal">
+              <div class="bezel-core stack-core">
+                <div class="stack-head"><h3>Frameworks &amp; libraries</h3><span class="mono">11</span></div>
+                <ul class="chips">
+                  <li>React Native</li><li>Node.js</li><li>Electron</li><li>Three.js</li><li>CesiumJS</li><li>TensorFlow</li><li>OpenCV</li><li>MediaPipe</li><li>FastAPI</li><li>Streamlit</li><li>Expo</li>
+                </ul>
+              </div>
+            </div>
+            <div class="bezel stack-card reveal">
+              <div class="bezel-core stack-core">
+                <div class="stack-head"><h3>Hardware &amp; platforms</h3><span class="mono">09</span></div>
+                <ul class="chips">
+                  <li>Arduino</li><li>Raspberry Pi</li><li>Home Assistant</li><li>Docker</li><li>Git</li><li>WebRTC</li><li>MCP</li><li>YOLO</li><li>MATLAB</li>
+                </ul>
+              </div>
+            </div>
+            <div class="bezel stack-card stack-wide reveal">
+              <div class="bezel-core stack-core">
+                <div class="stack-head"><h3>Tools &amp; design</h3><span class="mono">08</span></div>
+                <ul class="chips">
+                  <li>VS Code</li><li>Claude Code</li><li>Figma</li><li>Fusion 360</li><li>Proteus</li><li>Xcode</li><li>ChatGPT</li><li>Gemini</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BLOG:START -->
+      <!-- Generated by blog/_build.py — edit the posts, not this block -->
+      <section id="writing" class="section writing" aria-labelledby="writing-heading">
+        <div class="container">
+          <div class="section-head section-head-split">
+            <div>
+              <span class="eyebrow reveal">05 — Writing</span>
+              <h2 class="display reveal" id="writing-heading">Notes from <em>the lab.</em></h2>
+            </div>
+            <p class="body-md section-sub reveal">Technical deep dives into how my projects work, what broke along the way, and what I learned.</p>
+          </div>
+          <div class="post-grid">
+            <a href="/blog/chain-prompt.html" class="bezel card post-card reveal" data-tags="developer-tools,typescript,electron">
+              <div class="bezel-core card-core">
+                <div class="cover" data-kind="queue" data-seed="4" aria-hidden="true"><canvas></canvas></div>
+                <div class="card-body">
+                  <div class="post-card-meta"><span>Developer tools</span><span class="dot"></span><span>8 min read</span></div>
+                  <h3 class="card-title">Chain Prompt: driving Claude Code with its own hooks</h3>
+                  <p class="card-desc">How I built an Electron app that queues prompts for the real interactive claude CLI and advances the chain from Claude Code&#x27;s own lifecycle hooks, not from guessing at terminal output.</p>
+                  <div class="card-foot"><span class="read-more">Read the post</span><span class="btn-orb"><svg><use href="#i-arrow-ur" /></svg></span></div>
+                </div>
+              </div>
+            </a>
+            <a href="/blog/youtube-pip-subtitles.html" class="bezel card post-card reveal" data-tags="browser,javascript">
+              <div class="bezel-core card-core">
+                <div class="cover" data-kind="pip" data-seed="6" aria-hidden="true"><canvas></canvas></div>
+                <div class="card-body">
+                  <div class="post-card-meta"><span>Browser</span><span class="dot"></span><span>6 min read</span></div>
+                  <h3 class="card-title">Bringing YouTube captions into Picture-in-Picture</h3>
+                  <p class="card-desc">Native PiP only takes the raw video element, so YouTube&#x27;s captions stay behind. This Chrome extension uses the Document Picture-in-Picture API to render synced subtitles inside the floating window.</p>
+                  <div class="card-foot"><span class="read-more">Read the post</span><span class="btn-orb"><svg><use href="#i-arrow-ur" /></svg></span></div>
+                </div>
+              </div>
+            </a>
+            <a href="/blog/homepod-streamer.html" class="bezel card post-card reveal" data-tags="audio,python,windows">
+              <div class="bezel-core card-core">
+                <div class="cover" data-kind="bars" data-seed="3" aria-hidden="true"><canvas></canvas></div>
+                <div class="card-body">
+                  <div class="post-card-meta"><span>Audio</span><span class="dot"></span><span>7 min read</span></div>
+                  <h3 class="card-title">Streaming Windows audio to a HomePod over AirPlay</h3>
+                  <p class="card-desc">Apple doesn&#x27;t make AirPlay senders for Windows, so I built one in Python: WASAPI loopback capture, a jitter buffer, an endless WAV stream and a reconnecting RAOP session through pyatv.</p>
+                  <div class="card-foot"><span class="read-more">Read the post</span><span class="btn-orb"><svg><use href="#i-arrow-ur" /></svg></span></div>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div class="writing-cta reveal">
+            <a href="/blog/" class="btn btn-ghost magnetic">
+              <span>All 8 posts</span>
+              <span class="btn-orb"><svg><use href="#i-arrow-ur" /></svg></span>
+            </a>
+          </div>
+        </div>
+      </section>
+      <!-- BLOG:END -->
+
+      <!-- ============ Contact ============ -->
+      <section id="contact" class="section contact" aria-labelledby="contact-heading">
+        <div class="container contact-grid">
+          <div class="contact-copy">
+            <span class="eyebrow reveal">06 — Contact</span>
+            <h2 class="display display-xl reveal" id="contact-heading">Let's build something <em>people want.</em></h2>
+            <p class="body-lg reveal">
+              Have a project, an internship or an idea worth building? My inbox is open, and it's never too early to reach out.
+            </p>
+            <ul class="contact-links reveal">
+              <li><a href="mailto:mehmetkahyakas5@gmail.com"><span class="mono">Email</span><span>mehmetkahyakas5@gmail.com</span><svg><use href="#i-arrow-ur" /></svg></a></li>
+              <li><a href="https://github.com/mehmetkahya0" target="_blank" rel="noopener"><span class="mono">GitHub</span><span>github.com/mehmetkahya0</span><svg><use href="#i-arrow-ur" /></svg></a></li>
+              <li><a href="https://www.linkedin.com/in/mehmet-kahya/" target="_blank" rel="noopener"><span class="mono">LinkedIn</span><span>linkedin.com/in/mehmet-kahya</span><svg><use href="#i-arrow-ur" /></svg></a></li>
+            </ul>
+          </div>
+
+          <div class="bezel form-shell reveal">
+            <form id="contact-form" class="bezel-core contact-form" novalidate>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="name">Name</label>
+                  <input type="text" id="name" name="name" placeholder="Your name" autocomplete="name" required />
+                </div>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" name="email" placeholder="you@email.com" autocomplete="email" required />
+                </div>
               </div>
               <div class="form-group">
                 <label for="subject">Subject</label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  placeholder="What's this about?"
-                  required
-                />
+                <input type="text" id="subject" name="subject" placeholder="What's this about?" required />
               </div>
               <div class="form-group">
                 <label for="message">Message</label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows="5"
-                  placeholder="Your message..."
-                  required
-                ></textarea>
+                <textarea id="message" name="message" rows="5" placeholder="Tell me about your idea…" required></textarea>
               </div>
-              <button type="submit" class="btn btn-primary btn-full">
-                <span>Send Message</span>
-                <span>&rarr;</span>
+              <button type="submit" class="btn btn-accent btn-block magnetic">
+                <span>Send message</span>
+                <span class="btn-orb"><svg><use href="#i-arrow-r" /></svg></span>
               </button>
             </form>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </main>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
-      <div class="container">
-        <div class="cta-content">
-          <p class="cta-label">It's never too early to reach out.</p>
-          <h2>Let's build something<br />people want.</h2>
-          <a href="mailto:mehmetkahyakas5@gmail.com" class="btn btn-cta"
-            >Get in Touch &rarr;</a
-          >
-        </div>
-      </div>
-    </section>
-
-    <!-- Footer -->
+    <!-- ============ Footer ============ -->
     <footer class="footer">
       <div class="container">
         <div class="footer-grid">
           <div class="footer-brand">
-            <div class="footer-logo">
-              <span class="logo-mark">MK</span>
-            </div>
-            <p class="footer-tagline">Make something people want.</p>
+            <p class="footer-tag">Make something<br /><em>people want.</em></p>
           </div>
-
-          <div class="footer-links-group">
-            <h3>Navigation</h3>
+          <nav class="footer-col" aria-label="Footer navigation">
+            <h3 class="mono">Navigation</h3>
             <a href="#about">About</a>
             <a href="#experience">Experience</a>
             <a href="#projects">Projects</a>
-            <a href="#skills">Skills</a>
+            <a href="#skills">Stack</a>
+            <a href="/blog/">Blog</a>
             <a href="#contact">Contact</a>
+          </nav>
+          <div class="footer-col">
+            <h3 class="mono">Projects</h3>
+            <a href="https://github.com/mehmetkahya0/AI-Catalog" target="_blank" rel="noopener">AI Catalog</a>
+            <a href="https://github.com/mehmetkahya0/temp-mail" target="_blank" rel="noopener">TempMail</a>
+            <a href="https://github.com/mehmetkahya0/vision-uav-sim" target="_blank" rel="noopener">UAV Simulator</a>
+            <a href="https://github.com/mehmetkahya0/chain-prompt" target="_blank" rel="noopener">Chain Prompt</a>
+            <a href="https://github.com/mehmetkahya0/f1-race-prediction" target="_blank" rel="noopener">F1 Predictor</a>
           </div>
-
-          <div class="footer-links-group">
-            <h3>Projects</h3>
-            <a href="https://github.com/mehmetkahya0/temp-mail" target="_blank"
-              >TempMail</a
-            >
-            <a
-              href="https://github.com/mehmetkahya0/f1-race-prediction"
-              target="_blank"
-              >F1 Predictor</a
-            >
-            <a href="https://github.com/mehmetkahya0/AI-Catalog" target="_blank"
-              >AI Catalog</a
-            >
-            <a
-              href="https://github.com/mehmetkahya0/draw-together"
-              target="_blank"
-              >Draw Together</a
-            >
-          </div>
-
-          <div class="footer-links-group">
-            <h3>Connect</h3>
-            <a href="https://github.com/mehmetkahya0" target="_blank">GitHub</a>
-            <a href="https://www.linkedin.com/in/mehmet-kahya/" target="_blank"
-              >LinkedIn</a
-            >
+          <div class="footer-col">
+            <h3 class="mono">Connect</h3>
+            <a href="https://github.com/mehmetkahya0" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://www.linkedin.com/in/mehmet-kahya/" target="_blank" rel="noopener">LinkedIn</a>
             <a href="mailto:mehmetkahyakas5@gmail.com">Email</a>
           </div>
         </div>
 
+        <div class="footer-mark" aria-hidden="true">Mehmet Kahya</div>
+
         <div class="footer-bottom">
           <p>&copy; 2026 Mehmet Kahya. All rights reserved.</p>
+          <p class="mono">Izmir, TR · <span class="clock" data-tz="Europe/Istanbul">--:--</span></p>
+          <a href="#top" class="to-top">Back to top <svg><use href="#i-arrow-ur" /></svg></a>
         </div>
       </div>
     </footer>

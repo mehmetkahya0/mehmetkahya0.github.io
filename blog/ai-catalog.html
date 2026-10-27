@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#06121b" />
+    <title>AI Catalog: a README that became a website — Mehmet Kahya</title>
+    <meta name="description" content="My most-starred project is a curated list of 500+ AI tools across 40+ categories. Here is how it stays maintainable, and how a zero-build website turns the README itself into a searchable catalog." />
+    <meta name="author" content="Mehmet Kahya" />
+    <link rel="canonical" href="https://mehmetkahya0.github.io/blog/ai-catalog.html" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://mehmetkahya0.github.io/blog/ai-catalog.html" />
+    <meta property="og:title" content="AI Catalog: a README that became a website — Mehmet Kahya" />
+    <meta property="og:description" content="My most-starred project is a curated list of 500+ AI tools across 40+ categories. Here is how it stays maintainable, and how a zero-build website turns the README itself into a searchable catalog." />
+    <meta property="og:image" content="https://mehmetkahya0.github.io/preview.jpg" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="AI Catalog: a README that became a website — Mehmet Kahya" />
+    <meta property="twitter:description" content="My most-starred project is a curated list of 500+ AI tools across 40+ categories. Here is how it stays maintainable, and how a zero-build website turns the README itself into a searchable catalog." />
+    <meta property="twitter:image" content="https://mehmetkahya0.github.io/preview.jpg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="alternate" type="application/rss+xml" title="Mehmet Kahya — Writing" href="/blog/feed.xml" />
+    <script data-goatcounter="https://mehmetkahya.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "AI Catalog: a README that became a website", "description": "My most-starred project is a curated list of 500+ AI tools across 40+ categories. Here is how it stays maintainable, and how a zero-build website turns the README itself into a searchable catalog.", "datePublished": "2026-10-27", "author": {"@type": "Person", "name": "Mehmet Kahya", "url": "https://mehmetkahya0.github.io"}, "mainEntityOfPage": "https://mehmetkahya0.github.io/blog/ai-catalog.html", "keywords": "Open source, JavaScript"}</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- SVG sprite: hairline icons -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="i-arrow-ur" viewBox="0 0 24 24"><path d="M7 17 17 7M8.5 7H17v8.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14m-6-6 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.25 4.1 1 5.85L12 16.9l-5.25 2.75 1-5.85L3.5 9.7l5.9-.9L12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" /></symbol>
+      <symbol id="i-fork" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="6.5" cy="5.5" r="2" /><circle cx="17.5" cy="5.5" r="2" /><circle cx="12" cy="18.5" r="2" /><path d="M6.5 7.5v1.5a3 3 0 0 0 3 3h5a3 3 0 0 0 3-3V7.5M12 12v4.5" /></g></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" /><circle cx="12" cy="10" r="2.3" /></g></symbol>
+      <symbol id="i-cap" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M2.5 9 12 4.5 21.5 9 12 13.5 2.5 9Z" /><path d="M6.5 11v4.6c0 1.3 2.5 2.9 5.5 2.9s5.5-1.6 5.5-2.9V11M21.5 9v5" /></g></symbol>
+      <symbol id="i-cpu" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="6" width="12" height="12" rx="2" /><rect x="9.5" y="9.5" width="5" height="5" rx=".8" /><path d="M9 3v3m6-3v3M9 18v3m6-3v3M3 9h3m-3 6h3m12-6h3m-3 6h3" stroke-linecap="round" /></g></symbol>
+      <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6h4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="m3.5 7 8.5 6 8.5-6" /></g></symbol>
+      <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.56-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.16-1.18 3.16-1.18.63 1.59.23 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z" /></symbol>
+      <symbol id="i-linkedin" viewBox="0 0 24 24"><path fill="currentColor" d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z" /></symbol>
+    </svg>
+
+    <!-- ============ Header ============ -->
+    <header class="nav-wrap">
+      <nav class="nav" id="navbar" aria-label="Primary">
+        <ul class="nav-links">
+          <li><a href="/#about" class="nav-link">About</a></li>
+          <li><a href="/#experience" class="nav-link">Experience</a></li>
+          <li><a href="/#projects" class="nav-link">Projects</a></li>
+          <li><a href="/#skills" class="nav-link">Stack</a></li>
+          <li><a href="/blog/" class="nav-link is-active" aria-current="page">Blog</a></li>
+        </ul>
+        <a href="/" class="nav-logo" aria-label="Mehmet Kahya — home">
+          <svg class="nav-logo-mark" viewBox="0 0 7 7" aria-hidden="true" shape-rendering="crispEdges">
+            <path fill="currentColor" d="M3 0h1v2H3zM3 5h1v2H3zM0 3h2v1H0zM5 3h2v1H5zM2 2h3v3H2zM1 1h1v1H1zM5 1h1v1H5zM1 5h1v1H1zM5 5h1v1H5z" />
+          </svg>
+          <span class="nav-logo-text">Mehmet Kahya</span>
+        </a>
+        <div class="nav-right">
+          <a href="/#contact" class="nav-cta">Let's talk</a>
+          <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+            <span></span><span></span>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Fullscreen menu (mobile) -->
+    <div class="menu" id="menu" aria-hidden="true">
+      <ol class="menu-links">
+        <li><a href="/#about"><span class="menu-num">01</span>About</a></li>
+        <li><a href="/#experience"><span class="menu-num">02</span>Experience</a></li>
+        <li><a href="/#projects"><span class="menu-num">03</span>Projects</a></li>
+        <li><a href="/#skills"><span class="menu-num">04</span>Stack</a></li>
+        <li><a href="/blog/"><span class="menu-num">05</span>Blog</a></li>
+        <li><a href="/#contact"><span class="menu-num">06</span>Contact</a></li>
+      </ol>
+      <div class="menu-foot">
+        <a href="https://github.com/mehmetkahya0" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/mehmet-kahya/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:mehmetkahyakas5@gmail.com">Email</a>
+      </div>
+    </div>
+
+    <main id="main">
+      <article class="post">
+        <header class="post-hero" id="top">
+          <div class="container">
+            <div class="post-hero-inner">
+              <a class="post-back reveal" href="/blog/"><svg><use href="#i-arrow-r" /></svg>All posts</a>
+              <div class="post-meta reveal">
+                <span class="eyebrow">Open source</span>
+                <span class="mono"><time datetime="2026-10-27">Oct 27, 2026</time> · 4 min read</span>
+              </div>
+              <h1 class="post-title reveal">AI Catalog: <em>a README that became a website</em></h1>
+              <p class="post-lede reveal">My most-starred project is a curated list of 500+ AI tools across 40+ categories. Here is how it stays maintainable, and how a zero-build website turns the README itself into a searchable catalog.</p>
+              <div class="post-actions reveal">
+                <a href="https://github.com/mehmetkahya0/AI-Catalog" target="_blank" rel="noopener" class="btn btn-light magnetic"><span>View on GitHub</span><span class="btn-orb"><svg><use href="#i-github" /></svg></span></a><a href="https://mehmetkahya0.github.io/AI-Catalog/" target="_blank" rel="noopener" class="btn btn-ghost magnetic"><span>Live demo</span><span class="btn-orb"><svg><use href="#i-arrow-ur" /></svg></span></a>
+              </div>
+            </div>
+            <div class="bezel post-cover reveal">
+              <div class="bezel-core">
+                <div class="cover" data-kind="tiles" data-seed="7" aria-hidden="true"><canvas></canvas></div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="container post-layout">
+          <aside class="post-toc" aria-label="On this page">
+            <h2>On this page</h2>
+            <ol>
+              <li><a href="#one-file-as-the-source-of-truth">One file as the source of truth</a></li>
+              <li><a href="#tooling-that-keeps-the-list-honest">Tooling that keeps the list honest</a></li>
+              <li><a href="#the-website-parsing-the-readme-at-runtime">The website: parsing the README at runtime</a></li>
+              <li><a href="#what-maintaining-it-taught-me">What maintaining it taught me</a></li>
+              <li><a href="#what-is-next">What is next</a></li>
+            </ol>
+          </aside>
+          <div class="prose">
+<p>
+  <strong>AI Catalog</strong> is the most-starred repository on my profile: close to 500 stars and more than 120 forks
+  at the time of writing. It is a curated list of AI models, tools and platforms, more than 500 entries across over
+  40 categories, from text-to-image generators and LLMs to SQL assistants, voice cloning and autonomous agents.
+</p>
+<p>
+  A curated list sounds like the least technical project imaginable. In practice, keeping hundreds of entries
+  consistent, reviewable and actually <em>usable</em> turned into an interesting engineering problem. This post covers
+  the format, the tooling around it, and the website that turns the README into a searchable catalog without a single
+  build step.
+</p>
+
+<h2 id="one-file-as-the-source-of-truth">One file as the source of truth</h2>
+<p>
+  The whole catalog lives in <code>README.md</code>. That was a deliberate choice: GitHub renders it, people can star
+  and fork it, and contributors only need to know Markdown to open a pull request. Every entry follows the same shape:
+</p>
+<pre data-lang="text"><code>- **[Tool name](https://tool.url)** 🆓🔄 - One short line describing what it does</code></pre>
+<p>
+  The emoji after the link are a small but very effective schema. They encode pricing and status at a glance:
+</p>
+<table>
+  <thead><tr><th>Marker</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td>🆓</td><td>Completely free</td></tr>
+    <tr><td>💰</td><td>Paid (subscription or one-time)</td></tr>
+    <tr><td>🔄</td><td>Freemium: free tier with paid upgrades</td></tr>
+    <tr><td>🆕</td><td>Recently added</td></tr>
+    <tr><td>🔥</td><td>Popular, highly recommended by the community</td></tr>
+  </tbody>
+</table>
+<p>
+  Categories are <code>##</code> headings; finer groupings use <code>###</code> and <code>####</code>. The LLM section,
+  for example, splits into commercial models, open-source models, self-hosted solutions and research projects. A short
+  <code>&gt;</code> blockquote under a heading can describe the category.
+</p>
+
+<h2 id="tooling-that-keeps-the-list-honest">Tooling that keeps the list honest</h2>
+<p>
+  The bigger a list gets, the more it drifts: duplicated entries, missing pricing markers, descriptions that turn into
+  paragraphs. The repository ships three small shell scripts to fight that drift.
+</p>
+<ul>
+  <li><strong><code>scripts/add-tool.sh</code></strong> asks for the name, URL, description and pricing type, then
+    prints a correctly formatted line. Contributors copy it instead of hand-formatting.</li>
+  <li><strong><code>scripts/validate.sh</code></strong> is a quality gate built from <code>grep</code> and
+    <code>awk</code>. It flags malformed entries, tools without a pricing marker, descriptions over 100 characters,
+    and duplicate names.</li>
+  <li><strong><code>scripts/stats.sh</code></strong> counts tools and categories for the "Quick stats" section.</li>
+</ul>
+<pre data-lang="sh"><code># Check for missing pricing indicators
+tools_without_pricing=$(grep -n "^\s*-\s*\*\*\[.*\].*\*\*\s*-" README.md | grep -v "🆓\|💰\|🔄\|🆕\|🔥")
+
+# Check for duplicate entries
+duplicates=$(grep -o "\*\*\[.*\]" README.md | sort | uniq -d)</code></pre>
+<p>
+  Around the scripts sits the usual open-source scaffolding, which matters a lot once strangers start contributing:
+  issue templates for bug reports, feature requests and <em>tool submissions</em>, a pull-request template, a
+  contributing guide, a code of conduct and a roadmap. The tool-submission template alone saves a lot of back-and-forth,
+  because it asks for exactly the fields an entry needs.
+</p>
+
+<h2 id="the-website-parsing-the-readme-at-runtime">The website: parsing the README at runtime</h2>
+<p>
+  A 500-entry Markdown file is great to browse on GitHub and painful to <em>search</em>. So the repository also contains
+  a single <code>index.html</code>, served on GitHub Pages, that turns the README into a fast, filterable catalog. The
+  key design decision: <strong>no generated data file</strong>. The page fetches the README itself and parses it in the
+  browser, so the site can never go stale. Merge a pull request and the website is updated.
+</p>
+<pre data-lang="js"><code>const SOURCES = ['README.md', 'https://raw.githubusercontent.com/mehmetkahya0/AI-Catalog/main/README.md'];</code></pre>
+<p>
+  It tries the README served next to the page first and falls back to the raw GitHub URL, so the same file works on
+  Pages and when opened from a fork.
+</p>
+
+<h3>A line-by-line parser</h3>
+<p>
+  The parser walks the Markdown one line at a time and keeps a little state: the current category, the current
+  sub-group and an optional description. A few rules carry most of the weight:
+</p>
+<ul>
+  <li>Headings like "Table of contents", "Contributing" or "License" are skipped with one regular expression, so only
+    real categories become filters.</li>
+  <li><code>###</code> headings that start with a letter (for example "Summarizer") are categories of their own, while
+    emoji-led ones ("🔥 Commercial LLMs") are treated as sub-groups inside their parent. Unicode property escapes
+    (<code>\p{L}</code>) make that distinction a single test.</li>
+  <li>Each list item is matched against the entry pattern. The emoji block becomes boolean flags
+    (<code>free</code>, <code>freemium</code>, <code>paid</code>, <code>isNew</code>, <code>hot</code>), and the text
+    after <code> - </code> becomes the description.</li>
+</ul>
+<pre data-lang="js"><code>if ((m = item.match(/^\*{0,2}\[([^\]]+)\]\(([^)\s]+)\)\*{0,2}\s*(.*)$/))) [, name, url, rest] = m;
+// ...
+tools.push({
+  name, url, desc: dm ? dm[1].trim() : '', category, sub,
+  free: tags.includes('🆓'), freemium: tags.includes('🔄'), paid: tags.includes('💰'),
+  isNew: tags.includes('🆕'), hot: tags.includes('🔥'),
+});</code></pre>
+
+<h3>Search, filters and small touches</h3>
+<p>
+  The UI combines a category sidebar (a select on mobile), a search box and pricing/status filter chips. Search matches
+  the name, description, category, sub-group and URL, and highlights matches with <code>&lt;mark&gt;</code>. The query
+  is regex-escaped first, so typing <code>c++</code> doesn't throw. Every string from the README is HTML-escaped before
+  rendering, since contributors control that content.
+</p>
+<p>
+  Each card shows the tool's favicon (fetched from Google's favicon service and removed silently if it fails), the
+  host name and its badges. Entries without a URL fall back to a web search for the tool's name. A light/dark theme
+  toggle remembers your choice in <code>localStorage</code>, wrapped in <code>try/catch</code> for browsers that block
+  storage.
+</p>
+
+<h2 id="what-maintaining-it-taught-me">What maintaining it taught me</h2>
+<ul>
+  <li><strong>Curation is the product.</strong> Adding tools is easy; deciding what <em>not</em> to add, and pruning
+    tools that died, is what keeps a list worth starring.</li>
+  <li><strong>Make the right thing the easy thing.</strong> A formatter script and a submission template did more for
+    consistency than any amount of review comments.</li>
+  <li><strong>Keep data and presentation in one place.</strong> Parsing the README at runtime means there is exactly
+    one thing to update, which is the main reason the website has never drifted from the list.</li>
+</ul>
+
+<h2 id="what-is-next">What is next</h2>
+<p>
+  The obvious next step is automation: a GitHub Action that runs <code>validate.sh</code> on every pull request and a
+  scheduled job that checks links for dead tools. The validator is already script-shaped, so wiring it into CI is
+  mostly configuration.
+</p>
+<p>
+  If you know a tool that belongs in the catalog, the submission template is the fastest way in, and a star helps more
+  people find it.
+</p>
+            <hr />
+            <ul class="chips" aria-label="Tags"><li>Open source</li><li>JavaScript</li></ul>
+          </div>
+        </div>
+
+        <footer class="post-end container">
+          <nav class="post-nav" aria-label="More posts">
+            <a class="post-nav-link prev" href="/blog/homepod-streamer.html"><span class="mono">← Previous</span><span>Streaming Windows audio to a HomePod over AirPlay</span></a><a class="post-nav-link next" href="/blog/tempmail.html"><span class="mono">Next →</span><span>TempMail: a disposable inbox in vanilla JavaScript</span></a>
+          </nav>
+        </footer>
+      </article>
+    </main>
+
+    <!-- ============ Footer ============ -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <p class="footer-tag">Make something<br /><em>people want.</em></p>
+          </div>
+          <nav class="footer-col" aria-label="Footer navigation">
+            <h3 class="mono">Navigation</h3>
+            <a href="/#about">About</a>
+            <a href="/#experience">Experience</a>
+            <a href="/#projects">Projects</a>
+            <a href="/#skills">Stack</a>
+            <a href="/blog/">Blog</a>
+            <a href="/#contact">Contact</a>
+          </nav>
+          <div class="footer-col">
+            <h3 class="mono">Projects</h3>
+            <a href="https://github.com/mehmetkahya0/AI-Catalog" target="_blank" rel="noopener">AI Catalog</a>
+            <a href="https://github.com/mehmetkahya0/temp-mail" target="_blank" rel="noopener">TempMail</a>
+            <a href="https://github.com/mehmetkahya0/vision-uav-sim" target="_blank" rel="noopener">UAV Simulator</a>
+            <a href="https://github.com/mehmetkahya0/chain-prompt" target="_blank" rel="noopener">Chain Prompt</a>
+            <a href="https://github.com/mehmetkahya0/f1-race-prediction" target="_blank" rel="noopener">F1 Predictor</a>
+          </div>
+          <div class="footer-col">
+            <h3 class="mono">Connect</h3>
+            <a href="https://github.com/mehmetkahya0" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://www.linkedin.com/in/mehmet-kahya/" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="mailto:mehmetkahyakas5@gmail.com">Email</a>
+          </div>
+        </div>
+
+        <div class="footer-mark" aria-hidden="true">Mehmet Kahya</div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2026 Mehmet Kahya. All rights reserved.</p>
+          <p class="mono">Izmir, TR · <span class="clock" data-tz="Europe/Istanbul">--:--</span></p>
+          <a href="#top" class="to-top">Back to top <svg><use href="#i-arrow-ur" /></svg></a>
+        </div>
+      </div>
+    </footer>
+
+    <div class="read-progress" aria-hidden="true"></div>
+    <script src="/script.js"></script>
+  </body>
+</html>

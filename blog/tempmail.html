@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#06121b" />
+    <title>TempMail: a disposable inbox in vanilla JavaScript — Mehmet Kahya</title>
+    <meta name="description" content="How TempMail turns the Guerrilla Mail API into a fast, multi-inbox web app with no framework and no backend, and what it takes to safely render emails from strangers in the browser." />
+    <meta name="author" content="Mehmet Kahya" />
+    <link rel="canonical" href="https://mehmetkahya0.github.io/blog/tempmail.html" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://mehmetkahya0.github.io/blog/tempmail.html" />
+    <meta property="og:title" content="TempMail: a disposable inbox in vanilla JavaScript — Mehmet Kahya" />
+    <meta property="og:description" content="How TempMail turns the Guerrilla Mail API into a fast, multi-inbox web app with no framework and no backend, and what it takes to safely render emails from strangers in the browser." />
+    <meta property="og:image" content="https://mehmetkahya0.github.io/preview.jpg" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="TempMail: a disposable inbox in vanilla JavaScript — Mehmet Kahya" />
+    <meta property="twitter:description" content="How TempMail turns the Guerrilla Mail API into a fast, multi-inbox web app with no framework and no backend, and what it takes to safely render emails from strangers in the browser." />
+    <meta property="twitter:image" content="https://mehmetkahya0.github.io/preview.jpg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="alternate" type="application/rss+xml" title="Mehmet Kahya — Writing" href="/blog/feed.xml" />
+    <script data-goatcounter="https://mehmetkahya.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "TempMail: a disposable inbox in vanilla JavaScript", "description": "How TempMail turns the Guerrilla Mail API into a fast, multi-inbox web app with no framework and no backend, and what it takes to safely render emails from strangers in the browser.", "datePublished": "2026-10-27", "author": {"@type": "Person", "name": "Mehmet Kahya", "url": "https://mehmetkahya0.github.io"}, "mainEntityOfPage": "https://mehmetkahya0.github.io/blog/tempmail.html", "keywords": "Web, JavaScript, Privacy"}</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- SVG sprite: hairline icons -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="i-arrow-ur" viewBox="0 0 24 24"><path d="M7 17 17 7M8.5 7H17v8.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14m-6-6 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.25 4.1 1 5.85L12 16.9l-5.25 2.75 1-5.85L3.5 9.7l5.9-.9L12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" /></symbol>
+      <symbol id="i-fork" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="6.5" cy="5.5" r="2" /><circle cx="17.5" cy="5.5" r="2" /><circle cx="12" cy="18.5" r="2" /><path d="M6.5 7.5v1.5a3 3 0 0 0 3 3h5a3 3 0 0 0 3-3V7.5M12 12v4.5" /></g></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" /><circle cx="12" cy="10" r="2.3" /></g></symbol>
+      <symbol id="i-cap" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M2.5 9 12 4.5 21.5 9 12 13.5 2.5 9Z" /><path d="M6.5 11v4.6c0 1.3 2.5 2.9 5.5 2.9s5.5-1.6 5.5-2.9V11M21.5 9v5" /></g></symbol>
+      <symbol id="i-cpu" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="6" width="12" height="12" rx="2" /><rect x="9.5" y="9.5" width="5" height="5" rx=".8" /><path d="M9 3v3m6-3v3M9 18v3m6-3v3M3 9h3m-3 6h3m12-6h3m-3 6h3" stroke-linecap="round" /></g></symbol>
+      <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6h4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" /></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5" /><path d="m3.5 7 8.5 6 8.5-6" /></g></symbol>
+      <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.56-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.16-1.18 3.16-1.18.63 1.59.23 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z" /></symbol>
+      <symbol id="i-linkedin" viewBox="0 0 24 24"><path fill="currentColor" d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z" /></symbol>
+    </svg>
+
+    <!-- ============ Header ============ -->
+    <header class="nav-wrap">
+      <nav class="nav" id="navbar" aria-label="Primary">
+        <ul class="nav-links">
+          <li><a href="/#about" class="nav-link">About</a></li>
+          <li><a href="/#experience" class="nav-link">Experience</a></li>
+          <li><a href="/#projects" class="nav-link">Projects</a></li>
+          <li><a href="/#skills" class="nav-link">Stack</a></li>
+          <li><a href="/blog/" class="nav-link is-active" aria-current="page">Blog</a></li>
+        </ul>
+        <a href="/" class="nav-logo" aria-label="Mehmet Kahya — home">
+          <svg class="nav-logo-mark" viewBox="0 0 7 7" aria-hidden="true" shape-rendering="crispEdges">
+            <path fill="currentColor" d="M3 0h1v2H3zM3 5h1v2H3zM0 3h2v1H0zM5 3h2v1H5zM2 2h3v3H2zM1 1h1v1H1zM5 1h1v1H5zM1 5h1v1H1zM5 5h1v1H5z" />
+          </svg>
+          <span class="nav-logo-text">Mehmet Kahya</span>
+        </a>
+        <div class="nav-right">
+          <a href="/#contact" class="nav-cta">Let's talk</a>
+          <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+            <span></span><span></span>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Fullscreen menu (mobile) -->
+    <div class="menu" id="menu" aria-hidden="true">
+      <ol class="menu-links">
+        <li><a href="/#about"><span class="menu-num">01</span>About</a></li>
+        <li><a href="/#experience"><span class="menu-num">02</span>Experience</a></li>
+        <li><a href="/#projects"><span class="menu-num">03</span>Projects</a></li>
+        <li><a href="/#skills"><span class="menu-num">04</span>Stack</a></li>
+        <li><a href="/blog/"><span class="menu-num">05</span>Blog</a></li>
+        <li><a href="/#contact"><span class="menu-num">06</span>Contact</a></li>
+      </ol>
+      <div class="menu-foot">
+        <a href="https://github.com/mehmetkahya0" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/mehmet-kahya/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:mehmetkahyakas5@gmail.com">Email</a>
+      </div>
+    </div>
+
+    <main id="main">
+      <article class="post">
+        <header class="post-hero" id="top">
+          <div class="container">
+            <div class="post-hero-inner">
+              <a class="post-back reveal" href="/blog/"><svg><use href="#i-arrow-r" /></svg>All posts</a>
+              <div class="post-meta reveal">
+                <span class="eyebrow">Web</span>
+                <span class="mono"><time datetime="2026-10-27">Oct 27, 2026</time> · 5 min read</span>
+              </div>
+              <h1 class="post-title reveal">TempMail: a disposable inbox <em>in vanilla JavaScript</em></h1>
+              <p class="post-lede reveal">How TempMail turns the Guerrilla Mail API into a fast, multi-inbox web app with no framework and no backend, and what it takes to safely render emails from strangers in the browser.</p>
+              <div class="post-actions reveal">
+                <a href="https://github.com/mehmetkahya0/temp-mail" target="_blank" rel="noopener" class="btn btn-light magnetic"><span>View on GitHub</span><span class="btn-orb"><svg><use href="#i-github" /></svg></span></a><a href="https://mehmetkahya0.github.io/temp-mail/" target="_blank" rel="noopener" class="btn btn-ghost magnetic"><span>Live demo</span><span class="btn-orb"><svg><use href="#i-arrow-ur" /></svg></span></a>
+              </div>
+            </div>
+            <div class="bezel post-cover reveal">
+              <div class="bezel-core">
+                <div class="cover" data-kind="orb" data-seed="3" aria-hidden="true"><canvas></canvas></div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="container post-layout">
+          <aside class="post-toc" aria-label="On this page">
+            <h2>On this page</h2>
+            <ol>
+              <li><a href="#architecture-a-static-client-on-top-of-a-public-api">Architecture: a static client on top of a public API</a></li>
+              <li><a href="#rendering-email-from-strangers-safely">Rendering email from strangers, safely</a></li>
+              <li><a href="#multiple-inboxes-one-tab">Multiple inboxes, one tab</a></li>
+              <li><a href="#small-features-that-make-it-feel-fast">Small features that make it feel fast</a></li>
+              <li><a href="#design-without-a-framework">Design without a framework</a></li>
+              <li><a href="#dealing-with-clones">Dealing with clones</a></li>
+              <li><a href="#what-i-learned">What I learned</a></li>
+            </ol>
+          </aside>
+          <div class="prose">
+<p>
+  Every "sign up to download" form asks for an email address it will spam forever. <strong>TempMail</strong> gives you a
+  throwaway inbox in one click: a real address that receives real mail, which you can read, star and delete, then
+  simply forget. It is my second most-starred project, with more than 180 stars and 80 forks.
+</p>
+<p>
+  The interesting constraint is that there is <em>no backend of my own</em>. TempMail is a static site on GitHub Pages:
+  HTML, CSS and around 2,400 lines of vanilla JavaScript talking directly to the Guerrilla Mail API. This post is about
+  how that works, and about the part people underestimate: displaying HTML email from strangers safely.
+</p>
+
+<h2 id="architecture-a-static-client-on-top-of-a-public-api">Architecture: a static client on top of a public API</h2>
+<p>
+  Guerrilla Mail exposes a simple AJAX API where every call is <code>ajax.php?f=&lt;function&gt;</code> and a session
+  token (<code>sid_token</code>) ties requests to one mailbox. TempMail uses a handful of functions:
+</p>
+<table>
+  <thead><tr><th>Call</th><th>Used for</th></tr></thead>
+  <tbody>
+    <tr><td><code>get_email_address</code></td><td>Create a new inbox and get its session token</td></tr>
+    <tr><td><code>set_email_user</code></td><td>Pick a custom username and one of seven domains</td></tr>
+    <tr><td><code>get_email_list</code></td><td>Poll the inbox</td></tr>
+    <tr><td><code>fetch_email</code></td><td>Load a full message body</td></tr>
+    <tr><td><code>fetch_attachment</code></td><td>Download attachments</td></tr>
+    <tr><td><code>del_email</code></td><td>Delete one or many messages</td></tr>
+  </tbody>
+</table>
+<p>
+  Everything else (sessions, caching, tagging, the UI) lives in the browser. Configuration such as timeouts, retry
+  counts, storage keys and the domain list sits in one <code>config.js</code>, so behaviour can be tuned without
+  touching the logic.
+</p>
+
+<h3>Network calls that fail gracefully</h3>
+<p>
+  A free public API will sometimes be slow or down. Every request goes through a small wrapper that adds a hard timeout
+  with <code>AbortController</code>, so a hanging request never freezes the UI. On top of that, startup retries with a
+  growing delay, a failed address generation retries once by itself, and an online/offline indicator tells you what is
+  going on:
+</p>
+<pre data-lang="js"><code>async function fetchWithTimeout(url, options = {}, timeout = CONFIG.REQUEST_TIMEOUT) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() =&gt; controller.abort(), timeout);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') throw new Error('Request timed out');
+    throw error;
+  }
+}</code></pre>
+
+<h2 id="rendering-email-from-strangers-safely">Rendering email from strangers, safely</h2>
+<p>
+  An inbox is an unusual web app: its main content is HTML written by <em>anyone on the internet</em>. Dropping an email
+  body into <code>innerHTML</code> would let any sender run JavaScript on my domain. TempMail sanitizes every body before
+  it touches the page:
+</p>
+<ol>
+  <li>Parse the HTML with <code>DOMParser</code> into an inert document. Nothing executes during parsing.</li>
+  <li>Remove dangerous elements outright: <code>script</code>, <code>iframe</code>, <code>object</code>,
+    <code>embed</code>, <code>form</code> and form controls.</li>
+  <li>Strip every <code>on*</code> event-handler attribute and any attribute whose value starts with
+    <code>javascript:</code>.</li>
+  <li>Rewrite relative image and link URLs to absolute Guerrilla Mail URLs, and force external links to open in a new
+    tab with <code>rel="noopener noreferrer"</code>.</li>
+</ol>
+<pre data-lang="js"><code>const doc = new DOMParser().parseFromString(html, 'text/html');
+
+['script', 'iframe', 'object', 'embed', 'form', 'input', 'textarea', 'select']
+  .forEach(tag =&gt; doc.querySelectorAll(tag).forEach(el =&gt; el.remove()));
+
+doc.querySelectorAll('*').forEach(el =&gt; {
+  for (const attr of [...el.attributes]) {
+    if (attr.name.startsWith('on') || attr.value.startsWith('javascript:')) {
+      el.removeAttribute(attr.name);
+    }
+  }
+});</code></pre>
+<p>
+  Plain-text fields such as subjects and sender names go through a separate escape function instead, because text
+  should never be interpreted as markup in the first place.
+</p>
+<div class="callout">
+  <span class="callout-label">Lesson</span>
+  A block-list sanitizer is a solid first line of defence, but HTML has many dark corners (SVG, <code>srcdoc</code>,
+  CSS <code>url()</code> tricks). If I hardened it further, I would render bodies inside a sandboxed
+  <code>&lt;iframe srcdoc&gt;</code> without <code>allow-scripts</code>, so even a missed vector couldn't execute.
+</div>
+
+<h2 id="multiple-inboxes-one-tab">Multiple inboxes, one tab</h2>
+<p>
+  Version 4 added tabbed mailboxes: up to five disposable addresses at once, each with its own session token,
+  countdown timer and refresh settings. Sessions are stored as an array in <code>localStorage</code> under
+  <code>temp_mail_sessions_v4</code>, and older single-session data is migrated automatically on first load, so
+  upgrading never loses an inbox. The five-session cap is deliberate. Each inbox polls the API, and an unbounded
+  number of tabs would quietly hammer a free service.
+</p>
+<p>
+  New-mail detection keeps a set of known message ids per inbox. When a poll returns an id that isn't in the set, the
+  app knows it is genuinely new and can raise a browser notification (if you granted permission) instead of
+  re-announcing old mail after every refresh.
+</p>
+
+<h2 id="small-features-that-make-it-feel-fast">Small features that make it feel fast</h2>
+<ul>
+  <li><strong>Command palette</strong> (<kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>K</kbd>) with fuzzy search and full
+    keyboard navigation: copy the address, switch inboxes, regenerate, clear, change language or theme.</li>
+  <li><strong>Semantic tags.</strong> Incoming mail is classified by keywords in the subject and sender, in both English
+    and Turkish, into <em>Verification</em> (codes, OTPs, activation links), <em>Security</em> (logins, 2FA,
+    resets), <em>Testing</em> and <em>Marketing</em>. A "Verifications" filter chip shows the one email you usually
+    came for.</li>
+  <li><strong>Starring</strong> that persists across visits, and quick filters for <em>All</em>, <em>Starred</em> and
+    <em>Verifications</em>.</li>
+  <li><strong>QR code</strong> of the address, so you can use it on your phone.</li>
+  <li><strong>Bilingual UI.</strong> A dictionary-based TR/EN layer picks the language from <code>navigator.language</code>
+    and remembers your choice.</li>
+</ul>
+<p>
+  The classifier is deliberately simple: ordered keyword checks, with verification checked first because it matters
+  most. Simple rules are predictable, fast and easy to extend with a new language. That beats an opaque model for a
+  feature whose job is to surface one-time codes.
+</p>
+
+<h2 id="design-without-a-framework">Design without a framework</h2>
+<p>
+  The interface is glassmorphic cards over an animated "aurora" background with a subtle SVG film-grain overlay. The
+  colours are HSL-based CSS variables, which makes the dark/light theme switch a matter of swapping a few tokens. No
+  framework and no build step means the page loads fast from GitHub Pages and the code is readable by anyone who
+  opens DevTools, which is part of why so many people fork it.
+</p>
+
+<h2 id="dealing-with-clones">Dealing with clones</h2>
+<p>
+  Popularity has a downside: copies of the site re-hosted under other names. TempMail includes layered client-side
+  guards that check the hostname and a license flag at startup and periodically at runtime, with a <code>?dev=1</code>
+  escape hatch for local testing. I'm realistic about what this is: client-side checks are a <em>deterrent</em>, not
+  real protection, because anyone determined can strip them. The license and clear attribution do the real work.
+</p>
+
+<h2 id="what-i-learned">What I learned</h2>
+<ul>
+  <li>Treat every byte from the network as hostile, especially when the product's whole purpose is receiving mail from
+    strangers.</li>
+  <li>Vanilla JavaScript scales further than people think, as long as you keep configuration, networking, state and
+    rendering in clearly separated pieces.</li>
+  <li>Be a good citizen to the API you depend on: timeouts, bounded retries and a cap on concurrent pollers.</li>
+</ul>
+            <hr />
+            <ul class="chips" aria-label="Tags"><li>Web</li><li>JavaScript</li><li>Privacy</li></ul>
+          </div>
+        </div>
+
+        <footer class="post-end container">
+          <nav class="post-nav" aria-label="More posts">
+            <a class="post-nav-link prev" href="/blog/ai-catalog.html"><span class="mono">← Previous</span><span>AI Catalog: a README that became a website</span></a><a class="post-nav-link next" href="/blog/f1-race-predictor.html"><span class="mono">Next →</span><span>Predicting F1 races with simulation, ML and real telemetry</span></a>
+          </nav>
+        </footer>
+      </article>
+    </main>
+
+    <!-- ============ Footer ============ -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <p class="footer-tag">Make something<br /><em>people want.</em></p>
+          </div>
+          <nav class="footer-col" aria-label="Footer navigation">
+            <h3 class="mono">Navigation</h3>
+            <a href="/#about">About</a>
+            <a href="/#experience">Experience</a>
+            <a href="/#projects">Projects</a>
+            <a href="/#skills">Stack</a>
+            <a href="/blog/">Blog</a>
+            <a href="/#contact">Contact</a>
+          </nav>
+          <div class="footer-col">
+            <h3 class="mono">Projects</h3>
+            <a href="https://github.com/mehmetkahya0/AI-Catalog" target="_blank" rel="noopener">AI Catalog</a>
+            <a href="https://github.com/mehmetkahya0/temp-mail" target="_blank" rel="noopener">TempMail</a>
+            <a href="https://github.com/mehmetkahya0/vision-uav-sim" target="_blank" rel="noopener">UAV Simulator</a>
+            <a href="https://github.com/mehmetkahya0/chain-prompt" target="_blank" rel="noopener">Chain Prompt</a>
+            <a href="https://github.com/mehmetkahya0/f1-race-prediction" target="_blank" rel="noopener">F1 Predictor</a>
+          </div>
+          <div class="footer-col">
+            <h3 class="mono">Connect</h3>
+            <a href="https://github.com/mehmetkahya0" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://www.linkedin.com/in/mehmet-kahya/" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="mailto:mehmetkahyakas5@gmail.com">Email</a>
+          </div>
+        </div>
+
+        <div class="footer-mark" aria-hidden="true">Mehmet Kahya</div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2026 Mehmet Kahya. All rights reserved.</p>
+          <p class="mono">Izmir, TR · <span class="clock" data-tz="Europe/Istanbul">--:--</span></p>
+          <a href="#top" class="to-top">Back to top <svg><use href="#i-arrow-ur" /></svg></a>
+        </div>
+      </div>
+    </footer>
+
+    <div class="read-progress" aria-hidden="true"></div>
+    <script src="/script.js"></script>
+  </body>
+</html>

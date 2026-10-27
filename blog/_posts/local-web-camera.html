@@ -1,0 +1,140 @@
+<!--
+title: A LAN webcam with <em>WebRTC and Socket.IO</em>
+card_title: A LAN webcam with WebRTC and Socket.IO
+description: Turning any device into a wireless camera on your local network: rooms and signaling with Socket.IO, peer-to-peer video with WebRTC, live connection stats, and the lessons I'd apply if I rebuilt it today.
+date: 2026-10-27
+tags: Networking, JavaScript, WebRTC
+cover: rings
+seed: 2
+repo: https://github.com/mehmetkahya0/local-web-camera
+order: 7
+-->
+<p>
+  <strong>Local Web Camera</strong> answers a simple wish: point an old phone or laptop at something and watch it
+  from another device in the house, with no app store, no account and no cloud service in between. Open a page on the
+  device with the camera, share a link, open it on the viewer, done.
+</p>
+<p>
+  Building it means understanding how WebRTC really fits together. This post covers how signaling, ICE and the media path fit together, and then, honestly, what I
+  would change if I wrote it again today.
+</p>
+
+<h2>The big picture</h2>
+<p>
+  WebRTC sends video directly between browsers, but browsers can't find each other on their own. They need a
+  <em>signaling</em> channel to exchange two kinds of messages: <strong>session descriptions</strong> (SDP offers and
+  answers that describe codecs and media) and <strong>ICE candidates</strong> (possible network addresses to reach each
+  other). WebRTC deliberately doesn't specify how signaling works, so you bring your own. Here it is Socket.IO on a
+  small Express server.
+</p>
+<figure class="diagram">
+<pre data-lang="text"><code>  Host (camera)                Node server                 Viewer
+ ┌─────────────┐   join-room   ┌─────────────┐  join-room  ┌─────────────┐
+ │ getUserMedia│ ────────────▶ │  Socket.IO  │ ◀────────── │             │
+ │             │   offer/ICE   │  rooms map  │  answer/ICE │             │
+ │ RTCPeerConn │ ◀───────────▶ │  (relay)    │ ◀─────────▶ │ RTCPeerConn │
+ └──────┬──────┘               └─────────────┘             └──────▲──────┘
+        │                video + audio (DTLS-SRTP, P2P)            │
+        └──────────────────────────────────────────────────────────┘</code></pre>
+<figcaption>The server only relays small signaling messages; video flows directly between the two devices.</figcaption>
+</figure>
+
+<h2>Rooms and signaling</h2>
+<p>
+  The server keeps an in-memory map of rooms. Each room maps socket ids to a small record that includes which streams a
+  peer has started. When someone joins, existing members hear about the newcomer, and the newcomer receives the list of
+  existing users:
+</p>
+<pre data-lang="js"><code>socket.on('join-room', (roomId) =&gt; {
+  if (!rooms.has(roomId)) rooms.set(roomId, new Map());
+  const room = rooms.get(roomId);
+  room.set(socket.id, { peerId: socket.id, streams: new Set() });
+  socket.join(roomId);
+
+  socket.to(roomId).emit('user-connected', socket.id);
+  socket.emit('existing-users', Array.from(room.keys()).filter(id =&gt; id !== socket.id));
+});
+
+// SDP and ICE are relayed untouched to the other peers in the room
+socket.on('offer', (offer, roomId) =&gt; socket.to(roomId).emit('offer', offer));
+socket.on('answer', (answer, roomId) =&gt; socket.to(roomId).emit('answer', answer));
+socket.on('ice-candidate', (c, roomId) =&gt; socket.to(roomId).emit('ice-candidate', c));</code></pre>
+<p>
+  The server never inspects media and never stores anything. On disconnect it tells the room that the peer's streams
+  stopped, removes the peer, and deletes the room when it becomes empty. There is also a tiny admin "console" over the
+  same socket that can list rooms and users or clear everything, which is handy when debugging connections.
+</p>
+<p>
+  A host creates a room with a random id and shares a link of the form <code>http://&lt;host-ip&gt;:8080?room=&lt;id&gt;</code>.
+  The viewer page reads <code>room</code> from <code>URLSearchParams</code> and joins automatically. To help with that
+  link, the server walks <code>os.networkInterfaces()</code>, picks the first non-internal IPv4 address and exposes it
+  at <code>/config</code>.
+</p>
+
+<h2>The media path</h2>
+<p>The host requests the camera with constraints that prefer HD but accept less on weaker devices:</p>
+<pre data-lang="js"><code>localStream = await navigator.mediaDevices.getUserMedia({
+  video: {
+    width: { ideal: 1280, max: 1920 },
+    frameRate: { ideal: 30, max: 60 },
+    facingMode: 'user'
+  },
+  audio: true
+});</code></pre>
+<p>
+  Using <code>ideal</code> rather than <code>exact</code> is the important part. <code>exact</code> constraints make
+  <code>getUserMedia</code> fail outright on a camera that can't meet them, while <code>ideal</code> lets the browser get
+  as close as it can.
+</p>
+
+<h3>ICE: finding a path</h3>
+<p>
+  On a home network the two devices can usually reach each other directly through their local addresses ("host"
+  candidates), so the video never leaves the LAN. The peer connection is still configured with several public STUN
+  servers and a TURN server, so a connection can be established across trickier NATs too. STUN lets a device discover
+  its public address; TURN relays the media when no direct path exists.
+</p>
+<p>
+  The app listens to <code>iceConnectionState</code> and <code>connectionState</code>, prints a timestamped
+  connection log in the UI, and treats <code>failed</code> or <code>disconnected</code> as a cue to attempt a
+  reconnect. On the signaling side, the Socket.IO client is configured with automatic reconnection (five attempts) and
+  generous ping timeouts, so a phone that briefly drops Wi-Fi recovers on its own.
+</p>
+
+<h2>Seeing what the connection is doing</h2>
+<p>
+  "The video is choppy" is not a bug report you can act on. So both the host and viewer pages poll
+  <code>RTCPeerConnection.getStats()</code> and plot live charts with Chart.js: frames per second, bytes received
+  (bitrate) and packets lost, over a sliding window of data points. Charts update with <code>update('none')</code> to
+  skip animations, so drawing them doesn't compete with video decoding. A rising packet-loss line is usually the
+  first sign of weak Wi-Fi.
+</p>
+
+<h2>What I would change today</h2>
+<p>
+  Rereading the code with fresh eyes, there are things I would do differently. They are
+  worth writing down because they are common mistakes:
+</p>
+<ul>
+  <li><strong>Serve a <code>public/</code> folder, not the project root.</strong> The server uses
+    <code>express.static(__dirname)</code>, which makes <em>every</em> file in the project downloadable, including
+    <code>server.js</code> and the TLS key. Static serving should be limited to a dedicated folder of client files.</li>
+  <li><strong>Never commit private keys or <code>node_modules</code>.</strong> A self-signed key for local development
+    should be generated on first run, for example with <code>mkcert</code>, and listed in <code>.gitignore</code>.
+    Dependencies belong in <code>package-lock.json</code>, not in the repository.</li>
+  <li><strong>Secure contexts.</strong> Browsers only allow <code>getUserMedia</code> on HTTPS or
+    <code>localhost</code>. Serving over HTTPS on the LAN would let <em>any</em> device be the camera, not just the one
+    running the server.</li>
+  <li><strong>Address messages to a peer.</strong> Offers and answers are broadcast to the whole room today, which works
+    for one viewer. Sending them to a specific socket id would make several viewers per room possible.</li>
+  <li><strong>Unguessable room ids and an origin allow-list.</strong> <code>Math.random()</code> ids and a wildcard CORS
+    policy are fine on a trusted home network, but <code>crypto.randomUUID()</code> and a restricted origin cost nothing.</li>
+</ul>
+
+<h2>What I learned</h2>
+<p>
+  WebRTC looks intimidating because it bundles many protocols (SDP, ICE, STUN, TURN, DTLS, SRTP), but the mental model
+  is small: <em>exchange descriptions, exchange candidates, let the browsers do the rest</em>. Once that clicked, the
+  remaining work was ordinary engineering: reconnects, state handling and visibility into what the connection is
+  actually doing.
+</p>
